@@ -1,0 +1,16 @@
+{
+  "name": "laravel-nuxt-template",
+  "version": "1.0.0",
+  "description": "Laravel 12.x + Nuxt.js 3.16 + PostgreSQL 16.x を使用したモダンなウェブアプリケーションテンプレート",
+  "scripts": {
+    "security:check": "npm audit && cd frontend && npm audit && cd ../backend && composer audit"
+  },
+  "lint-staged": {
+    "backend/**/*.php": [
+      "backend/vendor/bin/pint --",
+      "backend/vendor/bin/phpcs --"
+    ]
+  },
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,181 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to run tests against"
+        required: true
+        default: "testing"
+        type: choice
+        options:
+          - testing
+          - staging
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: laravel_nuxt_template_testing
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pgsql, pdo_pgsql, bcmath, exif, gd
+
+      - name: Copy .env
+        run: |
+          cd backend
+          cp .env.example .env.testing
+          sed -i 's/DB_HOST=pgsql/DB_HOST=localhost/g' .env.testing
+          sed -i 's/DB_USERNAME=sail/DB_USERNAME=postgres/g' .env.testing
+          sed -i 's/DB_PASSWORD=password/DB_PASSWORD=postgres/g' .env.testing
+          sed -i 's/DB_DATABASE=laravel_nuxt_template/DB_DATABASE=laravel_nuxt_template_testing/g' .env.testing
+
+      - name: Install Dependencies
+        run: |
+          cd backend
+          composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Generate App Key
+        run: |
+          cd backend
+          php artisan key:generate --env=testing
+
+      - name: Generate JWT Secret
+        run: |
+          cd backend
+          php artisan jwt:secret --force --env=testing
+
+      - name: Run Migrations
+        run: |
+          cd backend
+          php artisan migrate --env=testing
+
+      - name: PHPUnit Tests with Coverage
+        run: |
+          cd backend
+          XDEBUG_MODE=coverage php artisan test --env=testing --coverage-clover coverage.xml
+
+      - name: Upload Backend Test Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: backend/coverage.xml
+          flags: backend
+          fail_ci_if_error: false
+
+      - name: Static Analysis
+        run: |
+          cd backend
+          composer analyze || echo "Static analysis failed but continuing..."
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+
+      - name: Lint
+        run: |
+          cd frontend
+          npm run lint || echo "Lint failed but continuing..."
+
+      - name: Run Unit Tests with Coverage
+        run: |
+          cd frontend
+          npm run test:coverage || npm run test
+
+      - name: Upload Frontend Test Coverage
+        uses: codecov/codecov-action@v3
+        if: hashFiles('frontend/coverage/coverage-final.json') != ''
+        with:
+          files: frontend/coverage/coverage-final.json
+          flags: frontend
+          fail_ci_if_error: false
+
+      - name: Build Check
+        run: |
+          cd frontend
+          npm run build
+        env:
+          BROWSER_API_BASE_URL: "http://localhost:8000/api"
+          SERVER_API_BASE_URL: "http://laravel.test/api"
+
+  security-check:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring
+
+      - name: Install Dependencies
+        run: |
+          cd backend
+          composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run Backend Security Check
+        run: |
+          cd backend
+          composer audit || true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+
+      - name: Run Frontend Security Check
+        run: |
+          cd frontend
+          npm audit
+
+      - name: Run SAST Scan
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

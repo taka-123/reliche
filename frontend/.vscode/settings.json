@@ -1,0 +1,17 @@
+{
+  // フロントエンド専用設定
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+
+  // Nuxt固有の除外設定
+  "files.exclude": {
+    "**/.nuxt": true,
+    "**/node_modules": true,
+    "**/.output": true
+  },
+
+  // Vue/Nuxt開発用設定
+  "typescript.preferences.useLabelDetailsInCompletionEntries": true,
+  "typescript.preferences.allowTextChangesInNewFiles": false,
+  "vue.inlayHints.missingProps": false,
+  "vue.inlayHints.optionsWrapper": false
+}

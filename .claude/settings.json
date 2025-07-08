@@ -1,0 +1,99 @@
+{
+  "cleanupPeriodDays": 30,
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "BASH_DEFAULT_TIMEOUT_MS": "300000",
+    "LANG": "ja_JP.UTF-8"
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Edit(**)",
+      "List(*)",
+
+      "Bash(git add*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git commit*)",
+      "Bash(git diff*)",
+      "Bash(git fetch*)",
+      "Bash(git log*)",
+      "Bash(git pull*)",
+      "Bash(git stash*)",
+      "Bash(git status*)",
+      "Bash(git switch:*)",
+      "Bash(git worktree add:*)",
+      "Bash(git push origin develop*)",
+      "Bash(git push origin feature/*)",
+
+      "Bash(node *.js)",
+      "Bash(npm install*)",
+      "Bash(npm run*)",
+      "Bash(php artisan*)",
+      "Bash(python *.py)",
+      "Bash(python3 *.py)",
+      "Bash(composer install*)",
+      "Bash(composer update*)",
+      "Bash(composer require*)",
+      "Bash(composer dump-autoload*)",
+
+      "Bash(cp:*)",
+      "Bash(chmod:*)",
+      "Bash(docker:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rg:*)",
+      "Bash(rm *.tmp)",
+      "Bash(rm -f *.log)",
+
+      "WebFetch(domain:*)",
+      "WebSearch(*)"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(sudo:*)",
+
+      "Bash(composer exec*)",
+      "Bash(composer global*)",
+      "Bash(composer run-script*)",
+
+      "Bash(git push origin main*)",
+      "Bash(git push origin master*)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+
+      "Read(.env*)",
+      "Write(.env*)",
+      "Edit(.env*)",
+      "Read(~/.ssh/*)",
+      "Write(~/.ssh/*)",
+      "Edit(~/.ssh/*)",
+      "Read(.aws/*)",
+      "Read(.npmrc)",
+      "Read(.netrc)",
+      "Read(/etc/*)",
+      "Write(/etc/*)",
+      "Edit(/etc/*)",
+
+      "Bash(*DROP DATABASE*)",
+      "Bash(*DROP TABLE*)",
+      "Bash(*TRUNCATE*)",
+      "Bash(redis-cli FLUSH*)"
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    ".git/**",
+    "*.log",
+    "dist/**",
+    "build/**",
+    "vendor/**",
+    "storage/**",
+    ".next/**",
+    ".nuxt/**"
+  ]
+}
