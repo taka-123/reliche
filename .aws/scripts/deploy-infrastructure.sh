@@ -12,9 +12,9 @@ NC="\033[0m" # No Color
 
 # 環境変数の設定
 ENVIRONMENT=${1:-production}
-PROJECT_NAME=laravel-nuxt-template
+PROJECT_NAME=reliche
 DB_INSTANCE_CLASS=${2:-db.t3.small}
-DB_NAME=${3:-laravel_nuxt_template}
+DB_NAME=${3:-reliche}
 DB_USERNAME=${4:-dbadmin}
 
 # ダミーパスワードを使用

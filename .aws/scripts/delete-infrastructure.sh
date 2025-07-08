@@ -4,7 +4,7 @@
 set -e
 
 # 環境変数の設定
-PROJECT_NAME=laravel-nuxt-template
+PROJECT_NAME=reliche
 ENVIRONMENT=${ENVIRONMENT:-production}
 
 # 関数定義

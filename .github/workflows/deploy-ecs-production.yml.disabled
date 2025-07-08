@@ -14,13 +14,13 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1 # AWSリージョン
-  PROJECT_NAME: laravel-nuxt-template
+  PROJECT_NAME: reliche
   ENVIRONMENT: production
-  ECR_REPOSITORY_BACKEND: ${{ vars.ECR_REPOSITORY_BACKEND || 'laravel-nuxt-template-production-backend' }}
-  ECR_REPOSITORY_FRONTEND: ${{ vars.ECR_REPOSITORY_FRONTEND || 'laravel-nuxt-template-production-frontend' }}
-  ECS_CLUSTER: ${{ vars.ECS_CLUSTER || 'laravel-nuxt-template-production' }}
-  ECS_SERVICE_BACKEND: ${{ vars.ECS_SERVICE_BACKEND || 'laravel-nuxt-template-production-backend' }}
-  ECS_SERVICE_FRONTEND: ${{ vars.ECS_SERVICE_FRONTEND || 'laravel-nuxt-template-production-frontend' }}
+  ECR_REPOSITORY_BACKEND: ${{ vars.ECR_REPOSITORY_BACKEND || 'reliche-production-backend' }}
+  ECR_REPOSITORY_FRONTEND: ${{ vars.ECR_REPOSITORY_FRONTEND || 'reliche-production-frontend' }}
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER || 'reliche-production' }}
+  ECS_SERVICE_BACKEND: ${{ vars.ECS_SERVICE_BACKEND || 'reliche-production-backend' }}
+  ECS_SERVICE_FRONTEND: ${{ vars.ECS_SERVICE_FRONTEND || 'reliche-production-frontend' }}
   TASK_DEFINITION_BACKEND: .aws/ecs/backend-task-definition.json
   TASK_DEFINITION_FRONTEND: .aws/ecs/frontend-task-definition.json
   BACKEND_CONTAINER_NAME: backend

@@ -23,7 +23,7 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_DB: laravel_nuxt_template_testing
+          POSTGRES_DB: reliche_testing
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
@@ -49,7 +49,7 @@ jobs:
           sed -i 's/DB_HOST=pgsql/DB_HOST=localhost/g' .env.testing
           sed -i 's/DB_USERNAME=sail/DB_USERNAME=postgres/g' .env.testing
           sed -i 's/DB_PASSWORD=password/DB_PASSWORD=postgres/g' .env.testing
-          sed -i 's/DB_DATABASE=laravel_nuxt_template/DB_DATABASE=laravel_nuxt_template_testing/g' .env.testing
+          sed -i 's/DB_DATABASE=reliche/DB_DATABASE=reliche_testing/g' .env.testing
 
       - name: Install Dependencies
         run: |

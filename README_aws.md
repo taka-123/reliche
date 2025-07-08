@@ -1,6 +1,6 @@
 # AWS デプロイガイド
 
-このドキュメントでは、Laravel + Nuxt + PostgreSQL テンプレートを AWS 環境にデプロイするための設定と手順について説明します。
+このドキュメントでは、relicheを AWS 環境にデプロイするための設定と手順について説明します。
 
 ## 目次
 
@@ -13,7 +13,7 @@
 
 ## 概要
 
-本テンプレートは、AWS の以下のサービスを使用してデプロイすることができます：
+本プロジェクトは、AWS の以下のサービスを使用してデプロイすることができます：
 
 - **ECS (Elastic Container Service)**: コンテナオーケストレーション
 - **ECR (Elastic Container Registry)**: コンテナイメージの保存
@@ -190,7 +190,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: laravel-nuxt-template
+          ECR_REPOSITORY: reliche
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # バックエンドイメージのビルドとプッシュ
@@ -209,25 +209,25 @@ jobs:
           # バックエンドタスク定義の更新
           aws ecs register-task-definition \
             --cli-input-json file://aws/task-definition-backend.json \
-            --family laravel-nuxt-template-backend
+            --family reliche-backend
 
           # フロントエンドタスク定義の更新
           aws ecs register-task-definition \
             --cli-input-json file://aws/task-definition-frontend.json \
-            --family laravel-nuxt-template-frontend
+            --family reliche-frontend
 
           # バックエンドサービスの更新
           aws ecs update-service \
-            --cluster laravel-nuxt-template \
+            --cluster reliche \
             --service backend \
-            --task-definition laravel-nuxt-template-backend \
+            --task-definition reliche-backend \
             --force-new-deployment
 
           # フロントエンドサービスの更新
           aws ecs update-service \
-            --cluster laravel-nuxt-template \
+            --cluster reliche \
             --service frontend \
-            --task-definition laravel-nuxt-template-frontend \
+            --task-definition reliche-frontend \
             --force-new-deployment
 
       - name: Invalidate CloudFront cache
@@ -269,18 +269,18 @@ jobs:
 1. **ECS タスクのデバッグ**:
 
    ```bash
-   aws ecs describe-tasks --cluster laravel-nuxt-template --tasks TASK_ID
+   aws ecs describe-tasks --cluster reliche --tasks TASK_ID
    ```
 
 2. **CloudWatch Logs の確認**:
 
    ```bash
-   aws logs get-log-events --log-group-name /ecs/laravel-nuxt-template --log-stream-name STREAM_NAME
+   aws logs get-log-events --log-group-name /ecs/reliche --log-stream-name STREAM_NAME
    ```
 
 3. **RDS インスタンスのステータス確認**:
    ```bash
-   aws rds describe-db-instances --db-instance-identifier laravel-nuxt-template
+   aws rds describe-db-instances --db-instance-identifier reliche
    ```
 
 ---

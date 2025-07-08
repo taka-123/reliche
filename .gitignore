@@ -122,21 +122,13 @@ packaged.yaml
 .aws/credentials
 .aws/config
 
-# Claude parallel development environment
-claude-parallel/
-
-# CodeRabbit configuration (template development only)
-.coderabbit.yaml
-.coderabbit.yml
-
 # Cursor IDE
 .cursor/
+.cursorignore
 
 # Windsurf IDE
 .windsurfrules
-
-# mise version management
-.mise.toml
+.codeiumignore
 
 # Temporary files
 tmp
