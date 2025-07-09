@@ -1,8 +1,8 @@
-# プロジェクト名
+# reliche
 
 ## プロジェクト概要
 
-Laravel 12.x + Nuxt.js 3.16 + PostgreSQL 17.x を使用したモダンなフルスタック Web アプリケーションテンプレート。API ドリブンなアーキテクチャでフロントエンドとバックエンドを分離。
+reliche - Laravel + Nuxt.js フルスタック Web アプリケーション。API ドリブンなアーキテクチャでフロントエンドとバックエンドを分離。
 
 ## プロジェクト構造
 
@@ -106,9 +106,9 @@ npm run lint:css:fix             # stylelint自動修正
 
 ### 環境設定
 
-- `/backend/.env.example` - Laravel 環境変数テンプレート
+- `/backend/.env.example` - Laravel 環境変数プロジェクト
   - `FRONTEND_URL`: フロントエンド URL（本番環境 CORS 設定用）
-- `/frontend/.env.example` - Nuxt 環境変数テンプレート
+- `/frontend/.env.example` - Nuxt 環境変数プロジェクト
 - `/docker-compose.yml` - Docker 開発環境
 
 ### パッケージ管理
@@ -148,7 +148,7 @@ npm run lint:css:fix             # stylelint自動修正
 ### 接続情報（Docker）
 
 - ホスト: localhost、ポート: 5432
-- データベース: laravel_nuxt_template
+- データベース: reliche
 - ユーザー名: sail、パスワード: password
 
 ## 開発ポート一覧

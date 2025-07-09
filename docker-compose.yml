@@ -36,7 +36,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev # 開発環境用Dockerfile
-    image: laravel-nuxt-template-frontend-dev
+    image: reliche-frontend-dev
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     volumes:
@@ -57,13 +57,13 @@ services:
   # PostgreSQL データベース
   pgsql:
     image: "postgres:17"
-    container_name: laravel-nuxt-template-pgsql-main
+    container_name: reliche-pgsql-main
     restart: unless-stopped
     ports:
       - "${FORWARD_DB_PORT:-5432}:5432"
     environment:
       PGPASSWORD: "${DB_PASSWORD:-password}"
-      POSTGRES_DB: "${DB_DATABASE:-laravel_nuxt_template}"
+      POSTGRES_DB: "${DB_DATABASE:-reliche}"
       POSTGRES_USER: "${DB_USERNAME:-sail}"
       POSTGRES_PASSWORD: "${DB_PASSWORD:-password}"
     volumes:
@@ -78,7 +78,7 @@ services:
           "pg_isready",
           "-q",
           "-d",
-          "${DB_DATABASE:-laravel_nuxt_template}",
+          "${DB_DATABASE:-reliche}",
           "-U",
           "${DB_USERNAME:-sail}",
         ]

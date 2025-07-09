@@ -1,6 +1,6 @@
 {
   "$schema": "https://getcomposer.org/schema.json",
-  "name": "laravel-nuxt-template/backend",
+  "name": "reliche/backend",
   "type": "project",
   "description": "Laravel + Nuxt + PostgreSQL テンプレートのバックエンド部分",
   "keywords": [

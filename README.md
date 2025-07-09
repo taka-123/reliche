@@ -1,24 +1,15 @@
-# Laravel + Nuxt + PostgreSQL テンプレート
+# reliche
 
-Laravel 12.x + Nuxt.js 3.16 + PostgreSQL 17.x を使用したモダンなウェブアプリケーションテンプレートです。
-
-> **テンプレートから作成されたプロジェクトの場合**: `[PROJECT_NAME]`部分がプロジェクト名に置き換わり、テンプレート固有の説明が削除されます。
+Laravel 12.x + Nuxt.js 3.16 + PostgreSQL 17.x を使用したモダンなウェブアプリケーションプロジェクトです。
 
 ## 🚀 クイックスタート
 
-### テンプレートから新プロジェクトを作成（推奨）
+## 🚀 クイックスタート
 
 ```bash
-# 1. GitHubで「Use this template」をクリック、または：
-gh repo create my-new-project --template your-org/laravel_nuxt_postgre_template --private
-
-# 2. クローンしてセットアップ（1コマンドで完了）
-git clone https://github.com/your-org/my-new-project.git
-cd my-new-project
-./setup.sh my-new-project
+# 開発環境をセットアップ
+./setup.sh
 ```
-
-### 直接クローンする場合
 
 ```bash
 git clone https://github.com/your-org/laravel_nuxt_postgre_template.git my-project
@@ -26,10 +17,9 @@ cd my-project
 ./setup.sh my-project
 ```
 
-**初回実行時**: テンプレートのカスタマイズ + 開発環境セットアップを自動実行  
 **2 回目以降**: 開発環境セットアップのみ実行
 
-## ✨ テンプレートの特徴
+## ✨ プロジェクトの特徴
 
 - **最新技術スタック**: Laravel 12、Nuxt 3、PostgreSQL 17 を使用
 - **アーキテクチャ**: フロントエンドとバックエンドを分離した API ベースのアーキテクチャ
@@ -86,7 +76,7 @@ cd frontend && npm run dev
 
 ## 📚 実装済みサンプル機能
 
-このテンプレートには以下の機能が完全に実装されており、すぐに動作確認できます：
+このプロジェクトには以下の機能が完全に実装されており、すぐに動作確認できます：
 
 ### ✅ 認証システム
 
@@ -101,41 +91,6 @@ cd frontend && npm run dev
 - ローディング状態表示
 
 ## 🔧 開発ツールの設定
-
-### テンプレート用の .gitignore 設定
-
-このテンプレートでは、以下のツールがデフォルトで `.gitignore` に含まれています：
-
-- **claude-parallel/**: Claude Code 並列開発環境ツール
-- **.coderabbit.yaml**: CodeRabbit AI コードレビューツール設定
-- **.cursor/**: Cursor IDE 設定
-- **.windsurfrules**: Windsurf IDE 設定
-- **mise.toml**: mise バージョン管理ツール設定
-
-これらのツールをプロジェクトで使用したい場合は、`.gitignore` から該当行を削除してください：
-
-```bash
-# claude-parallelを使用する場合
-# .gitignoreから以下の行を削除
-# claude-parallel/
-
-# CodeRabbitを使用する場合
-# .gitignoreから以下の行を削除
-# .coderabbit.yaml
-# .coderabbit.yml
-
-# Cursor IDEを使用する場合
-# .gitignoreから以下の行を削除
-# .cursor/
-
-# Windsurf IDEを使用する場合
-# .gitignoreから以下の行を削除
-# .windsurfrules
-
-# miseを使用する場合
-# .gitignoreから以下の行を削除
-# mise.toml
-```
 
 #### claude-parallel について
 
@@ -169,7 +124,7 @@ CodeRabbit は AI によるコードレビューツールです。プロジェ�
 
 ### CLAUDE.md について
 
-このテンプレートには `CLAUDE.md` というプロジェクト仕様書が含まれています。これは以下の理由で Git 管理されています：
+このプロジェクトには `CLAUDE.md` というプロジェクト仕様書が含まれています。これは以下の理由で Git 管理されています：
 
 - **プロジェクト固有の技術仕様や設計思想を記載**
 - **新メンバーのオンボーディング資料として活用可能**
@@ -189,11 +144,3 @@ echo "CLAUDE.md" >> .gitignore
 # または削除
 rm CLAUDE.md
 ```
-
-## 🤝 貢献
-
-プロジェクトへの貢献を歓迎します。Pull Request や Issue の報告をお待ちしています。
-
-## 📄 ライセンス
-
-MIT License

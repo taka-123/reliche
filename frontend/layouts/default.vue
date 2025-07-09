@@ -7,8 +7,8 @@
           to="/"
           class="text-decoration-none text-white d-flex align-center"
         >
-          <span class="d-none d-sm-block">Laravel Nuxt Template</span>
-          <span class="d-block d-sm-none">LNT</span>
+          <span class="d-none d-sm-block">reliche</span>
+          <span class="d-block d-sm-none">R</span>
         </NuxtLink>
       </v-app-bar-title>
 
