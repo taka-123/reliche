@@ -80,11 +80,8 @@ export const useRecipesStore = defineStore('recipes', {
           this.wakeLock = await navigator.wakeLock.request('screen')
           this.keepScreenOn = true
           
-          // Wake Lockが解放された時の処理
-          this.wakeLock.addEventListener('release', () => {
-            this.keepScreenOn = false
-            this.wakeLock = null
-          })
+          // Wake Lockが解放された時の処理（一度だけ登録）
+          this.wakeLock.addEventListener('release', this.handleWakeLockRelease, { once: true })
         }
       } catch (error) {
         const config = useRuntimeConfig()
@@ -94,6 +91,11 @@ export const useRecipesStore = defineStore('recipes', {
           console.error('Wake Lock操作エラー:', error)
         }
       }
+    },
+
+    handleWakeLockRelease() {
+      this.keepScreenOn = false
+      this.wakeLock = null
     },
 
     async releaseWakeLock() {

@@ -23,10 +23,10 @@ export const useRecipeApi = () => {
     }
 
     try {
-      const response = await api.post<Recipe[]>('/recipes/suggest', {
+      const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
         ingredient_ids: ingredientIds
       })
-      return response.data || []
+      return response.data.data || []
     } catch (error) {
       throw error
     }

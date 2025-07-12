@@ -121,8 +121,8 @@ const showSearch = ref(false)
 const searchQuery = ref('')
 
 const filters = [
-  { key: 'available', label: '時短' },
-  { key: 'quick', label: '節約' },
+  { key: 'quick', label: '時短' },
+  { key: 'economical', label: '節約' },
   { key: 'healthy', label: 'ヘルシー' }
 ]
 
@@ -138,13 +138,16 @@ const filteredRecipes = computed(() => {
   // フィルター適用（現在はプレースホルダー）
   if (selectedFilter.value) {
     switch (selectedFilter.value) {
-      case 'available':
-        filtered = filtered.filter(recipe => recipe.missing_count === 0)
-        break
       case 'quick':
         filtered = filtered.filter(recipe => recipe.cooking_time <= 15)
         break
+      case 'economical':
+        // 不足食材が少ない（手持ち食材で作りやすい）レシピを優先
+        filtered = filtered.filter(recipe => recipe.missing_count <= 2)
+        break
       case 'healthy':
+        // 調理時間が長め（手間をかけた）レシピをヘルシーと判定
+        filtered = filtered.filter(recipe => recipe.cooking_time >= 20)
         break
     }
   }
@@ -163,6 +166,12 @@ const filteredRecipes = computed(() => {
       filtered.sort((a, b) => a.cooking_time - b.cooking_time)
       break
     case 'popularity':
+      // 人気度 = 作りやすさ（不足食材少ない）+ 時短 の組み合わせで判定
+      filtered.sort((a, b) => {
+        const scoreA = (10 - a.missing_count) + (30 - a.cooking_time) / 10
+        const scoreB = (10 - b.missing_count) + (30 - b.cooking_time) / 10
+        return scoreB - scoreA
+      })
       break
   }
   

@@ -19,15 +19,15 @@ class RecipeDetailResource extends JsonResource
             'name' => $this->name,
             'cooking_time' => $this->cooking_time,
             'instructions' => $this->instructions,
-            'ingredients' => $this->ingredients->map(function ($ingredient) {
+            'ingredients' => $this->ingredients ? $this->ingredients->map(function ($ingredient) {
                 return [
                     'id' => $ingredient->id,
                     'name' => $ingredient->name,
                     'quantity' => $ingredient->pivot->quantity,
                 ];
-            }),
-            'created_at' => $this->created_at->toISOString(),
-            'updated_at' => $this->updated_at->toISOString(),
+            }) : [],
+            'created_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at->toIso8601String(),
         ];
     }
 }

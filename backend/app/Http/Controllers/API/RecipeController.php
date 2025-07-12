@@ -16,12 +16,19 @@ class RecipeController extends Controller
      */
     public function searchIngredients(Request $request)
     {
-        $query = $request->input('q', '');
+        $request->validate([
+            'q' => 'required|string|max:100'
+        ]);
+
+        $query = trim($request->input('q'));
         
         if (empty($query)) {
             return response()->json(['data' => []]);
         }
 
+        // SQLインジェクション対策としてサニタイズ
+        $query = strip_tags($query);
+        
         $ingredients = Ingredient::where('name', 'LIKE', '%' . $query . '%')
                                 ->limit(5)
                                 ->get(['id', 'name']);
@@ -34,6 +41,11 @@ class RecipeController extends Controller
      */
     public function suggest(Request $request)
     {
+        $request->validate([
+            'ingredient_ids' => 'required|array|min:1|max:20',
+            'ingredient_ids.*' => 'integer|exists:ingredients,id'
+        ]);
+
         $userIngredientIds = $request->input('ingredient_ids', []);
 
         $recipes = Recipe::with(['ingredients'])
@@ -54,7 +66,7 @@ class RecipeController extends Controller
             ->sortBy(['missing_count', 'cooking_time'])
             ->values();
 
-        return response()->json($recipes);
+        return response()->json(['data' => $recipes]);
     }
 
     /**
@@ -69,6 +81,7 @@ class RecipeController extends Controller
             return new RecipeDetailResource($recipe);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
+                'data' => null,
                 'message' => 'レシピが見つかりませんでした'
             ], 404);
         }
