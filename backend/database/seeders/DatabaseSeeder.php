@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // テスト用ユーザーを作成
+        // 開発環境用のサンプルユーザーを作成
         User::factory()->create([
             'name' => '管理者',
             'email' => 'admin@example.com',
