@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="primary" class="app-header">
       <!-- レスポンシブなタイトル表示 -->
       <v-app-bar-title class="d-flex align-center">
         <NuxtLink
@@ -64,9 +64,9 @@
       </v-container>
     </v-main>
 
-    <v-footer app color="primary" dark>
+    <v-footer app color="primary" class="app-footer">
       <v-row justify="center" no-gutters>
-        <span>&copy; {{ new Date().getFullYear() }} - Sample App</span>
+        <span>&copy; {{ new Date().getFullYear() }} - Reliche</span>
       </v-row>
     </v-footer>
   </v-app>
@@ -91,12 +91,36 @@ const handleLogout = async () => {
     if (isDevelopment) {
       // eslint-disable-next-line no-console
       console.error('ログアウトエラー:', error)
-    } else {
-      // 本番環境では silent fail または適切な UI フィードバックのみ
-      // TODO: 本番環境用のエラー監視サービスとの連携を実装
-      // await $errorReporting.captureException(error)
-      // await $toast.error('ログアウト中にエラーが発生しました')
     }
   }
 }
 </script>
+
+<style>
+/* ヘッダーとフッターの文字色を強制的に白にして視認性を確保 */
+.app-header {
+  color: white !important;
+}
+
+.app-header .v-toolbar__content,
+.app-header .v-app-bar-title,
+.app-header .v-app-bar-title span,
+.app-header .v-app-bar-title a,
+.app-header .v-btn,
+.app-header .v-btn .v-btn__content,
+.app-header .v-list-item-title {
+  color: white !important;
+}
+
+.app-header .v-icon {
+  color: white !important;
+}
+
+.app-footer {
+  color: white !important;
+}
+
+.app-footer span {
+  color: white !important;
+}
+</style>

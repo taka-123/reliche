@@ -1,0 +1,74 @@
+/* 日本語に最適化されたフォント設定 */
+* {
+  font-family: 
+    "Hiragino Kaku Gothic ProN", 
+    "Hiragino Sans", 
+    "BIZ UDPGothic",
+    "Yu Gothic UI", 
+    "Meiryo UI", 
+    "MS PGothic", 
+    "Yu Gothic Medium", 
+    "Segoe UI", 
+    "Noto Sans JP",
+    -apple-system, 
+    BlinkMacSystemFont, 
+    system-ui, 
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* 料理アプリ用のルートカスタムプロパティ */
+:root {
+  /* ブランドカラー - 自然で食材をイメージするグリーン系 */
+  --color-primary: #2e7d32;
+  --color-primary-light: #4caf50;
+  --color-primary-dark: #1b5e20;
+  
+  /* セカンダリカラー - アクセント用 */
+  --color-accent: #ff8f00;
+  --color-accent-light: #ffb74d;
+  
+  /* ニュートラルカラー */
+  --color-background: #f1f8e9;
+  --color-surface: #ffffff;
+  --color-text-primary: #1b5e20;
+  --color-text-secondary: #4e7c54;
+  
+  /* シャドウ */
+  --shadow-soft: 0 2px 8px rgba(46, 125, 50, 0.08);
+  --shadow-medium: 0 4px 12px rgba(46, 125, 50, 0.12);
+}
+
+/* 見出しのタイポグラフィ調整 */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* 本文テキストの可読性向上 */
+p, span, div {
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* 料理アプリらしい余白とリズム */
+.container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ボタンのホバーエフェクト */
+.v-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}

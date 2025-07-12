@@ -22,27 +22,27 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: false,
           colors: {
-            primary: '#1976D2', // メインカラー
-            secondary: '#673AB7', // セカンダリー
-            accent: '#FF5722', // アクセント
-            error: '#F44336', // エラー
-            warning: '#FFC107', // 警告
-            info: '#00BCD4', // 情報
-            success: '#4CAF50', // 成功
-            background: '#F5F5F5', // 背景色
+            primary: '#2e7d32', // 料理アプリらしいダークグリーン
+            secondary: '#4caf50', // ライトグリーン
+            accent: '#ff8f00', // アクセント（オレンジ系）
+            error: '#f44336', // エラー
+            warning: '#ff9800', // 警告
+            info: '#1b5e20', // 情報（深緑）
+            success: '#4caf50', // 成功
+            background: '#f1f8e9', // 背景色（薄緑）
           },
         },
         dark: {
           dark: true,
           colors: {
-            primary: '#2196F3',
-            secondary: '#9C27B0',
-            accent: '#FF9800',
-            error: '#FF5252',
-            warning: '#FFC107',
-            info: '#00BCD4',
-            success: '#4CAF50',
-            background: '#121212',
+            primary: '#4caf50',
+            secondary: '#66bb6a',
+            accent: '#ffb74d',
+            error: '#f44336',
+            warning: '#ff9800',
+            info: '#2e7d32',
+            success: '#4caf50',
+            background: '#1b5e20',
           },
         },
       },
