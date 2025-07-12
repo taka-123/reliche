@@ -166,7 +166,8 @@ const filteredRecipes = computed(() => {
       filtered.sort((a, b) => a.cooking_time - b.cooking_time)
       break
     case 'popularity':
-      // 人気度 = 作りやすさ（不足食材少ない）+ 時短 の組み合わせで判定
+      // 人気度スコア = (10 - 不足食材数) + (30 - 調理時間) / 10
+      // 作りやすさと時短性を組み合わせた総合的な人気度指標
       filtered.sort((a, b) => {
         const scoreA = (10 - a.missing_count) + (30 - a.cooking_time) / 10
         const scoreB = (10 - b.missing_count) + (30 - b.cooking_time) / 10
