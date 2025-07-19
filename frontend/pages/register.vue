@@ -1,104 +1,95 @@
 <template>
-  <v-container>
-    <v-card class="mb-6 pa-4 mx-auto" max-width="600px">
-      <v-card-title class="text-h4 font-weight-bold mb-4 text-center"
-        >ユーザー登録</v-card-title
-      >
-
-      <v-alert 
-        v-if="errorMessage" 
-        type="error" 
-        variant="tonal" 
-        class="mb-4"
-        @click:close="clearError"
-        closable
-      >
-        {{ errorMessage }}
-      </v-alert>
-
-      <v-alert 
-        v-if="successMessage" 
-        type="success" 
-        variant="tonal" 
-        class="mb-4"
-      >
-        {{ successMessage }}
-      </v-alert>
+  <div class="d-flex align-center justify-center" style="min-height: 100vh">
+    <v-card
+      class="pa-8 mx-4 mx-sm-auto"
+      max-width="450"
+      width="100%"
+      elevation="4"
+    >
+      <v-card-title class="text-h4 mb-6 text-center">ユーザー登録</v-card-title>
 
       <v-form @submit.prevent="register">
+        <v-alert 
+          v-if="errorMessage" 
+          type="error" 
+          class="mb-4"
+        >
+          {{ errorMessage }}
+        </v-alert>
+
+        <v-alert 
+          v-if="successMessage" 
+          type="success" 
+          class="mb-4"
+        >
+          {{ successMessage }}
+        </v-alert>
+
         <v-text-field
           v-model="form.name"
           label="お名前"
-          :rules="nameRules"
+          :error-messages="nameError"
           :disabled="loading"
-          variant="outlined"
-          class="mb-3"
           required
+          autocomplete="name"
+          @input="clearNameError"
         />
 
         <v-text-field
           v-model="form.email"
           label="メールアドレス"
           type="email"
-          :rules="emailRules"
+          :error-messages="emailError"
           :disabled="loading"
-          variant="outlined"
-          class="mb-3"
           required
+          autocomplete="email"
+          @input="clearEmailError"
         />
 
         <v-text-field
           v-model="form.password"
           label="パスワード"
           type="password"
-          :rules="passwordRules"
+          :error-messages="passwordError"
           :disabled="loading"
-          variant="outlined"
-          class="mb-3"
           required
+          autocomplete="new-password"
+          @input="clearPasswordError"
         />
 
         <v-text-field
           v-model="form.passwordConfirmation"
           label="パスワード（確認）"
           type="password"
-          :rules="passwordConfirmationRules"
+          :error-messages="passwordConfirmationError"
           :disabled="loading"
-          variant="outlined"
-          class="mb-4"
           required
+          autocomplete="new-password"
+          @input="clearPasswordConfirmationError"
         />
 
-        <v-btn
-          type="submit"
-          color="primary"
-          block
-          size="large"
-          :loading="loading"
-          :disabled="!isFormValid"
-          class="mb-4"
-        >
-          アカウントを作成する
-        </v-btn>
+        <div class="mt-6">
+          <v-btn
+            type="submit"
+            color="primary"
+            size="large"
+            :loading="loading"
+            :disabled="loading"
+            block
+            class="mb-4"
+          >
+            アカウントを作成する
+          </v-btn>
+
+          <div class="text-center">
+            <NuxtLink to="/login" class="text-decoration-none text-body-2">
+              すでにアカウントをお持ちの方はログイン
+            </NuxtLink>
+          </div>
+        </div>
       </v-form>
-
-      <v-divider class="my-4"></v-divider>
-
-      <div class="text-center">
-        <p class="text-body-2 mb-3">
-          すでにアカウントをお持ちですか？
-        </p>
-        <v-btn 
-          color="secondary" 
-          variant="outlined" 
-          to="/login" 
-          :disabled="loading"
-        >
-          ログインページへ
-        </v-btn>
-      </div>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script setup>
@@ -126,44 +117,78 @@ const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-// バリデーションルール
-const nameRules = [
-  (v) => !!v || 'お名前は必須です',
-  (v) => (v && v.length >= 2) || 'お名前は2文字以上で入力してください',
-  (v) => (v && v.length <= 255) || 'お名前は255文字以下で入力してください'
-]
+// 個別エラーメッセージ
+const nameError = ref('')
+const emailError = ref('')
+const passwordError = ref('')
+const passwordConfirmationError = ref('')
 
-const emailRules = [
-  (v) => !!v || 'メールアドレスは必須です',
-  (v) => /.+@.+\..+/.test(v) || 'メールアドレスの形式が正しくありません'
-]
+// バリデーション関数
+const validateForm = () => {
+  let isValid = true
 
-const passwordRules = [
-  (v) => !!v || 'パスワードは必須です',
-  (v) => (v && v.length >= 8) || 'パスワードは8文字以上で入力してください'
-]
+  // 名前のバリデーション
+  if (!form.value.name) {
+    nameError.value = 'お名前を入力してください'
+    isValid = false
+  } else if (form.value.name.length < 2) {
+    nameError.value = 'お名前は2文字以上で入力してください'
+    isValid = false
+  } else if (form.value.name.length > 255) {
+    nameError.value = 'お名前は255文字以下で入力してください'
+    isValid = false
+  }
 
-const passwordConfirmationRules = [
-  (v) => !!v || 'パスワード（確認）は必須です',
-  (v) => v === form.value.password || 'パスワードが一致しません'
-]
+  // メールアドレスのバリデーション
+  if (!form.value.email) {
+    emailError.value = 'メールアドレスを入力してください'
+    isValid = false
+  } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
+    emailError.value = '有効なメールアドレスを入力してください'
+    isValid = false
+  }
 
-// フォームの有効性チェック
-const isFormValid = computed(() => {
-  return (
-    form.value.name.length >= 2 &&
-    /.+@.+\..+/.test(form.value.email) &&
-    form.value.password.length >= 8 &&
-    form.value.password === form.value.passwordConfirmation
-  )
-})
+  // パスワードのバリデーション
+  if (!form.value.password) {
+    passwordError.value = 'パスワードを入力してください'
+    isValid = false
+  } else if (form.value.password.length < 8) {
+    passwordError.value = 'パスワードは8文字以上である必要があります'
+    isValid = false
+  }
+
+  // パスワード確認のバリデーション
+  if (!form.value.passwordConfirmation) {
+    passwordConfirmationError.value = 'パスワード（確認）を入力してください'
+    isValid = false
+  } else if (form.value.password !== form.value.passwordConfirmation) {
+    passwordConfirmationError.value = 'パスワードが一致しません'
+    isValid = false
+  }
+
+  return isValid
+}
+
+// エラーメッセージをクリア
+const clearNameError = () => {
+  nameError.value = ''
+}
+
+const clearEmailError = () => {
+  emailError.value = ''
+}
+
+const clearPasswordError = () => {
+  passwordError.value = ''
+}
+
+const clearPasswordConfirmationError = () => {
+  passwordConfirmationError.value = ''
+}
 
 // 登録処理
 const register = async () => {
-  if (!isFormValid.value) {
-    errorMessage.value = '入力内容を確認してください'
-    return
-  }
+  if (!validateForm()) return
 
   loading.value = true
   errorMessage.value = ''
@@ -193,11 +218,5 @@ const register = async () => {
   } finally {
     loading.value = false
   }
-}
-
-// エラーメッセージクリア
-const clearError = () => {
-  errorMessage.value = ''
-  authStore.clearError()
 }
 </script>
