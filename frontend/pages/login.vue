@@ -9,7 +9,15 @@
       <v-card-title class="text-h4 mb-6 text-center">ログイン</v-card-title>
 
       <v-form @submit.prevent="login">
-        <v-alert v-if="getError" type="error" class="mb-4">
+        <v-alert 
+          v-if="getError" 
+          type="error" 
+          variant="tonal"
+          class="mb-4"
+          prominent
+          border="start"
+        >
+          <strong>ログインエラー</strong><br>
           {{ getError }}
         </v-alert>
 
@@ -20,6 +28,7 @@
           :error-messages="emailError"
           required
           autocomplete="email"
+          prepend-inner-icon="mdi-email"
           @input="clearEmailError"
         ></v-text-field>
 
@@ -30,19 +39,23 @@
           :error-messages="passwordError"
           required
           autocomplete="current-password"
+          prepend-inner-icon="mdi-lock"
           @input="clearPasswordError"
         ></v-text-field>
 
         <div class="mt-6">
           <v-btn
             type="submit"
-            color="primary"
+            color="success"
+            variant="flat"
             size="large"
             :loading="loading"
             :disabled="loading"
             block
-            class="mb-4"
+            class="mb-4 text-white font-weight-bold"
+            style="background: linear-gradient(45deg, #4caf50, #2e7d32) !important;"
           >
+            <v-icon left class="mr-2">mdi-login</v-icon>
             ログイン
           </v-btn>
 

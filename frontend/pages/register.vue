@@ -12,16 +12,24 @@
         <v-alert 
           v-if="errorMessage" 
           type="error" 
+          variant="tonal"
           class="mb-4"
+          prominent
+          border="start"
         >
+          <strong>登録エラー</strong><br>
           {{ errorMessage }}
         </v-alert>
 
         <v-alert 
           v-if="successMessage" 
-          type="success" 
+          type="success"
+          variant="tonal"
           class="mb-4"
+          prominent
+          border="start"
         >
+          <strong>登録成功</strong><br>
           {{ successMessage }}
         </v-alert>
 
@@ -32,6 +40,7 @@
           :disabled="loading"
           required
           autocomplete="name"
+          prepend-inner-icon="mdi-account"
           @input="clearNameError"
         />
 
@@ -43,6 +52,7 @@
           :disabled="loading"
           required
           autocomplete="email"
+          prepend-inner-icon="mdi-email"
           @input="clearEmailError"
         />
 
@@ -54,6 +64,7 @@
           :disabled="loading"
           required
           autocomplete="new-password"
+          prepend-inner-icon="mdi-lock"
           @input="clearPasswordError"
         />
 
@@ -65,19 +76,23 @@
           :disabled="loading"
           required
           autocomplete="new-password"
+          prepend-inner-icon="mdi-lock-check"
           @input="clearPasswordConfirmationError"
         />
 
         <div class="mt-6">
           <v-btn
             type="submit"
-            color="primary"
+            color="success"
+            variant="flat"
             size="large"
             :loading="loading"
             :disabled="loading"
             block
-            class="mb-4"
+            class="mb-4 text-white font-weight-bold"
+            style="background: linear-gradient(45deg, #4caf50, #2e7d32) !important;"
           >
+            <v-icon left class="mr-2">mdi-account-plus</v-icon>
             アカウントを作成する
           </v-btn>
 
