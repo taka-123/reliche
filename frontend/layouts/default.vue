@@ -19,6 +19,9 @@
         <v-btn to="/" variant="text">ホーム</v-btn>
         <ClientOnly>
           <template v-if="isAuthenticated">
+            <v-btn to="/favorites" variant="text" prepend-icon="mdi-heart">
+              お気に入り
+            </v-btn>
             <v-btn variant="text" @click="handleLogout">ログアウト</v-btn>
           </template>
           <template v-else>
@@ -41,6 +44,12 @@
           </v-list-item>
           <ClientOnly>
             <template v-if="isAuthenticated">
+              <v-list-item to="/favorites">
+                <template #prepend>
+                  <v-icon>mdi-heart</v-icon>
+                </template>
+                <v-list-item-title>お気に入り</v-list-item-title>
+              </v-list-item>
               <v-list-item @click="handleLogout">
                 <v-list-item-title>ログアウト</v-list-item-title>
               </v-list-item>

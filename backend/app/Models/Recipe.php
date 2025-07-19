@@ -22,4 +22,20 @@ class Recipe extends Model
                     ->withPivot('quantity')
                     ->withTimestamps();
     }
+
+    /**
+     * このレシピをお気に入りにしているユーザー
+     */
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+
+    /**
+     * お気に入り数を取得
+     */
+    public function favoritesCount()
+    {
+        return $this->favoritedBy()->count();
+    }
 }

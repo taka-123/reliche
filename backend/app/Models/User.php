@@ -79,4 +79,20 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * ユーザーのお気に入りレシピ
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * お気に入りレシピを多対多で取得
+     */
+    public function favoriteRecipes()
+    {
+        return $this->belongsToMany(Recipe::class, 'favorites');
+    }
 }

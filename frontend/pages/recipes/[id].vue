@@ -12,6 +12,11 @@
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <div class="header-actions">
+          <FavoriteButton 
+            v-if="recipe"
+            :recipe-id="recipe.id" 
+            class="favorite-btn"
+          />
           <v-btn icon variant="text" class="share-btn" @click="shareRecipe">
             <v-icon>mdi-share-variant</v-icon>
           </v-btn>
