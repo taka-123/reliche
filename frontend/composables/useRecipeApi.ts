@@ -9,7 +9,9 @@ export const useRecipeApi = () => {
       return []
     }
 
-    const response = await api.get<ApiResponse<Ingredient[]>>(`/ingredients/search?q=${encodeURIComponent(query)}`)
+    const response = await api.get<ApiResponse<Ingredient[]>>(
+      `/ingredients/search?q=${encodeURIComponent(query)}`
+    )
     return response.data.data || []
   }
 
@@ -19,12 +21,14 @@ export const useRecipeApi = () => {
     }
 
     const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
-      ingredient_ids: ingredientIds
+      ingredient_ids: ingredientIds,
     })
     return response.data.data || []
   }
 
-  const getRecipeDetail = async (id: string | number): Promise<RecipeDetail> => {
+  const getRecipeDetail = async (
+    id: string | number
+  ): Promise<RecipeDetail> => {
     if (!id) {
       throw new Error('レシピIDが指定されていません')
     }
@@ -36,6 +40,6 @@ export const useRecipeApi = () => {
   return {
     searchIngredients,
     suggestRecipes,
-    getRecipeDetail
+    getRecipeDetail,
   }
 }

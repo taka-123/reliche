@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import type { 
-  Favorite, 
-  FavoriteState, 
-  FavoritesResponse, 
+import type {
+  Favorite,
+  FavoriteState,
+  FavoritesResponse,
   FavoriteCheckResponse,
   AddFavoriteRequest,
-  FavoriteApiResponse
+  FavoriteApiResponse,
 } from '~/types/favorites'
 
 export const useFavoritesStore = defineStore('favorites', {
@@ -18,13 +18,17 @@ export const useFavoritesStore = defineStore('favorites', {
   getters: {
     // ユーザーのお気に入りレシピIDリストを取得
     favoriteRecipeIds: (state): number[] => {
-      return state.favorites.map(favorite => favorite.recipe_id)
+      return state.favorites.map((favorite) => favorite.recipe_id)
     },
 
     // 特定のレシピがお気に入りかどうかチェック
-    isFavorited: (state) => (recipeId: number): boolean => {
-      return state.favorites.some(favorite => favorite.recipe_id === recipeId)
-    },
+    isFavorited:
+      (state) =>
+      (recipeId: number): boolean => {
+        return state.favorites.some(
+          (favorite) => favorite.recipe_id === recipeId
+        )
+      },
 
     // お気に入り数を取得
     favoritesCount: (state): number => {
@@ -73,7 +77,9 @@ export const useFavoritesStore = defineStore('favorites', {
         if (response.success && response.data) {
           this.favorites = response.data
         } else {
-          throw new Error(response.message || 'お気に入り一覧の取得に失敗しました')
+          throw new Error(
+            response.message || 'お気に入り一覧の取得に失敗しました'
+          )
         }
       } catch (error: any) {
         this.error = error.message || 'お気に入り一覧の取得に失敗しました'
@@ -99,11 +105,14 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const { $api } = useNuxtApp()
         const requestData: AddFavoriteRequest = { recipe_id: recipeId }
-        
-        const response = await $api<FavoriteApiResponse<Favorite>>('/api/favorites', {
-          method: 'POST',
-          body: requestData,
-        })
+
+        const response = await $api<FavoriteApiResponse<Favorite>>(
+          '/api/favorites',
+          {
+            method: 'POST',
+            body: requestData,
+          }
+        )
 
         if (response.success && response.data) {
           // ローカル状態を更新
@@ -130,13 +139,18 @@ export const useFavoritesStore = defineStore('favorites', {
         this.clearError()
 
         const { $api } = useNuxtApp()
-        const response = await $api<FavoriteApiResponse>(`/api/favorites/${recipeId}`, {
-          method: 'DELETE',
-        })
+        const response = await $api<FavoriteApiResponse>(
+          `/api/favorites/${recipeId}`,
+          {
+            method: 'DELETE',
+          }
+        )
 
         if (response.success) {
           // ローカル状態を更新
-          this.favorites = this.favorites.filter(favorite => favorite.recipe_id !== recipeId)
+          this.favorites = this.favorites.filter(
+            (favorite) => favorite.recipe_id !== recipeId
+          )
           return true
         } else {
           throw new Error(response.message || 'お気に入りの削除に失敗しました')
@@ -169,14 +183,19 @@ export const useFavoritesStore = defineStore('favorites', {
         this.clearError()
 
         const { $api } = useNuxtApp()
-        const response = await $api<FavoriteCheckResponse>(`/api/favorites/check/${recipeId}`, {
-          method: 'GET',
-        })
+        const response = await $api<FavoriteCheckResponse>(
+          `/api/favorites/check/${recipeId}`,
+          {
+            method: 'GET',
+          }
+        )
 
         if (response.success && response.data) {
           return response.data.is_favorited
         } else {
-          throw new Error(response.message || 'お気に入り状態の取得に失敗しました')
+          throw new Error(
+            response.message || 'お気に入り状態の取得に失敗しました'
+          )
         }
       } catch (error: any) {
         this.error = error.message || 'お気に入り状態の取得に失敗しました'

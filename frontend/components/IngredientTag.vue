@@ -2,11 +2,11 @@
   <div class="ingredient-tag">
     <span class="tag-name">{{ ingredient.name }}</span>
     <v-btn
-      @click="removeIngredient"
       icon
       size="small"
       variant="text"
       class="remove-btn"
+      @click="removeIngredient"
     >
       <v-icon size="16" color="rgba(0, 0, 0, 0.6)">mdi-close</v-icon>
     </v-btn>
@@ -36,7 +36,7 @@ const removeIngredient = () => {
   display: inline-flex;
   align-items: center;
   background-color: #e8f5e8;
-  border: 1px solid #4CAF50;
+  border: 1px solid #4caf50;
   border-radius: 20px;
   padding: 8px 4px 8px 12px;
   margin: 4px;

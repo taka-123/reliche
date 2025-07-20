@@ -9,27 +9,27 @@
       <v-card-title class="text-h4 mb-6 text-center">ユーザー登録</v-card-title>
 
       <v-form @submit.prevent="register">
-        <v-alert 
-          v-if="errorMessage" 
-          type="error" 
+        <v-alert
+          v-if="errorMessage"
+          type="error"
           variant="tonal"
           class="mb-4"
           prominent
           border="start"
         >
-          <strong>登録エラー</strong><br>
+          <strong>登録エラー</strong><br />
           {{ errorMessage }}
         </v-alert>
 
-        <v-alert 
-          v-if="successMessage" 
+        <v-alert
+          v-if="successMessage"
           type="success"
           variant="tonal"
           class="mb-4"
           prominent
           border="start"
         >
-          <strong>登録成功</strong><br>
+          <strong>登録成功</strong><br />
           {{ successMessage }}
         </v-alert>
 
@@ -85,12 +85,12 @@
         <div id="password-help" class="sr-only">
           8文字以上で大文字・小文字・数字・特殊文字を含むパスワードを入力してください
         </div>
-        <div 
+        <div
           v-if="passwordStrength.feedback.length > 0"
-          id="password-strength" 
+          id="password-strength"
           class="text-caption mb-2"
           :class="passwordStrength.score >= 4 ? 'text-success' : 'text-warning'"
-          role="status" 
+          role="status"
           aria-live="polite"
         >
           強度: {{ passwordStrength.score }}/5
@@ -133,7 +133,13 @@
             <v-icon left class="mr-2">mdi-account-plus</v-icon>
             アカウントを作成する
           </v-btn>
-          <div v-if="loading" id="loading-message" class="sr-only" role="status" aria-live="polite">
+          <div
+            v-if="loading"
+            id="loading-message"
+            class="sr-only"
+            role="status"
+            aria-live="polite"
+          >
             アカウント作成中です。しばらくお待ちください。
           </div>
 
@@ -150,9 +156,13 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
-import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
-import type { RegisterCredentials, ValidationErrors, FormState } from '~/types/auth'
+import { useAuthStore } from '~/stores/auth'
+import type {
+  RegisterCredentials,
+  ValidationErrors,
+  FormState,
+} from '~/types/auth'
 import { useValidation } from '~/composables/useValidation'
 
 definePageMeta({
@@ -161,12 +171,12 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const router = useRouter()
-const { 
-  validateForm: validateFormData, 
-  validatePasswordConfirmation, 
+const {
+  validateForm: validateFormData,
+  validatePasswordConfirmation,
   checkPasswordStrength,
   createDebouncedValidator,
-  registerValidationRules 
+  registerValidationRules,
 } = useValidation()
 
 // 型安全なフォームデータ
@@ -175,21 +185,23 @@ const form = ref<RegisterCredentials & { passwordConfirmation: string }>({
   email: '',
   password: '',
   password_confirmation: '',
-  passwordConfirmation: ''
+  passwordConfirmation: '',
 })
 
 // 型安全な状態管理
 const formState = ref<FormState>({
   loading: false,
   errors: {},
-  touched: {}
+  touched: {},
 })
 
 // 個別エラーメッセージ（Computed for type safety）
 const nameError = computed(() => formState.value.errors.name?.[0] || '')
 const emailError = computed(() => formState.value.errors.email?.[0] || '')
 const passwordError = computed(() => formState.value.errors.password?.[0] || '')
-const passwordConfirmationError = computed(() => formState.value.errors.password_confirmation?.[0] || '')
+const passwordConfirmationError = computed(
+  () => formState.value.errors.password_confirmation?.[0] || ''
+)
 
 // 後方互換性のためのエイリアス
 const loading = computed(() => formState.value.loading)
@@ -203,20 +215,20 @@ const passwordStrength = ref({ score: 0, feedback: [] })
 const validateForm = (): boolean => {
   // フォームデータのバリデーション
   const errors = validateFormData(form.value, registerValidationRules)
-  
+
   // パスワード確認のバリデーション
   const confirmationError = validatePasswordConfirmation(
-    form.value.password, 
+    form.value.password,
     form.value.passwordConfirmation
   )
-  
+
   if (confirmationError) {
     errors.password_confirmation = [confirmationError]
   }
-  
+
   // エラー状態を更新
   formState.value.errors = errors
-  
+
   return Object.keys(errors).length === 0
 }
 
@@ -237,10 +249,13 @@ const updatePasswordStrength = () => {
 }
 
 // デバウンス付きバリデーション
-const debouncedPasswordValidation = createDebouncedValidator((value: string) => {
-  updatePasswordStrength()
-  return ''
-}, 300)
+const debouncedPasswordValidation = createDebouncedValidator(
+  (value: string) => {
+    updatePasswordStrength()
+    return ''
+  },
+  300
+)
 
 // エラークリア関数（後方互換性）
 const clearNameError = () => clearFieldError('name')
@@ -249,7 +264,8 @@ const clearPasswordError = () => {
   clearFieldError('password')
   updatePasswordStrength()
 }
-const clearPasswordConfirmationError = () => clearFieldError('password_confirmation')
+const clearPasswordConfirmationError = () =>
+  clearFieldError('password_confirmation')
 
 // パフォーマンス最適化された登録処理
 const register = async (): Promise<void> => {
@@ -266,7 +282,7 @@ const register = async (): Promise<void> => {
       name: form.value.name.trim(),
       email: form.value.email.trim().toLowerCase(),
       password: form.value.password,
-      password_confirmation: form.value.passwordConfirmation
+      password_confirmation: form.value.passwordConfirmation,
     }
 
     const result = await authStore.register(
@@ -277,24 +293,23 @@ const register = async (): Promise<void> => {
     )
 
     if (result.success) {
-      successMessage.value = 'アカウントが作成されました！自動的にログインします...'
-      
+      successMessage.value =
+        'アカウントが作成されました！自動的にログインします...'
+
       // パフォーマンス: nextTick後にリダイレクト
       await nextTick()
       setTimeout(() => {
         router.push('/')
       }, 1500) // 1.5秒に短縮
-    } else {
+    } else if (result.errors) {
       // サーバーエラーの詳細表示
-      if (result.errors) {
-        formState.value.errors = result.errors as ValidationErrors
-      } else {
-        errorMessage.value = result.message || '登録に失敗しました'
-      }
+      formState.value.errors = result.errors as ValidationErrors
+    } else {
+      errorMessage.value = result.message || '登録に失敗しました'
     }
   } catch (error: any) {
     console.error('Registration error:', error)
-    
+
     // 型安全なエラーハンドリング
     if (error.response?.data?.errors) {
       formState.value.errors = error.response.data.errors

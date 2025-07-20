@@ -2,12 +2,7 @@
   <div class="recipes-page">
     <!-- ヘッダー -->
     <div class="header">
-      <v-btn 
-        @click="goBack" 
-        icon 
-        variant="text" 
-        class="back-btn"
-      >
+      <v-btn icon variant="text" class="back-btn" @click="goBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <h1 class="page-title">レシピ一覧</h1>
@@ -39,19 +34,18 @@
     <!-- レシピ検索結果サマリー -->
     <div class="result-summary">
       <p v-if="recipes.length > 0">
-        {{ selectedCount }}品目で作れるレシピ {{ recipes.length }}件見つかりました
+        {{ selectedCount }}品目で作れるレシピ
+        {{ recipes.length }}件見つかりました
       </p>
-      <p v-else-if="!isLoading">
-        レシピが見つかりませんでした
-      </p>
+      <p v-else-if="!isLoading">レシピが見つかりませんでした</p>
     </div>
 
     <!-- フィルター -->
     <div class="filters-section">
       <div class="filter-chips">
         <v-chip-group v-model="selectedFilter" color="primary">
-          <v-chip 
-            v-for="filter in filters" 
+          <v-chip
+            v-for="filter in filters"
             :key="filter.key"
             :value="filter.key"
             variant="outlined"
@@ -60,7 +54,7 @@
           </v-chip>
         </v-chip-group>
       </div>
-      
+
       <div class="sort-section">
         <v-select
           v-model="sortBy"
@@ -82,16 +76,16 @@
         <v-progress-circular indeterminate size="40" color="primary" />
         <p class="loading-text">レシピを検索中...</p>
       </div>
-      
+
       <div v-else-if="recipes.length === 0" class="empty-state">
         <v-icon size="64" color="rgba(0, 0, 0, 0.3)">mdi-chef-hat</v-icon>
         <p class="empty-text">レシピが見つかりませんでした</p>
         <p class="empty-subtext">食材を変更して再度お試しください</p>
       </div>
-      
+
       <div v-else class="recipes-grid">
-        <RecipeCard 
-          v-for="recipe in filteredRecipes" 
+        <RecipeCard
+          v-for="recipe in filteredRecipes"
           :key="recipe.id"
           :recipe="recipe"
         />
@@ -109,7 +103,8 @@ import RecipeCard from '~/components/RecipeCard.vue'
 import type { Recipe } from '~/types/recipe'
 
 const ingredientsStore = useIngredientsStore()
-const { selectedIngredients, selectedCount, selectedIngredientIds } = storeToRefs(ingredientsStore)
+const { selectedIngredients, selectedCount, selectedIngredientIds } =
+  storeToRefs(ingredientsStore)
 const { suggestRecipes } = useRecipeApi()
 
 const recipes = ref<Recipe[]>([])
@@ -123,35 +118,35 @@ const searchQuery = ref('')
 const filters = [
   { key: 'quick', label: '時短' },
   { key: 'economical', label: '節約' },
-  { key: 'healthy', label: 'ヘルシー' }
+  { key: 'healthy', label: 'ヘルシー' },
 ]
 
 const sortOptions = [
   { label: '適合率順', value: 'compatibility' },
   { label: '調理時間順', value: 'cooking_time' },
-  { label: '人気順', value: 'popularity' }
+  { label: '人気順', value: 'popularity' },
 ]
 
 const filteredRecipes = computed(() => {
   let filtered = [...recipes.value]
-  
+
   // フィルター適用（現在はプレースホルダー）
   if (selectedFilter.value) {
     switch (selectedFilter.value) {
       case 'quick':
-        filtered = filtered.filter(recipe => recipe.cooking_time <= 15)
+        filtered = filtered.filter((recipe) => recipe.cooking_time <= 15)
         break
       case 'economical':
         // 不足食材が少ない（手持ち食材で作りやすい）レシピを優先
-        filtered = filtered.filter(recipe => recipe.missing_count <= 2)
+        filtered = filtered.filter((recipe) => recipe.missing_count <= 2)
         break
       case 'healthy':
         // 調理時間が長め（手間をかけた）レシピをヘルシーと判定
-        filtered = filtered.filter(recipe => recipe.cooking_time >= 20)
+        filtered = filtered.filter((recipe) => recipe.cooking_time >= 20)
         break
     }
   }
-  
+
   // ソート適用
   switch (sortBy.value) {
     case 'compatibility':
@@ -169,13 +164,13 @@ const filteredRecipes = computed(() => {
       // 人気度スコア = (10 - 不足食材数) + (30 - 調理時間) / 10
       // 作りやすさと時短性を組み合わせた総合的な人気度指標
       filtered.sort((a, b) => {
-        const scoreA = (10 - a.missing_count) + (30 - a.cooking_time) / 10
-        const scoreB = (10 - b.missing_count) + (30 - b.cooking_time) / 10
+        const scoreA = 10 - a.missing_count + (30 - a.cooking_time) / 10
+        const scoreB = 10 - b.missing_count + (30 - b.cooking_time) / 10
         return scoreB - scoreA
       })
       break
   }
-  
+
   return filtered
 })
 
@@ -184,9 +179,9 @@ const fetchRecipes = async () => {
     await navigateTo('/')
     return
   }
-  
+
   isLoading.value = true
-  
+
   try {
     const data = await suggestRecipes(selectedIngredientIds.value)
     recipes.value = data
@@ -225,7 +220,7 @@ const performSearch = () => {
   if (!searchQuery.value.trim()) {
     recipes.value = [...allRecipes.value]
   } else {
-    recipes.value = allRecipes.value.filter(recipe =>
+    recipes.value = allRecipes.value.filter((recipe) =>
       recipe.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
@@ -243,8 +238,8 @@ onMounted(() => {
 useHead({
   title: 'レシピ一覧 - Reliche',
   meta: [
-    { name: 'description', content: '選択した食材に基づくおすすめレシピ一覧' }
-  ]
+    { name: 'description', content: '選択した食材に基づくおすすめレシピ一覧' },
+  ],
 })
 </script>
 
@@ -381,24 +376,24 @@ useHead({
     margin: 0 auto;
     padding: 24px;
   }
-  
+
   .page-title {
     font-size: 28px;
   }
-  
+
   .recipes-grid {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
   }
-  
+
   .filters-section {
     margin-bottom: 32px;
   }
-  
+
   .filter-chips {
     margin-bottom: 20px;
   }
-  
+
   .sort-select {
     width: 180px;
   }

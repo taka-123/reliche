@@ -33,11 +33,11 @@
     <div class="action-section">
       <v-btn
         :disabled="!hasSelectedIngredients"
-        @click="searchRecipes"
         color="primary"
         size="large"
         class="search-recipes-btn"
         block
+        @click="searchRecipes"
       >
         <v-icon left>mdi-chef-hat</v-icon>
         レシピを探す ({{ selectedCount }}品目)
@@ -53,7 +53,8 @@ import IngredientSearchInput from '~/components/IngredientSearchInput.vue'
 import IngredientTag from '~/components/IngredientTag.vue'
 
 const ingredientsStore = useIngredientsStore()
-const { selectedIngredients, selectedCount, hasSelectedIngredients } = storeToRefs(ingredientsStore)
+const { selectedIngredients, selectedCount, hasSelectedIngredients } =
+  storeToRefs(ingredientsStore)
 
 const removeIngredient = (ingredientId: number) => {
   ingredientsStore.removeIngredient(ingredientId)
@@ -61,7 +62,7 @@ const removeIngredient = (ingredientId: number) => {
 
 const searchRecipes = async () => {
   if (!hasSelectedIngredients.value) return
-  
+
   // レシピ検索ページに遷移
   await navigateTo('/recipes')
 }
@@ -70,8 +71,11 @@ const searchRecipes = async () => {
 useHead({
   title: '食材登録 - Reliche',
   meta: [
-    { name: 'description', content: '手持ちの食材を登録して、おすすめレシピを見つけよう' }
-  ]
+    {
+      name: 'description',
+      content: '手持ちの食材を登録して、おすすめレシピを見つけよう',
+    },
+  ],
 })
 </script>
 
@@ -166,7 +170,7 @@ useHead({
   font-weight: 600;
   text-transform: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
 }
 
 .search-recipes-btn:disabled {
@@ -183,15 +187,15 @@ useHead({
   .ingredient-registration {
     padding: 12px;
   }
-  
+
   .page-title {
     font-size: 20px;
   }
-  
+
   .action-section {
     padding: 12px;
   }
-  
+
   .search-recipes-btn {
     height: 48px;
     font-size: 14px;
@@ -205,7 +209,7 @@ useHead({
     margin: 0 auto;
     padding: 24px;
   }
-  
+
   .action-section {
     position: static;
     padding: 0;
@@ -213,7 +217,7 @@ useHead({
     border: none;
     box-shadow: none;
   }
-  
+
   .search-recipes-btn {
     max-width: 400px;
     margin: 0 auto;

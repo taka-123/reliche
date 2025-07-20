@@ -8,7 +8,10 @@
   >
     <!-- レシピ画像 -->
     <v-img
-      :src="recipe.image_url || 'https://via.placeholder.com/400x200/e8f5e8/2e7d32?text=Recipe'"
+      :src="
+        recipe.image_url ||
+        'https://via.placeholder.com/400x200/e8f5e8/2e7d32?text=Recipe'
+      "
       :alt="recipe.title"
       height="200"
       cover
@@ -31,8 +34,11 @@
       <h3 class="recipe-title text-h6 mb-2">
         {{ recipe.title }}
       </h3>
-      
-      <p v-if="recipe.description" class="recipe-description text-body-2 text-medium-emphasis mb-3">
+
+      <p
+        v-if="recipe.description"
+        class="recipe-description text-body-2 text-medium-emphasis mb-3"
+      >
         {{ truncatedDescription }}
       </p>
 
@@ -42,7 +48,7 @@
           <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
           <span class="text-caption">{{ recipe.cooking_time }}分</span>
         </div>
-        
+
         <div v-if="recipe.servings" class="meta-item d-flex align-center">
           <v-icon size="small" class="mr-1">mdi-account-group-outline</v-icon>
           <span class="text-caption">{{ recipe.servings }}人分</span>
@@ -60,9 +66,9 @@
       >
         詳細を見る
       </v-btn>
-      
+
       <v-spacer />
-      
+
       <FavoriteButton
         :recipe-id="recipe.id"
         show-text
@@ -100,12 +106,14 @@ const hover = ref(false)
 // Computed properties
 const truncatedDescription = computed(() => {
   if (!props.recipe.description) return ''
-  
+
   if (props.recipe.description.length <= props.maxDescriptionLength) {
     return props.recipe.description
   }
-  
-  return props.recipe.description.substring(0, props.maxDescriptionLength) + '...'
+
+  return (
+    props.recipe.description.substring(0, props.maxDescriptionLength) + '...'
+  )
 })
 
 // Event handlers
@@ -183,11 +191,11 @@ const handleError = (message: string) => {
   .recipe-content {
     padding: 12px;
   }
-  
+
   .recipe-actions {
     padding: 8px 12px 12px;
   }
-  
+
   .favorite-overlay {
     top: 4px;
     right: 4px;

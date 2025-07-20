@@ -9,15 +9,15 @@
       <v-card-title class="text-h4 mb-6 text-center">ログイン</v-card-title>
 
       <v-form @submit.prevent="login">
-        <v-alert 
-          v-if="getError" 
-          type="error" 
+        <v-alert
+          v-if="getError"
+          type="error"
           variant="tonal"
           class="mb-4"
           prominent
           border="start"
         >
-          <strong>ログインエラー</strong><br>
+          <strong>ログインエラー</strong><br />
           {{ getError }}
         </v-alert>
 

@@ -3,12 +3,7 @@
     <!-- ヘッダー -->
     <div class="header">
       <div class="header-top">
-        <v-btn 
-          @click="goBack" 
-          icon 
-          variant="text" 
-          class="back-btn"
-        >
+        <v-btn icon variant="text" class="back-btn" @click="goBack">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <div class="header-actions">
@@ -18,7 +13,9 @@
         </div>
       </div>
       <div class="recipe-title-section">
-        <h1 class="page-title" :title="recipe?.name">{{ recipe?.name || 'レシピ詳細' }}</h1>
+        <h1 class="page-title" :title="recipe?.name">
+          {{ recipe?.name || 'レシピ詳細' }}
+        </h1>
       </div>
     </div>
 
@@ -63,17 +60,23 @@
       <div class="ingredients-section">
         <h2 class="section-title">材料</h2>
         <div class="ingredients-list">
-          <div 
-            v-for="ingredient in recipe.ingredients" 
+          <div
+            v-for="ingredient in recipe.ingredients"
             :key="ingredient.id"
             class="ingredient-item"
           >
             <div class="ingredient-status">
-              <v-icon 
-                :color="isIngredientAvailable(ingredient.id) ? '#4CAF50' : '#FF9800'" 
+              <v-icon
+                :color="
+                  isIngredientAvailable(ingredient.id) ? '#4CAF50' : '#FF9800'
+                "
                 size="20"
               >
-                {{ isIngredientAvailable(ingredient.id) ? 'mdi-check-circle' : 'mdi-alert' }}
+                {{
+                  isIngredientAvailable(ingredient.id)
+                    ? 'mdi-check-circle'
+                    : 'mdi-alert'
+                }}
               </v-icon>
             </div>
             <div class="ingredient-info">
@@ -92,7 +95,7 @@
             <span class="progress-text">
               {{ completedStepsCount }}/{{ totalStepsCount }}
             </span>
-            <v-progress-linear 
+            <v-progress-linear
               :model-value="progressPercentage"
               color="primary"
               height="6"
@@ -103,24 +106,27 @@
         </div>
 
         <div class="instructions-list">
-          <div 
-            v-for="(instruction, index) in recipe.instructions" 
+          <div
+            v-for="(instruction, index) in recipe.instructions"
             :key="index"
             class="instruction-item"
           >
             <div class="instruction-checkbox">
               <v-checkbox
                 :model-value="isStepCompleted(index)"
-                @update:model-value="toggleStep(index)"
                 color="primary"
                 hide-details
                 density="comfortable"
+                @update:model-value="toggleStep(index)"
               />
             </div>
             <div class="instruction-content">
               <span class="step-number">{{ index + 1 }}.</span>
-              <span 
-                :class="['instruction-text', { 'completed': isStepCompleted(index) }]"
+              <span
+                :class="[
+                  'instruction-text',
+                  { completed: isStepCompleted(index) },
+                ]"
               >
                 {{ instruction }}
               </span>
@@ -136,10 +142,10 @@
           <span class="wake-lock-label">画面スリープ防止</span>
           <v-switch
             v-model="keepScreenOn"
-            @change="toggleScreenWakeLock"
             color="primary"
             hide-details
             density="comfortable"
+            @change="toggleScreenWakeLock"
           />
         </div>
       </div>
@@ -163,13 +169,13 @@ const recipesStore = useRecipesStore()
 const { getRecipeDetail } = useRecipeApi()
 
 const { selectedIngredientIds } = storeToRefs(ingredientsStore)
-const { 
-  currentRecipe, 
-  completedSteps, 
-  keepScreenOn, 
-  completedStepsCount, 
-  totalStepsCount, 
-  progressPercentage 
+const {
+  currentRecipe,
+  completedSteps,
+  keepScreenOn,
+  completedStepsCount,
+  totalStepsCount,
+  progressPercentage,
 } = storeToRefs(recipesStore)
 
 const recipe = computed(() => currentRecipe.value)
@@ -193,7 +199,7 @@ const toggleScreenWakeLock = () => {
 
 const fetchRecipe = async () => {
   isLoading.value = true
-  
+
   try {
     const recipe = await getRecipeDetail(recipeId)
     if (recipe && recipe.instructions && Array.isArray(recipe.instructions)) {
@@ -220,13 +226,13 @@ const goBack = () => {
 
 const shareRecipe = async () => {
   if (!recipe.value) return
-  
+
   const shareData = {
     title: recipe.value.name,
     text: `${recipe.value.name}のレシピをチェック！`,
-    url: window.location.href
+    url: window.location.href,
   }
-  
+
   try {
     if (navigator.share) {
       await navigator.share(shareData)
@@ -259,8 +265,13 @@ onUnmounted(() => {
 useHead({
   title: computed(() => `${recipe.value?.name || 'レシピ詳細'} - Reliche`),
   meta: [
-    { name: 'description', content: computed(() => `${recipe.value?.name || 'レシピ'}の詳細な作り方と材料`) }
-  ]
+    {
+      name: 'description',
+      content: computed(
+        () => `${recipe.value?.name || 'レシピ'}の詳細な作り方と材料`
+      ),
+    },
+  ],
 })
 </script>
 
@@ -484,7 +495,7 @@ useHead({
 }
 
 .instruction-item:hover {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
 }
 
@@ -541,23 +552,23 @@ useHead({
   .recipe-detail {
     padding: 24px;
   }
-  
+
   .page-title {
     font-size: 24px;
   }
-  
+
   .recipe-image {
     height: 250px;
   }
-  
+
   .recipe-stats {
     gap: 48px;
   }
-  
+
   .stat-item {
     font-size: 16px;
   }
-  
+
   .ingredients-section,
   .instructions-section {
     padding: 32px;
