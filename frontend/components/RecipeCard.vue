@@ -8,7 +8,7 @@
   >
     <!-- レシピ画像 -->
     <v-img
-      :src="recipe.image_url || '/images/default-recipe.jpg'"
+      :src="recipe.image_url || 'https://via.placeholder.com/400x200/e8f5e8/2e7d32?text=Recipe'"
       :alt="recipe.title"
       height="200"
       cover
@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import type { Recipe } from '~/types/favorites'
 
 interface Props {

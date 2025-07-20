@@ -1,3 +1,4 @@
+import { computed, readonly } from 'vue'
 import { useFavoritesStore } from '~/stores/favorites'
 
 /**
