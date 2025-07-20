@@ -23,12 +23,15 @@ export default defineNuxtPlugin((nuxtApp) => {
           dark: false,
           colors: {
             primary: '#2e7d32', // 料理アプリらしいダークグリーン
+            'on-primary': '#ffffff', // primary色の上の文字色（白）
             secondary: '#4caf50', // ライトグリーン
+            'on-secondary': '#ffffff', // secondary色の上の文字色（白）
             accent: '#ff8f00', // アクセント（オレンジ系）
             error: '#f44336', // エラー
             warning: '#ff9800', // 警告
             info: '#1b5e20', // 情報（深緑）
             success: '#4caf50', // 成功
+            'on-success': '#ffffff', // success色の上の文字色（白）
             background: '#f1f8e9', // 背景色（薄緑）
           },
         },
