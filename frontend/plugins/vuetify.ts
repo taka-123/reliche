@@ -22,17 +22,35 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: false,
           colors: {
-            primary: '#2e7d32', // 料理アプリらしいダークグリーン
-            'on-primary': '#ffffff', // primary色の上の文字色（白）
-            secondary: '#4caf50', // ライトグリーン
-            'on-secondary': '#ffffff', // secondary色の上の文字色（白）
-            accent: '#ff8f00', // アクセント（オレンジ系）
-            error: '#f44336', // エラー
-            warning: '#ff9800', // 警告
-            info: '#1b5e20', // 情報（深緑）
-            success: '#4caf50', // 成功
-            'on-success': '#ffffff', // success色の上の文字色（白）
-            background: '#f1f8e9', // 背景色（薄緑）
+            primary: '#2e7d32',
+            'on-primary': '#ffffff',
+            'primary-container': '#c8e6c9',
+            'on-primary-container': '#1b5e20',
+            secondary: '#4caf50',
+            'on-secondary': '#ffffff',
+            'secondary-container': '#a5d6a7',
+            'on-secondary-container': '#2e7d32',
+            tertiary: '#66bb6a',
+            'on-tertiary': '#ffffff',
+            'tertiary-container': '#e8f5e8',
+            'on-tertiary-container': '#1b5e20',
+            error: '#f44336',
+            'on-error': '#ffffff',
+            'error-container': '#ffebee',
+            'on-error-container': '#b71c1c',
+            background: '#f1f8e9',
+            'on-background': '#1a1c18',
+            surface: '#ffffff',
+            'on-surface': '#1a1c18',
+            'surface-variant': '#f5f5f5',
+            'on-surface-variant': '#424242',
+            outline: '#757575',
+            'outline-variant': '#c4c7c5',
+            shadow: '#000000',
+            scrim: '#000000',
+            'inverse-surface': '#2f312e',
+            'inverse-on-surface': '#f0f1ec',
+            'inverse-primary': '#a0cfa4',
           },
         },
         dark: {
@@ -79,6 +97,25 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
     },
   })
+
+  // Material Design 3 color inheritance fix
+  if (process.client) {
+    const style = document.createElement('style')
+    style.textContent = `
+      /* MD3準拠: v-btn__contentがon-primary色を正しく継承 */
+      .v-btn.bg-primary .v-btn__content,
+      .v-btn.bg-primary .v-btn__content * {
+        color: rgb(var(--v-theme-on-primary));
+      }
+
+      /* MD3準拠: その他のプライマリ色ボタンも同様 */
+      .v-btn[style*="background-color: rgb(var(--v-theme-primary))"] .v-btn__content,
+      .v-btn[style*="background-color: rgb(var(--v-theme-primary))"] .v-btn__content * {
+        color: rgb(var(--v-theme-on-primary));
+      }
+    `
+    document.head.appendChild(style)
+  }
 
   nuxtApp.vueApp.use(vuetify)
 })
