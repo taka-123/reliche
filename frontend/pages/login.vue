@@ -9,7 +9,15 @@
       <v-card-title class="text-h4 mb-6 text-center">ログイン</v-card-title>
 
       <v-form @submit.prevent="login">
-        <v-alert v-if="getError" type="error" class="mb-4">
+        <v-alert 
+          v-if="getError" 
+          type="error" 
+          variant="tonal"
+          class="mb-4"
+          prominent
+          border="start"
+        >
+          <strong>ログインエラー</strong><br>
           {{ getError }}
         </v-alert>
 
@@ -20,6 +28,7 @@
           :error-messages="emailError"
           required
           autocomplete="email"
+          prepend-inner-icon="mdi-email"
           @input="clearEmailError"
         ></v-text-field>
 
@@ -30,6 +39,7 @@
           :error-messages="passwordError"
           required
           autocomplete="current-password"
+          prepend-inner-icon="mdi-lock"
           @input="clearPasswordError"
         ></v-text-field>
 
@@ -37,12 +47,14 @@
           <v-btn
             type="submit"
             color="primary"
+            variant="flat"
             size="large"
             :loading="loading"
             :disabled="loading"
             block
             class="mb-4"
           >
+            <v-icon left class="mr-2">mdi-login</v-icon>
             ログイン
           </v-btn>
 
@@ -57,12 +69,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
 import { useAuthStore } from '~/stores/auth'
+import type { LoginCredentials } from '~/types/auth'
 
 // 認証機能を取得
 const { loginAndRedirect } = useAuth()
