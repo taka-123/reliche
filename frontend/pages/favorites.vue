@@ -105,7 +105,7 @@
               @click="navigateToRecipe(favorite.recipe_id)"
             >
               <v-img
-                src="/images/default-recipe.jpg"
+                src="https://via.placeholder.com/400x200/e8f5e8/2e7d32?text=Recipe"
                 height="200"
                 cover
               >
@@ -215,6 +215,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
 import { useFavorites } from '~/composables/useFavorites'
 
 definePageMeta({
