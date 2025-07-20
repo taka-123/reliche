@@ -16,14 +16,14 @@
 
       <!-- デスクトップ用ナビゲーション -->
       <div class="d-none d-md-flex">
-        <v-btn to="/" variant="text">ホーム</v-btn>
+        <v-btn to="/" variant="text" class="text-white">ホーム</v-btn>
         <ClientOnly>
           <template v-if="isAuthenticated">
-            <v-btn variant="text" @click="handleLogout">ログアウト</v-btn>
+            <v-btn variant="text" @click="handleLogout" class="text-white">ログアウト</v-btn>
           </template>
           <template v-else>
-            <v-btn to="/login" variant="text">ログイン</v-btn>
-            <v-btn to="/register" variant="text">登録</v-btn>
+            <v-btn to="/login" variant="text" class="text-white">ログイン</v-btn>
+            <v-btn to="/register" variant="text" class="text-white">登録</v-btn>
           </template>
         </ClientOnly>
       </div>
@@ -108,12 +108,27 @@ const handleLogout = async () => {
 .app-header .v-app-bar-title a,
 .app-header .v-btn,
 .app-header .v-btn .v-btn__content,
+.app-header .v-btn .v-btn__content span,
 .app-header .v-list-item-title {
   color: white !important;
 }
 
 .app-header .v-icon {
   color: white !important;
+}
+
+/* ナビゲーションボタンの色を強制的に白にする */
+.app-header .v-btn.text-white,
+.app-header .v-btn.text-white .v-btn__content,
+.app-header .v-btn.text-white span {
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+/* ホバー状態でも白を維持 */
+.app-header .v-btn:hover,
+.app-header .v-btn:hover .v-btn__content,
+.app-header .v-btn:hover span {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .app-footer {
