@@ -89,8 +89,8 @@
             :loading="loading"
             :disabled="loading"
             block
-            class="mb-4 text-white font-weight-bold"
-            style="background: linear-gradient(45deg, #4caf50, #2e7d32) !important;"
+            class="mb-4 font-weight-bold white--text"
+            style="background: linear-gradient(45deg, #4caf50, #2e7d32) !important; color: white !important;"
           >
             <v-icon left class="mr-2">mdi-account-plus</v-icon>
             アカウントを作成する
