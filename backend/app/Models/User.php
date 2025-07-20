@@ -6,6 +6,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -78,5 +79,31 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * ユーザーのお気に入りとのリレーション
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * ユーザーのお気に入りレシピIDを取得
+     *
+     * @return array<int>
+     */
+    public function getFavoriteRecipeIds(): array
+    {
+        return $this->favorites()->pluck('recipe_id')->toArray();
+    }
+
+    /**
+     * 特定のレシピがお気に入りかどうかチェック
+     */
+    public function hasFavorited(int $recipeId): bool
+    {
+        return $this->favorites()->where('recipe_id', $recipeId)->exists();
     }
 }
