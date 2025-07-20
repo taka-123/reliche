@@ -41,8 +41,14 @@
           required
           autocomplete="name"
           prepend-inner-icon="mdi-account"
+          aria-label="お名前を入力してください"
+          aria-describedby="name-help"
+          aria-invalid="nameError ? 'true' : 'false'"
           @input="clearNameError"
         />
+        <div id="name-help" class="sr-only">
+          2文字以上255文字以下で入力してください
+        </div>
 
         <v-text-field
           v-model="form.email"
@@ -53,8 +59,14 @@
           required
           autocomplete="email"
           prepend-inner-icon="mdi-email"
+          aria-label="メールアドレスを入力してください"
+          aria-describedby="email-help"
+          aria-invalid="emailError ? 'true' : 'false'"
           @input="clearEmailError"
         />
+        <div id="email-help" class="sr-only">
+          有効なメールアドレス形式で入力してください
+        </div>
 
         <v-text-field
           v-model="form.password"
@@ -65,8 +77,27 @@
           required
           autocomplete="new-password"
           prepend-inner-icon="mdi-lock"
+          aria-label="パスワードを入力してください"
+          aria-describedby="password-help password-strength"
+          aria-invalid="passwordError ? 'true' : 'false'"
           @input="clearPasswordError"
         />
+        <div id="password-help" class="sr-only">
+          8文字以上で大文字・小文字・数字・特殊文字を含むパスワードを入力してください
+        </div>
+        <div 
+          v-if="passwordStrength.feedback.length > 0"
+          id="password-strength" 
+          class="text-caption mb-2"
+          :class="passwordStrength.score >= 4 ? 'text-success' : 'text-warning'"
+          role="status" 
+          aria-live="polite"
+        >
+          強度: {{ passwordStrength.score }}/5
+          <span v-if="passwordStrength.feedback.length > 0">
+            - {{ passwordStrength.feedback.join(', ') }}
+          </span>
+        </div>
 
         <v-text-field
           v-model="form.passwordConfirmation"
@@ -77,8 +108,14 @@
           required
           autocomplete="new-password"
           prepend-inner-icon="mdi-lock-check"
+          aria-label="パスワード確認を入力してください"
+          aria-describedby="password-confirm-help"
+          aria-invalid="passwordConfirmationError ? 'true' : 'false'"
           @input="clearPasswordConfirmationError"
         />
+        <div id="password-confirm-help" class="sr-only">
+          上記で入力したパスワードと同じものを入力してください
+        </div>
 
         <div class="mt-6">
           <v-btn
@@ -90,10 +127,15 @@
             :disabled="loading"
             block
             class="mb-4"
+            aria-label="ユーザー登録を実行"
+            :aria-describedby="loading ? 'loading-message' : undefined"
           >
             <v-icon left class="mr-2">mdi-account-plus</v-icon>
             アカウントを作成する
           </v-btn>
+          <div v-if="loading" id="loading-message" class="sr-only" role="status" aria-live="polite">
+            アカウント作成中です。しばらくお待ちください。
+          </div>
 
           <div class="text-center">
             <NuxtLink to="/login" class="text-decoration-none text-body-2">
@@ -106,10 +148,12 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed, nextTick } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
+import type { RegisterCredentials, ValidationErrors, FormState } from '~/types/auth'
+import { useValidation } from '~/composables/useValidation'
 
 definePageMeta({
   middleware: 'guest', // 認証済みユーザーはリダイレクト
@@ -117,120 +161,162 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const router = useRouter()
+const { 
+  validateForm: validateFormData, 
+  validatePasswordConfirmation, 
+  checkPasswordStrength,
+  createDebouncedValidator,
+  registerValidationRules 
+} = useValidation()
 
-// フォームデータ
-const form = ref({
+// 型安全なフォームデータ
+const form = ref<RegisterCredentials & { passwordConfirmation: string }>({
   name: '',
   email: '',
   password: '',
+  password_confirmation: '',
   passwordConfirmation: ''
 })
 
-// 状態管理
-const loading = ref(false)
+// 型安全な状態管理
+const formState = ref<FormState>({
+  loading: false,
+  errors: {},
+  touched: {}
+})
+
+// 個別エラーメッセージ（Computed for type safety）
+const nameError = computed(() => formState.value.errors.name?.[0] || '')
+const emailError = computed(() => formState.value.errors.email?.[0] || '')
+const passwordError = computed(() => formState.value.errors.password?.[0] || '')
+const passwordConfirmationError = computed(() => formState.value.errors.password_confirmation?.[0] || '')
+
+// 後方互換性のためのエイリアス
+const loading = computed(() => formState.value.loading)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-// 個別エラーメッセージ
-const nameError = ref('')
-const emailError = ref('')
-const passwordError = ref('')
-const passwordConfirmationError = ref('')
+// パスワード強度表示
+const passwordStrength = ref({ score: 0, feedback: [] })
 
-// バリデーション関数
-const validateForm = () => {
-  let isValid = true
-
-  // 名前のバリデーション
-  if (!form.value.name) {
-    nameError.value = 'お名前を入力してください'
-    isValid = false
-  } else if (form.value.name.length < 2) {
-    nameError.value = 'お名前は2文字以上で入力してください'
-    isValid = false
-  } else if (form.value.name.length > 255) {
-    nameError.value = 'お名前は255文字以下で入力してください'
-    isValid = false
-  }
-
-  // メールアドレスのバリデーション
-  if (!form.value.email) {
-    emailError.value = 'メールアドレスを入力してください'
-    isValid = false
-  } else if (!/\S+@\S+\.\S+/.test(form.value.email)) {
-    emailError.value = '有効なメールアドレスを入力してください'
-    isValid = false
-  }
-
-  // パスワードのバリデーション
-  if (!form.value.password) {
-    passwordError.value = 'パスワードを入力してください'
-    isValid = false
-  } else if (form.value.password.length < 8) {
-    passwordError.value = 'パスワードは8文字以上である必要があります'
-    isValid = false
-  }
-
+// セキュリティ強化されたバリデーション関数
+const validateForm = (): boolean => {
+  // フォームデータのバリデーション
+  const errors = validateFormData(form.value, registerValidationRules)
+  
   // パスワード確認のバリデーション
-  if (!form.value.passwordConfirmation) {
-    passwordConfirmationError.value = 'パスワード（確認）を入力してください'
-    isValid = false
-  } else if (form.value.password !== form.value.passwordConfirmation) {
-    passwordConfirmationError.value = 'パスワードが一致しません'
-    isValid = false
+  const confirmationError = validatePasswordConfirmation(
+    form.value.password, 
+    form.value.passwordConfirmation
+  )
+  
+  if (confirmationError) {
+    errors.password_confirmation = [confirmationError]
   }
-
-  return isValid
+  
+  // エラー状態を更新
+  formState.value.errors = errors
+  
+  return Object.keys(errors).length === 0
 }
 
-// エラーメッセージをクリア
-const clearNameError = () => {
-  nameError.value = ''
+// リアルタイムバリデーション（デバウンス付き）
+const clearFieldError = (fieldName: keyof ValidationErrors) => {
+  if (formState.value.errors[fieldName]) {
+    delete formState.value.errors[fieldName]
+  }
 }
 
-const clearEmailError = () => {
-  emailError.value = ''
+// パスワード強度チェック（リアルタイム）
+const updatePasswordStrength = () => {
+  if (form.value.password) {
+    passwordStrength.value = checkPasswordStrength(form.value.password)
+  } else {
+    passwordStrength.value = { score: 0, feedback: [] }
+  }
 }
 
+// デバウンス付きバリデーション
+const debouncedPasswordValidation = createDebouncedValidator((value: string) => {
+  updatePasswordStrength()
+  return ''
+}, 300)
+
+// エラークリア関数（後方互換性）
+const clearNameError = () => clearFieldError('name')
+const clearEmailError = () => clearFieldError('email')
 const clearPasswordError = () => {
-  passwordError.value = ''
+  clearFieldError('password')
+  updatePasswordStrength()
 }
+const clearPasswordConfirmationError = () => clearFieldError('password_confirmation')
 
-const clearPasswordConfirmationError = () => {
-  passwordConfirmationError.value = ''
-}
-
-// 登録処理
-const register = async () => {
+// パフォーマンス最適化された登録処理
+const register = async (): Promise<void> => {
   if (!validateForm()) return
 
-  loading.value = true
+  // ローディング状態開始
+  formState.value.loading = true
   errorMessage.value = ''
   successMessage.value = ''
 
   try {
+    // 型安全な登録データ
+    const registerData: RegisterCredentials = {
+      name: form.value.name.trim(),
+      email: form.value.email.trim().toLowerCase(),
+      password: form.value.password,
+      password_confirmation: form.value.passwordConfirmation
+    }
+
     const result = await authStore.register(
-      form.value.name,
-      form.value.email,
-      form.value.password,
-      form.value.passwordConfirmation
+      registerData.name,
+      registerData.email,
+      registerData.password,
+      registerData.password_confirmation
     )
 
     if (result.success) {
       successMessage.value = 'アカウントが作成されました！自動的にログインします...'
       
-      // 成功時は2秒後にホームページにリダイレクト
+      // パフォーマンス: nextTick後にリダイレクト
+      await nextTick()
       setTimeout(() => {
         router.push('/')
-      }, 2000)
+      }, 1500) // 1.5秒に短縮
     } else {
-      errorMessage.value = result.message || '登録に失敗しました'
+      // サーバーエラーの詳細表示
+      if (result.errors) {
+        formState.value.errors = result.errors as ValidationErrors
+      } else {
+        errorMessage.value = result.message || '登録に失敗しました'
+      }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error)
-    errorMessage.value = error.message || '登録中にエラーが発生しました'
+    
+    // 型安全なエラーハンドリング
+    if (error.response?.data?.errors) {
+      formState.value.errors = error.response.data.errors
+    } else {
+      errorMessage.value = error.message || '登録中にエラーが発生しました'
+    }
   } finally {
-    loading.value = false
+    formState.value.loading = false
   }
 }
 </script>
+
+<style scoped>
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>

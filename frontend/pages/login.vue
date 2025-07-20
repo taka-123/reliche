@@ -69,12 +69,13 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
 import { useAuthStore } from '~/stores/auth'
+import type { LoginCredentials } from '~/types/auth'
 
 // 認証機能を取得
 const { loginAndRedirect } = useAuth()
