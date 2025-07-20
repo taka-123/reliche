@@ -16,14 +16,14 @@
 
       <!-- デスクトップ用ナビゲーション -->
       <div class="d-none d-md-flex">
-        <v-btn to="/" variant="text">ホーム</v-btn>
+        <v-btn to="/" variant="text" color="white">ホーム</v-btn>
         <ClientOnly>
           <template v-if="isAuthenticated">
-            <v-btn variant="text" @click="handleLogout">ログアウト</v-btn>
+            <v-btn variant="text" @click="handleLogout" color="white">ログアウト</v-btn>
           </template>
           <template v-else>
-            <v-btn to="/login" variant="text">ログイン</v-btn>
-            <v-btn to="/register" variant="text">登録</v-btn>
+            <v-btn to="/login" variant="text" color="white">ログイン</v-btn>
+            <v-btn to="/register" variant="text" color="white">登録</v-btn>
           </template>
         </ClientOnly>
       </div>
@@ -108,11 +108,17 @@ const handleLogout = async () => {
 .app-header .v-app-bar-title a,
 .app-header .v-btn,
 .app-header .v-btn .v-btn__content,
+.app-header .v-btn .v-btn__content span,
 .app-header .v-list-item-title {
   color: white !important;
 }
 
 .app-header .v-icon {
+  color: white !important;
+}
+
+/* Vuetifyのcolorプロパティで白色が適用されない場合の追加CSS */
+.app-header .v-btn--variant-text {
   color: white !important;
 }
 
