@@ -34,11 +34,11 @@ export function useFavorites() {
   const addToFavorites = async (recipeId: number): Promise<boolean> => {
     try {
       const result = await favoritesStore.addToFavorites(recipeId)
-      
+
       if (result && process.env.NODE_ENV === 'development') {
         console.log(`レシピ ${recipeId} をお気に入りに追加しました`)
       }
-      
+
       return result
     } catch (error) {
       console.error('お気に入り追加エラー:', error)
@@ -52,11 +52,11 @@ export function useFavorites() {
   const removeFromFavorites = async (recipeId: number): Promise<boolean> => {
     try {
       const result = await favoritesStore.removeFromFavorites(recipeId)
-      
+
       if (result && process.env.NODE_ENV === 'development') {
         console.log(`レシピ ${recipeId} をお気に入りから削除しました`)
       }
-      
+
       return result
     } catch (error) {
       console.error('お気に入り削除エラー:', error)
@@ -71,12 +71,12 @@ export function useFavorites() {
     try {
       const wasAlreadyFavorited = isFavorited(recipeId)
       const result = await favoritesStore.toggleFavorite(recipeId)
-      
+
       if (result && process.env.NODE_ENV === 'development') {
         const action = wasAlreadyFavorited ? '削除' : '追加'
         console.log(`レシピ ${recipeId} のお気に入り${action}が完了しました`)
       }
-      
+
       return result
     } catch (error) {
       console.error('お気に入りトグルエラー:', error)
@@ -104,13 +104,13 @@ export function useFavorites() {
    */
   const debouncedToggleFavorite = (() => {
     let timeoutId: NodeJS.Timeout | null = null
-    
-    return async (recipeId: number, delay: number = 300): Promise<boolean> => {
+
+    return (recipeId: number, delay: number = 300): Promise<boolean> => {
       return new Promise((resolve) => {
         if (timeoutId) {
           clearTimeout(timeoutId)
         }
-        
+
         timeoutId = setTimeout(async () => {
           try {
             const result = await toggleFavorite(recipeId)
@@ -131,7 +131,7 @@ export function useFavorites() {
     isLoading: readonly(isLoading),
     error: readonly(error),
     favoritesCount: readonly(favoritesCount),
-    
+
     // Actions
     isFavorited,
     fetchFavorites,

@@ -11,13 +11,10 @@
     class="favorite-btn"
     @click="handleToggle"
   >
-    <v-icon 
-      :class="{ 'favorite-icon-animated': isAnimating }"
-      :size="iconSize"
-    >
+    <v-icon :class="{ 'favorite-icon-animated': isAnimating }" :size="iconSize">
       {{ isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
     </v-icon>
-    
+
     <span v-if="showText" class="ml-2">
       {{ isFavorited ? 'お気に入り解除' : 'お気に入り' }}
     </span>
@@ -48,11 +45,11 @@ const emit = defineEmits<{
 }>()
 
 // お気に入り機能を使用
-const { 
-  isFavorited: checkIsFavorited, 
-  debouncedToggleFavorite, 
+const {
+  isFavorited: checkIsFavorited,
+  debouncedToggleFavorite,
   error,
-  clearError 
+  clearError,
 } = useFavorites()
 
 // ローカル状態
@@ -70,9 +67,9 @@ const ariaLabel = computed(() => {
 const iconSize = computed(() => {
   const sizeMap = {
     'x-small': 'small',
-    'small': 'small',
-    'default': 'default',
-    'large': 'large',
+    small: 'small',
+    default: 'default',
+    large: 'large',
     'x-large': 'x-large',
   }
   return sizeMap[props.size] || 'default'
@@ -107,8 +104,9 @@ const handleToggle = async (): Promise<void> => {
       const errorMessage = error.value || 'お気に入りの更新に失敗しました'
       emit('error', errorMessage)
     }
-  } catch (err: any) {
-    const errorMessage = err.message || 'お気に入りの更新中にエラーが発生しました'
+  } catch (err) {
+    const errorMessage =
+      (err as Error)?.message || 'お気に入りの更新中にエラーが発生しました'
     emit('error', errorMessage)
   } finally {
     isLoading.value = false

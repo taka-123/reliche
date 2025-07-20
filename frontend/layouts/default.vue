@@ -19,8 +19,12 @@
         <v-btn to="/" variant="text" color="white">ホーム</v-btn>
         <ClientOnly>
           <template v-if="isAuthenticated">
-            <v-btn to="/favorites" variant="text" color="white">お気に入り</v-btn>
-            <v-btn variant="text" @click="handleLogout" color="white">ログアウト</v-btn>
+            <v-btn to="/favorites" variant="text" color="white"
+              >お気に入り</v-btn
+            >
+            <v-btn variant="text" color="white" @click="handleLogout"
+              >ログアウト</v-btn
+            >
           </template>
           <template v-else>
             <v-btn to="/login" variant="text" color="white">ログイン</v-btn>

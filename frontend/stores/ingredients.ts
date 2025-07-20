@@ -6,16 +6,19 @@ export const useIngredientsStore = defineStore('ingredients', {
     selectedIngredients: [] as Ingredient[],
     searchQuery: '',
     searchResults: [] as Ingredient[],
-    isSearching: false
+    isSearching: false,
   }),
 
   getters: {
     selectedCount: (state) => state.selectedIngredients.length,
-    selectedIngredientIds: (state) => state.selectedIngredients.map(ingredient => ingredient.id),
+    selectedIngredientIds: (state) =>
+      state.selectedIngredients.map((ingredient) => ingredient.id),
     hasSelectedIngredients: (state) => state.selectedIngredients.length > 0,
     isIngredientSelected: (state) => (ingredientId: number) => {
-      return state.selectedIngredients.some(ingredient => ingredient.id === ingredientId)
-    }
+      return state.selectedIngredients.some(
+        (ingredient) => ingredient.id === ingredientId
+      )
+    },
   },
 
   actions: {
@@ -27,7 +30,7 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     removeIngredient(ingredientId: number) {
       this.selectedIngredients = this.selectedIngredients.filter(
-        ingredient => ingredient.id !== ingredientId
+        (ingredient) => ingredient.id !== ingredientId
       )
     },
 
@@ -50,6 +53,6 @@ export const useIngredientsStore = defineStore('ingredients', {
     clearSearchResults() {
       this.searchResults = []
       this.searchQuery = ''
-    }
-  }
+    },
+  },
 })
