@@ -58,6 +58,9 @@ export default defineNuxtPlugin((nuxtApp) => {
         elevation: 2,
         fontWeight: 'medium',
       },
+      VAppBar: {
+        color: 'primary',
+      },
       VAlert: {
         borderRadius: 'lg',
       },
