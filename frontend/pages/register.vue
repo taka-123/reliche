@@ -83,14 +83,13 @@
         <div class="mt-6">
           <v-btn
             type="submit"
-            color="success"
+            color="primary"
             variant="flat"
             size="large"
             :loading="loading"
             :disabled="loading"
             block
-            class="mb-4 font-weight-bold white--text"
-            style="background: linear-gradient(45deg, #4caf50, #2e7d32) !important; color: white !important;"
+            class="mb-4"
           >
             <v-icon left class="mr-2">mdi-account-plus</v-icon>
             アカウントを作成する
