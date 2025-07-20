@@ -32,43 +32,56 @@ export function useFavorites() {
    * お気に入りに追加
    */
   const addToFavorites = async (recipeId: number): Promise<boolean> => {
-    const result = await favoritesStore.addToFavorites(recipeId)
-    
-    if (result) {
-      // 成功時の通知などを追加可能
-      console.log(`レシピ ${recipeId} をお気に入りに追加しました`)
+    try {
+      const result = await favoritesStore.addToFavorites(recipeId)
+      
+      if (result && process.env.NODE_ENV === 'development') {
+        console.log(`レシピ ${recipeId} をお気に入りに追加しました`)
+      }
+      
+      return result
+    } catch (error) {
+      console.error('お気に入り追加エラー:', error)
+      return false
     }
-    
-    return result
   }
 
   /**
    * お気に入りから削除
    */
   const removeFromFavorites = async (recipeId: number): Promise<boolean> => {
-    const result = await favoritesStore.removeFromFavorites(recipeId)
-    
-    if (result) {
-      // 成功時の通知などを追加可能
-      console.log(`レシピ ${recipeId} をお気に入りから削除しました`)
+    try {
+      const result = await favoritesStore.removeFromFavorites(recipeId)
+      
+      if (result && process.env.NODE_ENV === 'development') {
+        console.log(`レシピ ${recipeId} をお気に入りから削除しました`)
+      }
+      
+      return result
+    } catch (error) {
+      console.error('お気に入り削除エラー:', error)
+      return false
     }
-    
-    return result
   }
 
   /**
    * お気に入り状態をトグル
    */
   const toggleFavorite = async (recipeId: number): Promise<boolean> => {
-    const wasAlreadyFavorited = isFavorited(recipeId)
-    const result = await favoritesStore.toggleFavorite(recipeId)
-    
-    if (result) {
-      const action = wasAlreadyFavorited ? '削除' : '追加'
-      console.log(`レシピ ${recipeId} のお気に入り${action}が完了しました`)
+    try {
+      const wasAlreadyFavorited = isFavorited(recipeId)
+      const result = await favoritesStore.toggleFavorite(recipeId)
+      
+      if (result && process.env.NODE_ENV === 'development') {
+        const action = wasAlreadyFavorited ? '削除' : '追加'
+        console.log(`レシピ ${recipeId} のお気に入り${action}が完了しました`)
+      }
+      
+      return result
+    } catch (error) {
+      console.error('お気に入りトグルエラー:', error)
+      return false
     }
-    
-    return result
   }
 
   /**
@@ -99,8 +112,13 @@ export function useFavorites() {
         }
         
         timeoutId = setTimeout(async () => {
-          const result = await toggleFavorite(recipeId)
-          resolve(result)
+          try {
+            const result = await toggleFavorite(recipeId)
+            resolve(result)
+          } catch (error) {
+            console.error('デバウンスお気に入りトグルエラー:', error)
+            resolve(false)
+          }
         }, delay)
       })
     }

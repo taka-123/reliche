@@ -23,18 +23,12 @@ class FavoriteController extends Controller
     {
         try {
             $user = Auth::user();
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => '認証が必要です。',
-                ], 401);
-            }
+            $perPage = min((int) request('per_page', 20), 100); // 最大100件に制限
 
             // ユーザーのお気に入りを取得（ページネーション付き）
             $favorites = $user->favorites()
                             ->orderBy('created_at', 'desc')
-                            ->paginate(20);
+                            ->paginate($perPage);
 
             return response()->json([
                 'success' => true,
@@ -65,17 +59,20 @@ class FavoriteController extends Controller
     {
         try {
             $user = Auth::user();
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => '認証が必要です。',
-                ], 401);
-            }
 
             // バリデーション
             $validator = Validator::make($request->all(), [
-                'recipe_id' => 'required|integer|min:1',
+                'recipe_id' => [
+                    'required',
+                    'integer',
+                    'min:1',
+                    function ($attribute, $value, $fail) {
+                        // 将来的にRecipeモデルができたら存在確認を有効化
+                        // if (!Recipe::where('id', $value)->exists()) {
+                        //     $fail('指定されたレシピが見つかりません。');
+                        // }
+                    },
+                ],
             ], [
                 'recipe_id.required' => 'レシピIDは必須です。',
                 'recipe_id.integer' => 'レシピIDは整数である必要があります。',
@@ -131,13 +128,6 @@ class FavoriteController extends Controller
     {
         try {
             $user = Auth::user();
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => '認証が必要です。',
-                ], 401);
-            }
 
             // お気に入りを検索
             $favorite = $user->favorites()->where('recipe_id', $recipeId)->first();
@@ -177,14 +167,6 @@ class FavoriteController extends Controller
     {
         try {
             $user = Auth::user();
-            
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => '認証が必要です。',
-                ], 401);
-            }
-
             $isFavorited = $user->hasFavorited($recipeId);
 
             return response()->json([
