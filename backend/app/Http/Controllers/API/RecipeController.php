@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Recipe;
 use App\Models\Ingredient;
 use App\Http\Resources\RecipeResource;
@@ -48,19 +49,28 @@ class RecipeController extends Controller
 
         $userIngredientIds = $request->input('ingredient_ids', []);
 
-        $recipes = Recipe::with(['ingredients'])
+        $placeholders = implode(',', array_fill(0, count($userIngredientIds), '?'));
+        
+        $recipes = Recipe::select([
+                'recipes.id',
+                'recipes.name', 
+                'recipes.cooking_time',
+                \DB::raw("(
+                    SELECT COUNT(*)
+                    FROM recipe_ingredients ri
+                    WHERE ri.recipe_id = recipes.id
+                    AND ri.ingredient_id NOT IN ({$placeholders})
+                ) as missing_count")
+            ])
+            ->addBinding($userIngredientIds)
             ->get()
-            ->map(function ($recipe) use ($userIngredientIds) {
-                $missingCount = $recipe->ingredients
-                    ->whereNotIn('id', $userIngredientIds)
-                    ->count();
-
+            ->map(function ($recipe) {
                 return [
                     'id' => $recipe->id,
                     'name' => $recipe->name,
                     'cooking_time' => $recipe->cooking_time,
-                    'missing_count' => $missingCount,
-                    'status' => $this->getStatus($missingCount),
+                    'missing_count' => (int) $recipe->missing_count,
+                    'status' => $this->getStatus($recipe->missing_count),
                 ];
             })
             ->sortBy(['missing_count', 'cooking_time'])
