@@ -3,18 +3,19 @@
 use App\Models\Recipe;
 use App\Services\AIRecipeGeneratorService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    // テスト用のAPIキー設定
-    Config::set('services.gemini.api_key', 'test-api-key');
-    Config::set('services.gemini.model', 'gemini-2.5-flash-lite');
-    Config::set('services.gemini.base_url', 'https://test-api.example.com');
-    Config::set('ai.recipe.max_retries', 1);
-    Config::set('ai.recipe.timeout', 5);
-    Config::set('ai.recipe.cache_ttl', 10);
+    config([
+        'services.gemini.api_key' => 'test-api-key',
+        'services.gemini.model' => 'gemini-2.5-flash-lite',
+        'services.gemini.base_url' => 'https://test-api.example.com',
+        'ai.recipe.max_retries' => 1,
+        'ai.recipe.timeout' => 5,
+        'ai.recipe.cache_ttl' => 10,
+    ]);
 });
 
 test('validates recipe data correctly', function () {
@@ -160,7 +161,7 @@ test('parses JSON response correctly', function () {
 });
 
 test('throws exception when API key is missing for actual API call', function () {
-    Config::set('services.gemini.api_key', null);
+    config(['services.gemini.api_key' => null]);
 
     $service = new AIRecipeGeneratorService;
 

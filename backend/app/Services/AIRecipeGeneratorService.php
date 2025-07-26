@@ -163,7 +163,7 @@ class AIRecipeGeneratorService
      */
     private function getBasePrompt(): string
     {
-        return '日本の家庭料理のレシピを1つ作成してください。
+        return '日本の家庭料理のレシピを1つ作成してください。実際に作って美味しく、失敗しにくいレシピを心がけてください。
 
 以下のJSON形式で正確に出力してください：
 
@@ -171,11 +171,11 @@ class AIRecipeGeneratorService
   "title": "レシピ名",
   "cooking_time": 調理時間（分、数値のみ）,
   "servings": 人数（数値のみ）,
-  "calories": カロリー（kcal、数値のみ）,
-  "tags": ["タグ1", "タグ2"],
-  "category": "料理カテゴリ",
+  "calories": カロリー（1人前あたりのkcal、数値のみ）,
+  "tags": ["時短", "節約", "簡単", "ヘルシー", "主菜", "副菜", "和風", "洋風", "中華風"等から3-5個選択],
+  "category": "和食または洋食または中華またはイタリアン",
   "ingredients": [
-    {"name": "食材名", "amount": "分量"}
+    {"name": "食材名", "amount": "具体的な分量"}
   ],
   "instructions": [
     "手順1",
@@ -192,6 +192,8 @@ class AIRecipeGeneratorService
 - 分量は具体的に記載（「適量」「お好みで」禁止）
 - 実際に作れる現実的なレシピ
 - 日本で入手可能な食材のみ
+- 一般的な家庭用調理器具のみ使用
+- 火加減・時間・温度は具体的に指定
 - JSON形式以外は一切出力しない';
     }
 
@@ -280,16 +282,24 @@ class AIRecipeGeneratorService
      */
     private function parseRecipeResponse(string $responseText): array
     {
+        // デバッグ用：APIレスポンスをログ出力
+        \Log::info('Gemini API Response:', ['response' => $responseText]);
+
         // JSONブロックを抽出
         preg_match('/\{.*\}/s', $responseText, $matches);
 
         if (empty($matches[0])) {
+            \Log::error('No JSON found in response', ['full_response' => $responseText]);
             throw new Exception('No JSON found in response');
         }
 
         $jsonData = json_decode($matches[0], true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            \Log::error('JSON decode error', [
+                'json_string' => $matches[0],
+                'error' => json_last_error_msg(),
+            ]);
             throw new Exception('Invalid JSON in response: '.json_last_error_msg());
         }
 

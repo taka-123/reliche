@@ -2,17 +2,16 @@
 
 use App\Services\AIRecipeGeneratorService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Mockery;
+use Tests\TestCase;
 
-uses(RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    Config::set('services.gemini.api_key', 'test-api-key');
+    config(['services.gemini.api_key' => 'test-api-key']);
 });
 
 test('command runs with dry-run option', function () {
-    $mockService = Mockery::mock(AIRecipeGeneratorService::class);
+    $mockService = \Mockery::mock(AIRecipeGeneratorService::class);
     $mockService->shouldReceive('generateBasicRecipe')
         ->once()
         ->andReturn([
@@ -41,7 +40,7 @@ test('command runs with dry-run option', function () {
 });
 
 test('command handles API errors gracefully', function () {
-    $mockService = Mockery::mock(AIRecipeGeneratorService::class);
+    $mockService = \Mockery::mock(AIRecipeGeneratorService::class);
     $mockService->shouldReceive('generateBasicRecipe')
         ->once()
         ->andThrow(new Exception('API Error'));
@@ -54,7 +53,7 @@ test('command handles API errors gracefully', function () {
 });
 
 test('command parses ingredients option correctly', function () {
-    $mockService = Mockery::mock(AIRecipeGeneratorService::class);
+    $mockService = \Mockery::mock(AIRecipeGeneratorService::class);
     $mockService->shouldReceive('generateRecipeByIngredients')
         ->once()
         ->with(['鶏肉', 'キャベツ', '玉ねぎ'])
@@ -83,7 +82,7 @@ test('command parses ingredients option correctly', function () {
 });
 
 test('command parses tags option correctly', function () {
-    $mockService = Mockery::mock(AIRecipeGeneratorService::class);
+    $mockService = \Mockery::mock(AIRecipeGeneratorService::class);
     $mockService->shouldReceive('generateRecipeWithConstraints')
         ->once()
         ->with(['tags' => ['時短', '節約']])
@@ -112,7 +111,7 @@ test('command parses tags option correctly', function () {
 });
 
 test('command applies rate limiting between requests', function () {
-    $mockService = Mockery::mock(AIRecipeGeneratorService::class);
+    $mockService = \Mockery::mock(AIRecipeGeneratorService::class);
     $mockService->shouldReceive('generateBasicRecipe')
         ->twice()
         ->andReturn([
