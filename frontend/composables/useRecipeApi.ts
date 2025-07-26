@@ -9,22 +9,30 @@ export const useRecipeApi = () => {
       return []
     }
 
-    const response = await api.get<ApiResponse<Ingredient[]>>(`/ingredients/search?q=${encodeURIComponent(query)}`)
+    const response = await api.get<ApiResponse<Ingredient[]>>(
+      `/ingredients/search?q=${encodeURIComponent(query)}`
+    )
     return response.data.data || []
   }
 
-  const suggestRecipes = async (ingredientIds: number[]): Promise<Recipe[]> => {
-    if (ingredientIds.length === 0) {
-      throw new Error('食材を選択してください')
-    }
-
+  const getAllRecipes = async (): Promise<Recipe[]> => {
+    // 全レシピを表示するため、空の食材配列を送信
     const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
-      ingredient_ids: ingredientIds
+      ingredient_ids: [],
     })
     return response.data.data || []
   }
 
-  const getRecipeDetail = async (id: string | number): Promise<RecipeDetail> => {
+  const suggestRecipes = async (ingredientIds: number[]): Promise<Recipe[]> => {
+    const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
+      ingredient_ids: ingredientIds,
+    })
+    return response.data.data || []
+  }
+
+  const getRecipeDetail = async (
+    id: string | number
+  ): Promise<RecipeDetail> => {
     if (!id) {
       throw new Error('レシピIDが指定されていません')
     }
@@ -35,7 +43,8 @@ export const useRecipeApi = () => {
 
   return {
     searchIngredients,
+    getAllRecipes,
     suggestRecipes,
-    getRecipeDetail
+    getRecipeDetail,
   }
 }

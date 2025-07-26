@@ -1,5 +1,5 @@
 // API関連の型定義
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   message: string
   data?: T
@@ -13,7 +13,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export interface ApiRequestConfig {
   method?: HttpMethod
   headers?: Record<string, string>
-  body?: any
+  body?: unknown
   timeout?: number
 }
 

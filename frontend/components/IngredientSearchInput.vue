@@ -2,43 +2,54 @@
   <div class="ingredient-search-input">
     <div class="search-container">
       <div class="search-input-wrapper">
-        <v-icon class="search-icon" size="20" color="rgba(0, 0, 0, 0.6)">mdi-magnify</v-icon>
+        <v-icon class="search-icon" size="20" color="rgba(0, 0, 0, 0.6)"
+          >mdi-magnify</v-icon
+        >
         <input
           v-model="searchQuery"
+          placeholder="食材を検索..."
+          class="search-input"
           @input="onSearchInput"
           @focus="showSuggestions = true"
           @blur="hideSuggestions"
-          placeholder="食材を検索..."
-          class="search-input"
         />
         <v-btn
           v-if="searchQuery"
-          @click="clearSearch"
           icon
           size="small"
           variant="text"
           class="clear-btn"
+          @click="clearSearch"
         >
           <v-icon size="16">mdi-close</v-icon>
         </v-btn>
       </div>
-      
+
       <!-- 検索候補リスト -->
-      <div v-if="showSuggestions && suggestions.length > 0" class="suggestions-container">
+      <div
+        v-if="showSuggestions && suggestions.length > 0"
+        class="suggestions-container"
+      >
         <div
           v-for="suggestion in suggestions"
           :key="suggestion.id"
-          @mousedown="selectIngredient(suggestion)"
           class="suggestion-item"
+          @mousedown="selectIngredient(suggestion)"
         >
           <span class="suggestion-name">{{ suggestion.name }}</span>
-          <v-icon v-if="suggestion.isPopular" size="16" color="#4CAF50">mdi-star</v-icon>
+          <v-icon v-if="suggestion.isPopular" size="16" color="#4CAF50"
+            >mdi-star</v-icon
+          >
         </div>
       </div>
-      
+
       <!-- 検索中のローディング -->
       <div v-if="isSearching && showSuggestions" class="loading-container">
-        <v-progress-circular indeterminate size="20" color="primary"></v-progress-circular>
+        <v-progress-circular
+          indeterminate
+          size="20"
+          color="primary"
+        ></v-progress-circular>
         <span class="loading-text">検索中...</span>
       </div>
     </div>
@@ -63,28 +74,28 @@ let searchTimeout: NodeJS.Timeout | null = null
 
 const onSearchInput = () => {
   const query = searchQuery.value.trim()
-  
+
   if (!query) {
     suggestions.value = []
     isSearching.value = false
     return
   }
-  
+
   // デバウンス処理
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
-  
+
   isSearching.value = true
-  
+
   searchTimeout = setTimeout(async () => {
     try {
       const ingredients = await apiSearchIngredients(query)
-      
+
       // 人気の食材にマークを付ける（今後の実装で使用）
-      suggestions.value = ingredients.map(ingredient => ({
+      suggestions.value = ingredients.map((ingredient) => ({
         ...ingredient,
-        isPopular: false
+        isPopular: false,
       }))
     } catch (error) {
       const config = useRuntimeConfig()
@@ -149,7 +160,7 @@ onUnmounted(() => {
 }
 
 .search-input-wrapper:focus-within {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   background-color: #fff;
 }
 
