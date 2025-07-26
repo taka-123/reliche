@@ -32,7 +32,6 @@
     <!-- レシピを探すボタン -->
     <div class="action-section">
       <v-btn
-        :disabled="!hasSelectedIngredients"
         color="primary"
         size="large"
         class="search-recipes-btn"
@@ -40,7 +39,10 @@
         @click="searchRecipes"
       >
         <v-icon left>mdi-chef-hat</v-icon>
-        レシピを探す ({{ selectedCount }}品目)
+        <span v-if="selectedCount > 0">
+          レシピを探す ({{ selectedCount }}品目)
+        </span>
+        <span v-else> 全レシピを見る </span>
       </v-btn>
     </div>
   </div>
@@ -61,9 +63,7 @@ const removeIngredient = (ingredientId: number) => {
 }
 
 const searchRecipes = async () => {
-  if (!hasSelectedIngredients.value) return
-
-  // レシピ検索ページに遷移
+  // レシピ検索ページに遷移（食材選択の有無に関わらず）
   await navigateTo('/recipes')
 }
 

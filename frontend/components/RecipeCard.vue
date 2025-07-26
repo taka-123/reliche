@@ -58,22 +58,13 @@
       <v-btn
         :to="`/recipes/${recipe.id}`"
         color="primary"
-        variant="text"
+        variant="outlined"
         size="small"
+        block
+        class="detail-btn"
       >
         詳細を見る
       </v-btn>
-
-      <v-spacer />
-
-      <FavoriteButton
-        :recipe-id="recipe.id"
-        show-text
-        size="small"
-        @favorite-added="handleFavoriteAdded"
-        @favorite-removed="handleFavoriteRemoved"
-        @error="handleError"
-      />
     </v-card-actions>
   </v-card>
 </template>
@@ -181,6 +172,28 @@ const handleError = (message: string) => {
 
 .recipe-actions {
   padding: 8px 16px 16px;
+}
+
+/* 詳細を見るボタンのスタイル改善 - お気に入りボタンと統一感を保つ */
+.detail-btn {
+  font-weight: 500;
+  text-transform: none;
+  border-radius: 8px;
+  border-color: rgba(
+    0,
+    0,
+    0,
+    0.12
+  ) !important; /* お気に入りボタンと同じ薄いグレー */
+  color: #4caf50 !important; /* 緑色のテキスト */
+  transition: all 0.3s ease;
+}
+
+.detail-btn:hover {
+  background-color: rgba(76, 175, 80, 0.08) !important; /* より薄い緑背景 */
+  border-color: rgba(76, 175, 80, 0.3) !important; /* ホバー時のみ緑の枠線 */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
 }
 
 /* レスポンシブ対応 */

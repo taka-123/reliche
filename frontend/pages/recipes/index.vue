@@ -34,8 +34,11 @@
     <!-- レシピ検索結果サマリー -->
     <div class="result-summary">
       <p v-if="recipes.length > 0">
-        {{ selectedCount }}品目で作れるレシピ
-        {{ recipes.length }}件見つかりました
+        <span v-if="selectedCount > 0">
+          {{ selectedCount }}品目で作れるレシピ
+          {{ recipes.length }}件見つかりました
+        </span>
+        <span v-else> 全レシピ {{ recipes.length }}件を表示中 </span>
       </p>
       <p v-else-if="!isLoading">レシピが見つかりませんでした</p>
     </div>
@@ -105,7 +108,7 @@ import type { Recipe } from '~/types/recipe'
 const ingredientsStore = useIngredientsStore()
 const { selectedIngredients, selectedCount, selectedIngredientIds } =
   storeToRefs(ingredientsStore)
-const { suggestRecipes } = useRecipeApi()
+const { getAllRecipes, suggestRecipes } = useRecipeApi()
 
 const recipes = ref<Recipe[]>([])
 const allRecipes = ref<Recipe[]>([])
@@ -175,15 +178,17 @@ const filteredRecipes = computed(() => {
 })
 
 const fetchRecipes = async () => {
-  if (selectedIngredientIds.value.length === 0) {
-    await navigateTo('/')
-    return
-  }
-
   isLoading.value = true
 
   try {
-    const data = await suggestRecipes(selectedIngredientIds.value)
+    let data
+    if (selectedIngredientIds.value.length === 0) {
+      // 食材が選択されていない場合は全レシピを取得
+      data = await getAllRecipes()
+    } else {
+      // 食材が選択されている場合は提案レシピを取得
+      data = await suggestRecipes(selectedIngredientIds.value)
+    }
     recipes.value = data
     allRecipes.value = [...data]
   } catch (error) {

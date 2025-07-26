@@ -51,8 +51,8 @@ class Favorite extends Model
     public static function isFavorited(int $userId, int $recipeId): bool
     {
         return static::where('user_id', $userId)
-                    ->where('recipe_id', $recipeId)
-                    ->exists();
+            ->where('recipe_id', $recipeId)
+            ->exists();
     }
 
     /**
@@ -61,7 +61,7 @@ class Favorite extends Model
     public static function getFavoriteRecipeIds(int $userId): array
     {
         return static::where('user_id', $userId)
-                    ->pluck('recipe_id')
-                    ->toArray();
+            ->pluck('recipe_id')
+            ->toArray();
     }
 }

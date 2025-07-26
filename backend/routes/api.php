@@ -32,6 +32,7 @@ Route::group([
 ], function ($router) {
     Route::get('ingredients/search', [RecipeController::class, 'searchIngredients'])->name('ingredients.search');
     Route::post('recipes/suggest', [RecipeController::class, 'suggest'])->name('recipes.suggest');
+    Route::get('recipes', [RecipeController::class, 'index'])->name('recipes.index');
     Route::get('recipes/{id}', [RecipeController::class, 'show'])->name('recipes.show');
 });
 

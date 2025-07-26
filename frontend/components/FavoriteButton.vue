@@ -1,17 +1,23 @@
 <template>
   <v-btn
-    :color="isFavorited ? 'error' : 'grey'"
-    :variant="isFavorited ? 'flat' : 'outlined'"
+    color="grey"
+    variant="outlined"
     :size="size"
     :disabled="isLoading || disabled"
     :loading="isLoading"
     :aria-label="ariaLabel"
     :aria-pressed="isFavorited"
     role="button"
-    class="favorite-btn"
+    :class="['favorite-btn', { favorited: isFavorited }]"
     @click="handleToggle"
   >
-    <v-icon :class="{ 'favorite-icon-animated': isAnimating }" :size="iconSize">
+    <v-icon
+      :class="{
+        'favorite-icon-animated': isAnimating,
+        'red-heart': isFavorited,
+      }"
+      :size="iconSize"
+    >
       {{ isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
     </v-icon>
 
@@ -147,9 +153,47 @@ watch(error, (newError) => {
 }
 
 /* お気に入り状態でのスタイル調整 */
-.v-btn--variant-flat.v-btn--color-error {
-  background-color: rgb(var(--v-theme-error)) !important;
-  color: rgb(var(--v-theme-on-error)) !important;
+.v-btn--variant-flat.v-btn--color-success {
+  background-color: rgb(var(--v-theme-success)) !important;
+  color: rgb(var(--v-theme-on-success)) !important;
+}
+
+/* お気に入りボタンの基本スタイル */
+.favorite-btn {
+  background-color: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+}
+
+/* お気に入り登録時は薄ピンク背景 */
+.favorite-btn.favorited {
+  background-color: #fce4ec !important;
+  border-color: rgba(244, 67, 54, 0.3) !important;
+}
+
+.red-heart {
+  color: #f44336 !important; /* 赤いハート */
+}
+
+.favorite-btn:hover {
+  border-color: rgba(244, 67, 54, 0.3) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+  transform: scale(1.05);
+}
+
+/* 未選択時のホバー */
+.favorite-btn:hover:not(.favorited) {
+  background-color: #fafafa !important;
+}
+
+/* 選択時のホバー */
+.favorite-btn:hover.favorited {
+  background-color: #f8bbd9 !important; /* より濃いピンク */
+}
+
+.favorite-btn:hover .red-heart {
+  color: #d32f2f !important; /* ホバー時はより濃い赤 */
 }
 
 /* ローディング状態のスタイル */
