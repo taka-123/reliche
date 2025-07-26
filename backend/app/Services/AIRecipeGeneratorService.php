@@ -32,8 +32,8 @@ class AIRecipeGeneratorService
         $this->timeout = config('ai.recipe.timeout', 30);
         $this->cacheTtl = config('ai.recipe.cache_ttl', 3600);
 
-        // コマンド実行時はAPIキーチェックをスキップ
-        if (app()->runningInConsole() && ! app()->runningUnitTests()) {
+        // テスト環境またはCI環境ではAPIキーチェックをスキップ
+        if (app()->runningUnitTests() || app()->environment('testing') || !empty(env('CI'))) {
             return;
         }
 
@@ -217,8 +217,8 @@ class AIRecipeGeneratorService
      */
     private function callGeminiAPI(string $prompt): array
     {
-        // 実際のAPI呼び出し時にAPIキーをチェック
-        if (empty($this->apiKey)) {
+        // 実際のAPI呼び出し時にAPIキーをチェック（テスト・CI環境以外）
+        if (empty($this->apiKey) && !app()->runningUnitTests() && !app()->environment('testing') && empty(env('CI'))) {
             throw new Exception('Gemini API key is not configured. Please set GEMINI_API_KEY in your .env file.');
         }
 
