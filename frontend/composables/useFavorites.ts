@@ -59,7 +59,6 @@ export function useFavorites() {
    */
   const toggleFavorite = async (recipeId: number): Promise<boolean> => {
     try {
-      const wasAlreadyFavorited = isFavorited(recipeId)
       const result = await favoritesStore.toggleFavorite(recipeId)
       return result
     } catch (error) {

@@ -80,8 +80,11 @@ export const useFavoritesStore = defineStore('favorites', {
             response.data.message || 'お気に入り一覧の取得に失敗しました'
           )
         }
-      } catch (error: any) {
-        this.error = error.message || 'お気に入り一覧の取得に失敗しました'
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'お気に入り一覧の取得に失敗しました'
         console.error('お気に入り一覧取得エラー:', error)
       } finally {
         this.setLoading(false)
@@ -119,8 +122,11 @@ export const useFavoritesStore = defineStore('favorites', {
             response.data.message || 'お気に入りの追加に失敗しました'
           )
         }
-      } catch (error: any) {
-        this.error = error.message || 'お気に入りの追加に失敗しました'
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'お気に入りの追加に失敗しました'
         console.error('お気に入り追加エラー:', error)
         return false
       } finally {
@@ -152,8 +158,11 @@ export const useFavoritesStore = defineStore('favorites', {
             response.data.message || 'お気に入りの削除に失敗しました'
           )
         }
-      } catch (error: any) {
-        this.error = error.message || 'お気に入りの削除に失敗しました'
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'お気に入りの削除に失敗しました'
         console.error('お気に入り削除エラー:', error)
         return false
       } finally {
@@ -191,8 +200,11 @@ export const useFavoritesStore = defineStore('favorites', {
             response.data.message || 'お気に入り状態の取得に失敗しました'
           )
         }
-      } catch (error: any) {
-        this.error = error.message || 'お気に入り状態の取得に失敗しました'
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'お気に入り状態の取得に失敗しました'
         console.error('お気に入り状態チェックエラー:', error)
         return false
       }
