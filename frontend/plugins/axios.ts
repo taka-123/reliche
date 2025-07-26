@@ -84,9 +84,19 @@ export default defineNuxtPlugin(() => {
     }
   )
 
+  // APIレスポンス形式を統一する関数
+  const apiCall = async <T = unknown>(
+    url: string,
+    options: Record<string, unknown> = {}
+  ): Promise<T> => {
+    const response = await apiClient(url, options)
+    return response.data
+  }
+
   return {
     provide: {
       axios: apiClient,
+      api: apiCall,
     },
   }
 })

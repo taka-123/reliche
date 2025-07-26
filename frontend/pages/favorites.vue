@@ -5,10 +5,10 @@
       <v-container>
         <div class="d-flex align-center justify-space-between">
           <div>
-            <h1 class="text-h4 font-weight-bold mb-2">お気に入りレシピ</h1>
-            <p class="text-body-1 text-medium-emphasis">
-              保存したレシピを管理できます
-            </p>
+            <h1 class="text-h4 font-weight-bold mb-2 text-white">
+              お気に入りレシピ
+            </h1>
+            <p class="text-body-1 text-white">保存したレシピを管理できます</p>
           </div>
 
           <v-chip
@@ -70,7 +70,7 @@
           color="primary"
           variant="elevated"
           size="large"
-          prepend-icon="mdi-magnify"
+          prepend-icon="mdi-chef-hat"
         >
           レシピを探す
         </v-btn>

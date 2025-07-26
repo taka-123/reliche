@@ -8,11 +8,8 @@
   >
     <!-- レシピ画像 -->
     <v-img
-      :src="
-        recipe.image_url ||
-        'https://via.placeholder.com/400x200/e8f5e8/2e7d32?text=Recipe'
-      "
-      :alt="recipe.title"
+      :src="recipe.image_url || '/images/recipe-placeholder.svg'"
+      :alt="recipe.title || recipe.name"
       height="200"
       cover
       class="recipe-image"
@@ -32,7 +29,7 @@
     <!-- レシピ情報 -->
     <v-card-text class="recipe-content">
       <h3 class="recipe-title text-h6 mb-2">
-        {{ recipe.title }}
+        {{ recipe.title || recipe.name }}
       </h3>
 
       <p

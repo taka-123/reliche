@@ -70,7 +70,7 @@ export const useFavoritesStore = defineStore('favorites', {
         this.clearError()
 
         const { $api } = useNuxtApp()
-        const response = await $api<FavoritesResponse>('/api/favorites', {
+        const response = await $api<FavoritesResponse>('/favorites', {
           method: 'GET',
         })
 
@@ -107,7 +107,7 @@ export const useFavoritesStore = defineStore('favorites', {
         const requestData: AddFavoriteRequest = { recipe_id: recipeId }
 
         const response = await $api<FavoriteApiResponse<Favorite>>(
-          '/api/favorites',
+          '/favorites',
           {
             method: 'POST',
             body: requestData,
@@ -140,7 +140,7 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const { $api } = useNuxtApp()
         const response = await $api<FavoriteApiResponse>(
-          `/api/favorites/${recipeId}`,
+          `/favorites/${recipeId}`,
           {
             method: 'DELETE',
           }
@@ -184,7 +184,7 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const { $api } = useNuxtApp()
         const response = await $api<FavoriteCheckResponse>(
-          `/api/favorites/check/${recipeId}`,
+          `/favorites/check/${recipeId}`,
           {
             method: 'GET',
           }

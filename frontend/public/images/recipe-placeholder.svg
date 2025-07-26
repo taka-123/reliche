@@ -1,0 +1,8 @@
+<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="200" fill="#e8f5e8"/>
+  <circle cx="200" cy="80" r="20" fill="#4caf50"/>
+  <rect x="185" y="85" width="30" height="8" fill="#4caf50"/>
+  <rect x="190" y="95" width="20" height="4" fill="#4caf50"/>
+  <text x="200" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#2e7d32">レシピ画像</text>
+  <text x="200" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">準備中</text>
+</svg>
