@@ -122,6 +122,10 @@ packaged.yaml
 .aws/credentials
 .aws/config
 
+# Claude Code
+.claude/settings.local.json
+.claude/*.local.*
+
 # Cursor IDE
 .cursor/
 .cursorignore
