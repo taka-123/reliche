@@ -307,14 +307,23 @@ const register = async (): Promise<void> => {
     } else {
       errorMessage.value = result.message || '登録に失敗しました'
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Registration error:', error)
 
     // 型安全なエラーハンドリング
-    if (error.response?.data?.errors) {
-      formState.value.errors = error.response.data.errors
-    } else {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as {
+        response?: { data?: { errors?: ValidationErrors } }
+      }
+      if (axiosError.response?.data?.errors) {
+        formState.value.errors = axiosError.response.data.errors
+      } else {
+        errorMessage.value = '登録中にエラーが発生しました'
+      }
+    } else if (error instanceof Error) {
       errorMessage.value = error.message || '登録中にエラーが発生しました'
+    } else {
+      errorMessage.value = '登録中にエラーが発生しました'
     }
   } finally {
     formState.value.loading = false

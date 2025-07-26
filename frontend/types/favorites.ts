@@ -57,7 +57,7 @@ export interface Recipe {
 }
 
 // お気に入り機能のAPI呼び出し結果
-export interface FavoriteApiResponse<T = any> {
+export interface FavoriteApiResponse<T = unknown> {
   success: boolean
   message: string
   data?: T

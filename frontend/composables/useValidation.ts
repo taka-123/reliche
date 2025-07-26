@@ -72,7 +72,7 @@ export function useValidation() {
 
   // フォーム全体のバリデーション
   const validateForm = (
-    formData: Record<string, any>,
+    formData: Record<string, unknown>,
     rules: ValidationRules
   ): ValidationErrors => {
     const errors: ValidationErrors = {}
