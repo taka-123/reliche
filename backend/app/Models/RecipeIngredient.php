@@ -5,58 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Recipe extends Model
+class RecipeIngredient extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'cooking_time',
-        'instructions',
-        'servings',
-        'calories',
-        'tags',
-        'category',
-        'source',
+        'recipe_id',
+        'ingredient_id',
+        'quantity',
         'created_by',
         'updated_by',
     ];
 
-    protected $casts = [
-        'instructions' => 'array',
-        'tags' => 'array',
-    ];
-
-    public function ingredients()
+    public function recipe()
     {
-        return $this->belongsToMany(Ingredient::class, 'recipe_ingredients')
-            ->withPivot('quantity')
-            ->withTimestamps();
+        return $this->belongsTo(Recipe::class);
     }
 
-    public function scopeAiGenerated($query)
+    public function ingredient()
     {
-        return $query->where('source', 'ai_generated');
-    }
-
-    public function scopeByCategory($query, $category)
-    {
-        return $query->where('category', $category);
-    }
-
-    public function scopeByTags($query, array $tags)
-    {
-        return $query->whereJsonContains('tags', $tags);
-    }
-
-    public function isAiGenerated()
-    {
-        return $this->source === 'ai_generated';
-    }
-
-    public function getCaloriesPerServingAttribute()
-    {
-        return $this->calories ? round($this->calories / max($this->servings, 1)) : null;
+        return $this->belongsTo(Ingredient::class);
     }
 
     // 監査ログ関係のリレーション
@@ -95,7 +63,7 @@ class Recipe extends Model
         static::deleting(function ($model) {
             if (auth()->check()) {
                 $model->deleted_by = auth()->id();
-                $model->save(); // deleted_byを保存してからソフトデリート
+                $model->save();
             }
         });
     }

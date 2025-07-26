@@ -90,6 +90,7 @@ reliche - Laravel + Nuxt.js フルスタック Web アプリケーション。AP
 - パスワードや API キーをハードコーディングしない
 - マイグレーションファイルを直接編集しない
 - 本番環境で debug モードを有効にしない
+- **絶対にデータベース設定を勝手にSQLiteに変更しない（本番と合わせてPostgreSQLを維持）**
 
 **YOU MUST**:
 
@@ -190,8 +191,10 @@ npm run lint:css:fix             # stylelint自動修正
 ### 開発用データベース
 
 - **Docker**: PostgreSQL 17 コンテナ（ポート 5432）
-- **ローカル**: SQLite データベース
+- **ローカル**: PostgreSQL（本番環境と合わせるため）
 - **管理ツール**: pgAdmin (http://localhost:5050)
+
+**重要**: ローカル開発でもPostgreSQLを使用し、本番環境との一貫性を保つこと
 
 ### 接続情報（Docker）
 
