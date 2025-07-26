@@ -15,11 +15,15 @@ export const useRecipeApi = () => {
     return response.data.data || []
   }
 
-  const suggestRecipes = async (ingredientIds: number[]): Promise<Recipe[]> => {
-    if (ingredientIds.length === 0) {
-      throw new Error('食材を選択してください')
-    }
+  const getAllRecipes = async (): Promise<Recipe[]> => {
+    // 全レシピを表示するため、空の食材配列を送信
+    const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
+      ingredient_ids: [],
+    })
+    return response.data.data || []
+  }
 
+  const suggestRecipes = async (ingredientIds: number[]): Promise<Recipe[]> => {
     const response = await api.post<ApiResponse<Recipe[]>>('/recipes/suggest', {
       ingredient_ids: ingredientIds,
     })
@@ -39,6 +43,7 @@ export const useRecipeApi = () => {
 
   return {
     searchIngredients,
+    getAllRecipes,
     suggestRecipes,
     getRecipeDetail,
   }

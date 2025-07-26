@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Favorite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +26,8 @@ class FavoriteController extends Controller
 
             // ユーザーのお気に入りを取得（ページネーション付き）
             $favorites = $user->favorites()
-                            ->orderBy('created_at', 'desc')
-                            ->paginate($perPage);
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
 
             return response()->json([
                 'success' => true,
@@ -42,8 +41,8 @@ class FavoriteController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
-            Log::error('お気に入り一覧取得エラー: ' . $e->getMessage());
-            
+            Log::error('お気に入り一覧取得エラー: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'お気に入り一覧の取得に失敗しました。',
@@ -111,8 +110,8 @@ class FavoriteController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            Log::error('お気に入り追加エラー: ' . $e->getMessage());
-            
+            Log::error('お気に入り追加エラー: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'お気に入りの追加に失敗しました。',
@@ -132,7 +131,7 @@ class FavoriteController extends Controller
             // お気に入りを検索
             $favorite = $user->favorites()->where('recipe_id', $recipeId)->first();
 
-            if (!$favorite) {
+            if (! $favorite) {
                 return response()->json([
                     'success' => false,
                     'message' => 'お気に入りが見つかりませんでした。',
@@ -150,8 +149,8 @@ class FavoriteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('お気に入り削除エラー: ' . $e->getMessage());
-            
+            Log::error('お気に入り削除エラー: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'お気に入りの削除に失敗しました。',
@@ -179,8 +178,8 @@ class FavoriteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('お気に入り状態チェックエラー: ' . $e->getMessage());
-            
+            Log::error('お気に入り状態チェックエラー: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'お気に入り状態の取得に失敗しました。',

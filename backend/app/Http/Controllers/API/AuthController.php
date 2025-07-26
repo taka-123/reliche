@@ -46,7 +46,7 @@ class AuthController extends Controller
 
         $token = Auth::guard('api')->login($user);
 
-        if (!is_string($token)) {
+        if (! is_string($token)) {
             return $this->errorResponse('Could not create token', 500);
         }
 
@@ -74,7 +74,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if (!is_string($token)) {
+        if (! is_string($token)) {
             return $this->errorResponse('Authentication failed', 401);
         }
 

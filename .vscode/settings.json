@@ -83,10 +83,13 @@
     "files.trimTrailingWhitespace": false
   },
 
-  // バックエンド（Laravel Pint）
+  // バックエンド（PHP CS Fixer）
   "[php]": {
-    "editor.defaultFormatter": "open-southeners.laravel-pint"
+    "editor.defaultFormatter": "junstyle.php-cs-fixer",
+    "editor.formatOnSave": true
   },
+  "php-cs-fixer.executablePath": "${workspaceFolder}/backend/vendor/bin/pint",
+  "php-cs-fixer.config": "${workspaceFolder}/backend/pint.json",
   "[blade]": {
     "editor.defaultFormatter": "shufo.vscode-blade-formatter"
   },
@@ -100,6 +103,12 @@
   // ESLint設定
   // ===================================
   "eslint.validate": ["javascript", "typescript", "vue"],
+  "eslint.rules.customizations": [
+    { "rule": "no-console", "severity": "off" },
+    { "rule": "@typescript-eslint/no-explicit-any", "severity": "off" },
+    { "rule": "import/namespace", "severity": "off" },
+    { "rule": "import/named", "severity": "off" }
+  ],
 
   // ===================================
   // TypeScript診断制御（IDE警告を抑制）
@@ -216,6 +225,9 @@
   "intelephense.diagnostics.enable": true,
   "intelephense.diagnostics.run": "onSave",
   "intelephense.diagnostics.embeddedLanguages": false,
+  "intelephense.diagnostics.undefinedMethods": false,
+  "intelephense.diagnostics.undefinedFunctions": false,
+  "intelephense.diagnostics.undefinedTypes": false,
   "intelephense.completion.maxItems": 100,
   "intelephense.hover.references": true,
   "intelephense.hover.types": true,
