@@ -92,6 +92,40 @@ reliche - Laravel + Nuxt.js フルスタック Web アプリケーション。AP
 - 本番環境で debug モードを有効にしない
 - **絶対にデータベース設定を勝手にSQLiteに変更しない（本番と合わせてPostgreSQLを維持）**
 
+## 🚨 データベース設定に関する絶対禁止事項
+
+### Claude は以下を絶対に行ってはならない：
+
+1. **SQLite への変更を提案・実行すること**
+   - テストが失敗しても SQLite に逃げない
+   - 「手っ取り早く」という理由での変更は厳禁
+   - phpunit.xml で DB_CONNECTION=sqlite に変更することは禁止
+
+2. **本番環境との一貫性を破ること**
+   - 本番が PostgreSQL なら開発・テストも PostgreSQL
+   - データ型・制約・SQL方言の違いによる本番エラーを防ぐ
+
+3. **テスト失敗時の安易な解決策**
+   - PostgreSQL 接続エラー → Docker コンテナ起動を確認
+   - ホスト名エラー → localhost:5432 で接続設定を修正
+   - SQLite 変更は解決策ではない
+
+### 正しい対処法：
+
+```bash
+# PostgreSQL コンテナが起動していない場合
+docker compose up -d
+
+# テスト用 PostgreSQL 設定（phpunit.xml）
+<env name="DB_HOST" value="127.0.0.1"/>
+<env name="DB_PORT" value="5432"/>
+<env name="DB_DATABASE" value="testing"/>
+<env name="DB_USERNAME" value="sail"/>
+<env name="DB_PASSWORD" value="password"/>
+```
+
+**この規約に違反した場合は即座に指摘し、修正すること**
+
 **YOU MUST**:
 
 - PR マージ前にコードレビューを 2 名以上から取得

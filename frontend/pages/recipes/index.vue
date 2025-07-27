@@ -7,6 +7,15 @@
       </v-btn>
       <h1 class="page-title">レシピ一覧</h1>
       <div class="header-actions">
+        <v-btn
+          icon
+          variant="text"
+          class="ai-generate-btn"
+          :title="'AI レシピ生成'"
+          @click="goToAIGenerate"
+        >
+          <v-icon>mdi-robot-excited</v-icon>
+        </v-btn>
         <v-btn icon variant="text" class="search-btn" @click="toggleSearch">
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
@@ -209,6 +218,10 @@ const goBack = () => {
   navigateTo('/')
 }
 
+const goToAIGenerate = () => {
+  navigateTo('/recipes/generate')
+}
+
 const toggleSearch = () => {
   showSearch.value = !showSearch.value
   if (!showSearch.value) {
@@ -280,6 +293,10 @@ useHead({
 .header-actions {
   display: flex;
   gap: 8px;
+}
+
+.ai-generate-btn {
+  color: #4caf50;
 }
 
 .search-btn {

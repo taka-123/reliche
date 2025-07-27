@@ -165,6 +165,6 @@ test('allows creation in test environment without API key', function () {
 
     // テスト環境では API キーなしでもサービス作成可能
     $service = new AIRecipeGeneratorService;
-    
+
     expect($service)->toBeInstanceOf(AIRecipeGeneratorService::class);
 });

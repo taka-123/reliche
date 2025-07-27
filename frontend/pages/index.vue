@@ -29,8 +29,20 @@
       </div>
     </div>
 
-    <!-- レシピを探すボタン -->
+    <!-- アクションボタン -->
     <div class="action-section">
+      <v-btn
+        color="secondary"
+        variant="outlined"
+        size="large"
+        class="ai-generate-btn"
+        block
+        @click="goToAIGenerate"
+      >
+        <v-icon left>mdi-robot-excited</v-icon>
+        AIでレシピ生成
+      </v-btn>
+
       <v-btn
         color="primary"
         size="large"
@@ -65,6 +77,11 @@ const removeIngredient = (ingredientId: number) => {
 const searchRecipes = async () => {
   // レシピ検索ページに遷移（食材選択の有無に関わらず）
   await navigateTo('/recipes')
+}
+
+const goToAIGenerate = async () => {
+  // AI レシピ生成ページに遷移
+  await navigateTo('/recipes/generate')
 }
 
 // SEOとメタデータ
@@ -162,6 +179,19 @@ useHead({
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   z-index: 9999;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-generate-btn {
+  height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+  border-radius: 8px;
+  border-color: #4caf50;
+  color: #4caf50;
 }
 
 .search-recipes-btn {

@@ -308,7 +308,7 @@ const register = async (): Promise<void> => {
       errorMessage.value = result.message || '登録に失敗しました'
     }
   } catch (error: unknown) {
-    console.error('Registration error:', error)
+    // エラーログは適切にスローまたはトーストで表示
 
     // 型安全なエラーハンドリング
     if (error && typeof error === 'object' && 'response' in error) {

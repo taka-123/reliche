@@ -254,9 +254,7 @@ const handleFavoriteRemoved = (recipeId: number) => {
 
 const handleError = (message: string) => {
   // エラーは useFavorites の error state で管理される
-  if (process.env.NODE_ENV === 'development') {
-    console.error('お気に入り操作エラー:', message)
-  }
+  // エラーは useFavorites の error state で管理される
 }
 
 // SEO設定

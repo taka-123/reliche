@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AIRecipeController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\API\RecipeController;
@@ -24,6 +25,16 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
     Route::get('me', [AuthController::class, 'me'])->name('me');
+});
+
+// AIレシピ生成関連のルート（異なるパスで先に定義）
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'ai-recipes',
+], function ($router) {
+    Route::post('generate', [AIRecipeController::class, 'generate'])->name('ai-recipes.generate');
+    Route::post('generate/ingredients', [AIRecipeController::class, 'generateByIngredients'])->name('ai-recipes.generate-by-ingredients');
+    Route::post('generate/constraints', [AIRecipeController::class, 'generateWithConstraints'])->name('ai-recipes.generate-with-constraints');
 });
 
 // レシピ関連のルート
