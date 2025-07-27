@@ -80,7 +80,7 @@ reliche - Laravel + Nuxt.js フルスタック Web アプリケーション。AP
 
 - **Docker Compose**: Laravel, Nuxt, PostgreSQL, pgAdmin を含む完全な開発スタック
 - **ローカル開発**: Docker なしで Laravel と Nuxt を個別に実行可能
-- **データベース**: PostgreSQL 17 (Docker) または SQLite (ローカル開発)
+- **データベース**: PostgreSQL 17 (Docker)
 - **AI コードレビュー**: Code Rabbit によるプルリクエスト自動レビュー
 
 ## 開発規約
@@ -90,20 +90,22 @@ reliche - Laravel + Nuxt.js フルスタック Web アプリケーション。AP
 - パスワードや API キーをハードコーディングしない
 - マイグレーションファイルを直接編集しない
 - 本番環境で debug モードを有効にしない
-- **絶対にデータベース設定を勝手にSQLiteに変更しない（本番と合わせてPostgreSQLを維持）**
+- **絶対にデータベース設定を勝手に SQLite に変更しない（本番と合わせて PostgreSQL を維持）**
 
 ## 🚨 データベース設定に関する絶対禁止事項
 
 ### Claude は以下を絶対に行ってはならない：
 
 1. **SQLite への変更を提案・実行すること**
+
    - テストが失敗しても SQLite に逃げない
    - 「手っ取り早く」という理由での変更は厳禁
    - phpunit.xml で DB_CONNECTION=sqlite に変更することは禁止
 
 2. **本番環境との一貫性を破ること**
+
    - 本番が PostgreSQL なら開発・テストも PostgreSQL
-   - データ型・制約・SQL方言の違いによる本番エラーを防ぐ
+   - データ型・制約・SQL 方言の違いによる本番エラーを防ぐ
 
 3. **テスト失敗時の安易な解決策**
    - PostgreSQL 接続エラー → Docker コンテナ起動を確認
@@ -228,7 +230,7 @@ npm run lint:css:fix             # stylelint自動修正
 - **ローカル**: PostgreSQL（本番環境と合わせるため）
 - **管理ツール**: pgAdmin (http://localhost:5050)
 
-**重要**: ローカル開発でもPostgreSQLを使用し、本番環境との一貫性を保つこと
+**重要**: ローカル開発でも PostgreSQL を使用し、本番環境との一貫性を保つこと
 
 ### 接続情報（Docker）
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Recipe;
+use App\Models\User;
 
 class Ingredient extends Model
 {
@@ -11,8 +13,12 @@ class Ingredient extends Model
 
     protected $fillable = [
         'name',
+    ];
+
+    protected $guarded = [
         'created_by',
         'updated_by',
+        'deleted_by',
     ];
 
     public function recipes()
@@ -44,21 +50,24 @@ class Ingredient extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            if (auth()->check()) {
-                $model->created_by = auth()->id();
+            $userId = optional(auth()->user())->id;
+            if ($userId) {
+                $model->created_by = $userId;
             }
         });
 
         static::updating(function ($model) {
-            if (auth()->check()) {
-                $model->updated_by = auth()->id();
+            $userId = optional(auth()->user())->id;
+            if ($userId) {
+                $model->updated_by = $userId;
             }
         });
 
         static::deleting(function ($model) {
-            if (auth()->check()) {
-                $model->deleted_by = auth()->id();
-                $model->save();
+            $userId = optional(auth()->user())->id;
+            if ($userId) {
+                $model->deleted_by = $userId;
+                $model->saveQuietly(); // イベントを発生させずに保存
             }
         });
     }

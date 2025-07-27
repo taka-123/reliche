@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="recipe-title-section">
-        <h1 class="page-title" :title="recipe?.name">
+        <h1 class="page-title" :title="escapeHtml(recipe?.name)">
           {{ recipe?.name || 'レシピ詳細' }}
         </h1>
       </div>
@@ -154,12 +154,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useRecipeApi } from '~/composables/useRecipeApi'
 import { useIngredientsStore } from '~/stores/ingredients'
 import { useRecipesStore } from '~/stores/recipes'
-import { useRecipeApi } from '~/composables/useRecipeApi'
-import type { RecipeDetail } from '~/types/recipe'
 
 const route = useRoute()
 const recipeId = route.params.id as string

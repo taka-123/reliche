@@ -1,8 +1,9 @@
 // plugins/vuetify.ts
+import { defineNuxtPlugin } from '#app'
 import { createVuetify } from 'vuetify'
+import { md3 } from 'vuetify/blueprints'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { md3 } from 'vuetify/blueprints'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
@@ -57,13 +58,34 @@ export default defineNuxtPlugin((nuxtApp) => {
           dark: true,
           colors: {
             primary: '#4caf50',
+            'on-primary': '#1b5e20',
+            'primary-container': '#2e7d32',
+            'on-primary-container': '#c8e6c9',
             secondary: '#66bb6a',
-            accent: '#ffb74d',
+            'on-secondary': '#1b5e20',
+            'secondary-container': '#388e3c',
+            'on-secondary-container': '#c8e6c9',
+            tertiary: '#81c784',
+            'on-tertiary': '#1b5e20',
+            'tertiary-container': '#2e7d32',
+            'on-tertiary-container': '#e8f5e8',
             error: '#f44336',
-            warning: '#ff9800',
-            info: '#2e7d32',
-            success: '#4caf50',
-            background: '#1b5e20',
+            'on-error': '#ffffff',
+            'error-container': '#d32f2f',
+            'on-error-container': '#ffcdd2',
+            background: '#0d1b0f',
+            'on-background': '#e8f5e8',
+            surface: '#1a1c18',
+            'on-surface': '#e8f5e8',
+            'surface-variant': '#424242',
+            'on-surface-variant': '#c4c7c5',
+            outline: '#757575',
+            'outline-variant': '#424242',
+            shadow: '#000000',
+            scrim: '#000000',
+            'inverse-surface': '#e8f5e8',
+            'inverse-on-surface': '#1a1c18',
+            'inverse-primary': '#2e7d32',
           },
         },
       },

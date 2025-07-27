@@ -184,7 +184,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useFavorites } from '~/composables/useFavorites'
 
 definePageMeta({
@@ -253,8 +253,8 @@ const handleFavoriteRemoved = (recipeId: number) => {
 }
 
 const handleError = (message: string) => {
-  // エラーは useFavorites の error state で管理される
-  // エラーは useFavorites の error state で管理される
+  // FavoriteButtonからのエラーを適切に処理
+  // エラーログは適切にスローまたはトーストで表示
 }
 
 // SEO設定
