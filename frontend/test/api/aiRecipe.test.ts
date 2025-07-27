@@ -1,18 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockPost } from '../setup'
+import { useRecipeApi } from '~/composables/useRecipeApi'
 import type { AIRecipeResponse } from '~/types/aiRecipe'
-
-// useApi composableをモック
-const mockPost = vi.fn()
-vi.mock('~/composables/useApi', () => ({
-  default: () => ({
-    post: mockPost,
-  }),
-  useApi: () => ({
-    post: mockPost,
-  }),
-}))
-
-// useRecipeApiをテスト用にインポート
 
 describe('AI Recipe API', () => {
   beforeEach(() => {
@@ -21,8 +10,6 @@ describe('AI Recipe API', () => {
 
   describe('generateBasicRecipe', () => {
     it('基本レシピ生成APIを正しく呼び出す', async () => {
-      // useRecipeApiを動的にインポート
-      const { useRecipeApi } = await import('~/composables/useRecipeApi')
       const mockResponse: AIRecipeResponse = {
         success: true,
         data: {
@@ -217,23 +204,23 @@ describe('AI Recipe API', () => {
     })
   })
 
-  describe('HTTP Path Validation', () => {
-    it('正しいAPIパスを使用している', async () => {
+  describe('HTTP Endpoint Validation', () => {
+    it('各メソッドが正しいAPIエンドポイントを呼び出す', async () => {
       const mockResponse: AIRecipeResponse = {
         success: true,
         data: {
           recipe: {
-            title: 'パステスト',
-            cooking_time: 10,
-            servings: 1,
-            calories: 200,
+            title: 'エンドポイントテスト',
+            cooking_time: 20,
+            servings: 2,
+            calories: 300,
             tags: ['テスト'],
             category: 'テスト',
-            instructions: ['テスト'],
+            instructions: ['手順1'],
           },
           recipe_ingredients: [],
         },
-        message: 'テスト成功',
+        message: 'エンドポイントテスト成功',
       }
 
       mockPost.mockResolvedValue({ data: mockResponse })
@@ -244,42 +231,32 @@ describe('AI Recipe API', () => {
         generateRecipeWithConstraints,
       } = useRecipeApi()
 
-      // 基本生成
-      await generateBasicRecipe()
-      expect(mockPost).toHaveBeenCalledWith('/ai-recipes/generate', {})
+      // 基本レシピ生成エンドポイント確認
+      await generateBasicRecipe({ category: 'テスト' })
+      expect(mockPost).toHaveBeenCalledWith('/ai-recipes/generate', {
+        category: 'テスト',
+      })
 
-      // 食材指定
-      await generateRecipeByIngredients({ ingredients: ['test'] })
+      // 食材指定レシピ生成エンドポイント確認
+      await generateRecipeByIngredients({ ingredients: ['テスト食材'] })
       expect(mockPost).toHaveBeenCalledWith(
         '/ai-recipes/generate/ingredients',
         {
-          ingredients: ['test'],
+          ingredients: ['テスト食材'],
         }
       )
 
-      // 制約条件
-      await generateRecipeWithConstraints()
+      // 制約条件付きレシピ生成エンドポイント確認
+      await generateRecipeWithConstraints({ max_time: 15 })
       expect(mockPost).toHaveBeenCalledWith(
         '/ai-recipes/generate/constraints',
-        {}
+        {
+          max_time: 15,
+        }
       )
 
-      // 正しいパスが使用されていることを確認
+      // 各エンドポイントが1回ずつ呼び出されていることを確認
       expect(mockPost).toHaveBeenCalledTimes(3)
-
-      // 古い間違ったパスが使用されていないことを確認
-      expect(mockPost).not.toHaveBeenCalledWith(
-        '/recipes/generate',
-        expect.any(Object)
-      )
-      expect(mockPost).not.toHaveBeenCalledWith(
-        '/recipes/generate/ingredients',
-        expect.any(Object)
-      )
-      expect(mockPost).not.toHaveBeenCalledWith(
-        '/recipes/generate/constraints',
-        expect.any(Object)
-      )
     })
   })
 })
