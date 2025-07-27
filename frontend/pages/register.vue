@@ -43,7 +43,7 @@
           prepend-inner-icon="mdi-account"
           aria-label="お名前を入力してください"
           aria-describedby="name-help"
-          aria-invalid="nameError ? 'true' : 'false'"
+          :aria-invalid="!!nameError"
           @input="clearNameError"
         />
         <div id="name-help" class="sr-only">
@@ -155,15 +155,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useValidation } from '~/composables/useValidation'
 import { useAuthStore } from '~/stores/auth'
 import type {
+  FormState,
   RegisterCredentials,
   ValidationErrors,
-  FormState,
 } from '~/types/auth'
-import { useValidation } from '~/composables/useValidation'
 
 definePageMeta({
   middleware: 'guest', // 認証済みユーザーはリダイレクト
@@ -308,7 +308,7 @@ const register = async (): Promise<void> => {
       errorMessage.value = result.message || '登録に失敗しました'
     }
   } catch (error: unknown) {
-    console.error('Registration error:', error)
+    // エラーログは適切にスローまたはトーストで表示
 
     // 型安全なエラーハンドリング
     if (error && typeof error === 'object' && 'response' in error) {

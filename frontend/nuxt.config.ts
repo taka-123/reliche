@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   typescript: {
     strict: false,
     typeCheck: false,
-    shim: false,
+    shim: true,
   },
   runtimeConfig: {
     public: {

@@ -18,8 +18,6 @@ class Recipe extends Model
         'tags',
         'category',
         'source',
-        'created_by',
-        'updated_by',
     ];
 
     protected $casts = [

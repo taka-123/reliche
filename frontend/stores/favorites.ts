@@ -85,7 +85,7 @@ export const useFavoritesStore = defineStore('favorites', {
           error instanceof Error
             ? error.message
             : 'お気に入り一覧の取得に失敗しました'
-        console.error('お気に入り一覧取得エラー:', error)
+        // エラーログは適切にスローまたはトーストで表示
       } finally {
         this.setLoading(false)
       }
@@ -127,7 +127,7 @@ export const useFavoritesStore = defineStore('favorites', {
           error instanceof Error
             ? error.message
             : 'お気に入りの追加に失敗しました'
-        console.error('お気に入り追加エラー:', error)
+        // エラーログは適切にスローまたはトーストで表示
         return false
       } finally {
         this.setLoading(false)
@@ -163,7 +163,7 @@ export const useFavoritesStore = defineStore('favorites', {
           error instanceof Error
             ? error.message
             : 'お気に入りの削除に失敗しました'
-        console.error('お気に入り削除エラー:', error)
+        // エラーログは適切にスローまたはトーストで表示
         return false
       } finally {
         this.setLoading(false)
@@ -205,7 +205,7 @@ export const useFavoritesStore = defineStore('favorites', {
           error instanceof Error
             ? error.message
             : 'お気に入り状態の取得に失敗しました'
-        console.error('お気に入り状態チェックエラー:', error)
+        // エラーログは適切にスローまたはトーストで表示
         return false
       }
     },

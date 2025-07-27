@@ -1,7 +1,7 @@
 import type {
-  ValidationRules,
-  ValidationRule,
   ValidationErrors,
+  ValidationRule,
+  ValidationRules,
 } from '~/types/auth'
 
 // 強化されたメールバリデーション（RFC 5322準拠）
@@ -10,7 +10,7 @@ const emailRegex =
 
 // パスワード強度チェック（最低8文字、大文字・小文字・数字・特殊文字を含む）
 const strongPasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 // バリデーションルール定義
 export const registerValidationRules: ValidationRules = {

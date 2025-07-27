@@ -111,10 +111,10 @@ class RecipeController extends Controller
     private function validateIngredientIds($userIngredientIds)
     {
         if (! is_array($userIngredientIds)) {
-            return response()->json([
+            abort(422, [
                 'success' => false,
                 'message' => 'ingredient_idsは配列である必要があります。',
-            ], 422);
+            ]);
         }
 
         if (! empty($userIngredientIds)) {

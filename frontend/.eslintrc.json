@@ -18,6 +18,7 @@
   "plugins": [],
   "settings": {
     "import/resolver": {
+      "node": true,
       "typescript": false
     }
   },
