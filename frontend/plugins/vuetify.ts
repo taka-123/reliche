@@ -1,9 +1,9 @@
 // plugins/vuetify.ts
-import { defineNuxtPlugin } from '#app'
 import { createVuetify } from 'vuetify'
 import { md3 } from 'vuetify/blueprints'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({

@@ -32,6 +32,31 @@ class Recipe extends Model
             ->withTimestamps();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(RecipeReview::class);
+    }
+
+    public function media()
+    {
+        return $this->hasMany(RecipeMedia::class);
+    }
+
+    public function approvedMedia()
+    {
+        return $this->hasMany(RecipeMedia::class)->approved();
+    }
+
+    public function images()
+    {
+        return $this->hasMany(RecipeMedia::class)->images()->approved();
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(RecipeMedia::class)->videos()->approved();
+    }
+
     public function scopeAiGenerated($query)
     {
         return $query->where('source', 'ai_generated');
@@ -55,6 +80,53 @@ class Recipe extends Model
     public function getCaloriesPerServingAttribute()
     {
         return $this->calories ? round($this->calories / max($this->servings, 1)) : null;
+    }
+
+    // 評価関連アクセサ
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->count();
+    }
+
+    public function getAverageTasteScoreAttribute()
+    {
+        return $this->reviews()->whereNotNull('taste_score')->avg('taste_score') ?? 0;
+    }
+
+    public function getAverageDifficultyScoreAttribute()
+    {
+        return $this->reviews()->whereNotNull('difficulty_score')->avg('difficulty_score') ?? 0;
+    }
+
+    public function getAverageInstructionClarityAttribute()
+    {
+        return $this->reviews()->whereNotNull('instruction_clarity')->avg('instruction_clarity') ?? 0;
+    }
+
+    // 評価関連スコープ
+    public function scopeHighRated($query, $minRating = 4.0)
+    {
+        return $query->whereHas('reviews', function ($q) use ($minRating) {
+            $q->havingRaw('AVG(rating) >= ?', [$minRating]);
+        });
+    }
+
+    public function scopeLowRated($query, $maxRating = 3.0)
+    {
+        return $query->whereHas('reviews', function ($q) use ($maxRating) {
+            $q->havingRaw('AVG(rating) <= ?', [$maxRating]);
+        });
+    }
+
+    // 品質管理用メソッド
+    public function isLowQuality($threshold = 3.0, $minReviews = 3)
+    {
+        return $this->review_count >= $minReviews && $this->average_rating <= $threshold;
     }
 
     // 監査ログ関係のリレーション

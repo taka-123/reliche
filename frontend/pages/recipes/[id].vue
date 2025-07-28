@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="recipe-title-section">
-        <h1 class="page-title" :title="escapeHtml(recipe?.name)">
+        <h1 class="page-title" :title="recipe?.name || 'レシピ詳細'">
           {{ recipe?.name || 'レシピ詳細' }}
         </h1>
       </div>
@@ -149,7 +149,74 @@
           />
         </div>
       </div>
+
+      <!-- メディアギャラリーセクション -->
+      <div class="media-section">
+        <MediaGallery :recipe-id="parseInt(recipeId)" />
+      </div>
+
+      <!-- レビューセクション -->
+      <div class="reviews-section">
+        <ReviewList
+          :reviews="reviews"
+          :statistics="reviewStatistics"
+          :meta="reviewMeta"
+          :is-loading="isLoadingReviews"
+          :can-write-review="canWriteReview"
+          :current-user-id="currentUser?.id"
+          @write-review="openReviewForm"
+          @edit-review="editReview"
+          @delete-review="deleteReview"
+          @page-change="loadReviews"
+        />
+      </div>
     </div>
+
+    <!-- レビューフォームダイアログ -->
+    <v-dialog v-model="showReviewForm" max-width="600px" persistent>
+      <ReviewForm
+        :recipe-id="recipeId"
+        :existing-review="editingReview"
+        @success="onReviewSuccess"
+        @cancel="closeReviewForm"
+        @error="onReviewError"
+      />
+    </v-dialog>
+
+    <!-- 削除確認ダイアログ -->
+    <v-dialog v-model="showDeleteDialog" max-width="400px">
+      <v-card>
+        <v-card-title class="delete-title">
+          <v-icon color="error" class="mr-2">mdi-alert</v-icon>
+          レビューを削除
+        </v-card-title>
+        <v-card-text>
+          <p>このレビューを削除しますか？</p>
+          <p class="delete-warning">この操作は取り消すことができません。</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="outlined" @click="showDeleteDialog = false">
+            キャンセル
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            color="error"
+            :loading="isDeletingReview"
+            @click="confirmDeleteReview"
+          >
+            削除する
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- スナックバー -->
+    <v-snackbar v-model="showSnackbar" :color="snackbarColor" timeout="4000">
+      {{ snackbarMessage }}
+      <template #actions>
+        <v-btn variant="text" @click="showSnackbar = false"> 閉じる </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -157,15 +224,27 @@
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRecipeApi } from '~/composables/useRecipeApi'
+import { useReviewApi } from '~/composables/useReviewApi'
 import { useIngredientsStore } from '~/stores/ingredients'
 import { useRecipesStore } from '~/stores/recipes'
+import { useAuthStore } from '~/stores/auth'
+import type { RecipeReview, ReviewStatistics } from '~/types/review'
+import ReviewList from '~/components/ReviewList.vue'
+import ReviewForm from '~/components/ReviewForm.vue'
+import MediaGallery from '~/components/MediaGallery.vue'
 
 const route = useRoute()
 const recipeId = route.params.id as string
 
 const ingredientsStore = useIngredientsStore()
 const recipesStore = useRecipesStore()
+const authStore = useAuthStore()
 const { getRecipeDetail } = useRecipeApi()
+const {
+  getReviews,
+  getStatistics,
+  deleteReview: deleteReviewApi,
+} = useReviewApi()
 
 const { selectedIngredientIds } = storeToRefs(ingredientsStore)
 const {
@@ -176,9 +255,36 @@ const {
   totalStepsCount,
   progressPercentage,
 } = storeToRefs(recipesStore)
+const { currentUser, isAuthenticated } = storeToRefs(authStore)
 
 const recipe = computed(() => currentRecipe.value)
 const isLoading = ref(true)
+
+// レビュー関連の状態
+const reviews = ref<RecipeReview[]>([])
+const reviewStatistics = ref<ReviewStatistics | null>(null)
+const reviewMeta = ref<{
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+} | null>(null)
+const isLoadingReviews = ref(false)
+const showReviewForm = ref(false)
+const showDeleteDialog = ref(false)
+const editingReview = ref<RecipeReview | undefined>(undefined)
+const deletingReview = ref<RecipeReview | null>(null)
+const isDeletingReview = ref(false)
+
+// スナックバー
+const showSnackbar = ref(false)
+const snackbarMessage = ref('')
+const snackbarColor = ref<'success' | 'error'>('success')
+
+// レビュー機能の権限チェック
+const canWriteReview = computed(() => {
+  return isAuthenticated.value && recipe.value
+})
 
 const isIngredientAvailable = (ingredientId: number) => {
   return selectedIngredientIds.value.includes(ingredientId)
@@ -219,6 +325,97 @@ const fetchRecipe = async () => {
   }
 }
 
+// レビュー一覧と統計の読み込み
+const loadReviews = async (page = 1) => {
+  isLoadingReviews.value = true
+
+  try {
+    const [reviewsData, statisticsData] = await Promise.all([
+      getReviews(recipeId, page),
+      getStatistics(recipeId),
+    ])
+
+    reviews.value = reviewsData.data
+    reviewMeta.value = reviewsData.meta
+    reviewStatistics.value = statisticsData
+  } catch (error) {
+    const config = useRuntimeConfig()
+    const isDevelopment = config.public.appEnv === 'development'
+    if (isDevelopment) {
+      // eslint-disable-next-line no-console
+      console.error('レビュー取得エラー:', error)
+    }
+    showMessage('レビューの読み込みに失敗しました', 'error')
+  } finally {
+    isLoadingReviews.value = false
+  }
+}
+
+// レビューフォーム関連
+const openReviewForm = () => {
+  editingReview.value = undefined
+  showReviewForm.value = true
+}
+
+const editReview = (review: RecipeReview) => {
+  editingReview.value = review
+  showReviewForm.value = true
+}
+
+const closeReviewForm = () => {
+  showReviewForm.value = false
+  editingReview.value = undefined
+}
+
+const onReviewSuccess = (review: RecipeReview) => {
+  closeReviewForm()
+  showMessage(
+    editingReview.value ? 'レビューを更新しました' : 'レビューを投稿しました',
+    'success'
+  )
+  loadReviews() // レビュー一覧を再読み込み
+}
+
+const onReviewError = (error: string) => {
+  showMessage(error, 'error')
+}
+
+// レビュー削除
+const deleteReview = (review: RecipeReview) => {
+  deletingReview.value = review
+  showDeleteDialog.value = true
+}
+
+const confirmDeleteReview = async () => {
+  if (!deletingReview.value) return
+
+  isDeletingReview.value = true
+
+  try {
+    await deleteReviewApi(recipeId, deletingReview.value.id)
+    showMessage('レビューを削除しました', 'success')
+    loadReviews() // レビュー一覧を再読み込み
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'レビューの削除に失敗しました'
+    showMessage(errorMessage, 'error')
+  } finally {
+    isDeletingReview.value = false
+    showDeleteDialog.value = false
+    deletingReview.value = null
+  }
+}
+
+// スナックバーメッセージ表示
+const showMessage = (
+  message: string,
+  color: 'success' | 'error' = 'success'
+) => {
+  snackbarMessage.value = message
+  snackbarColor.value = color
+  showSnackbar.value = true
+}
+
 const goBack = () => {
   history.back()
 }
@@ -252,8 +449,9 @@ const shareRecipe = async () => {
   }
 }
 
-onMounted(() => {
-  fetchRecipe()
+onMounted(async () => {
+  await fetchRecipe()
+  await loadReviews()
 })
 
 onUnmounted(() => {
@@ -531,6 +729,15 @@ useHead({
   background: white;
   border-radius: 12px;
   padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.media-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -544,6 +751,26 @@ useHead({
   flex: 1;
   font-size: 16px;
   color: #333;
+}
+
+.reviews-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-title {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+}
+
+.delete-warning {
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
 /* タブレット・デスクトップ対応 */

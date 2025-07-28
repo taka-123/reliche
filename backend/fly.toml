@@ -4,7 +4,7 @@
 #
 # 注意: このファイルを使用する前に、app名を任意のユニークな名前に変更してください
 
-app = 'your-app-name-backend'  # ← ユニークなアプリ名に変更してください
+app = 'reliche-backend'
 primary_region = 'nrt'
 kill_signal = 'SIGINT'
 kill_timeout = '5s'
