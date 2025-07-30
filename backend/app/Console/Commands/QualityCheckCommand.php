@@ -141,7 +141,7 @@ class QualityCheckCommand extends Command
             return;
         }
 
-        $this->warn('⚠️  低品質レシピ一覧:');
+        $this->warn('⚠️ 低品質レシピ一覧:');
         $this->newLine();
 
         $tableData = [];

@@ -38,11 +38,11 @@ export interface ReviewStatistics {
 
 export interface CreateReviewRequest {
   rating: number
-  taste_score?: number
-  difficulty_score?: number
-  instruction_clarity?: number
-  comment?: string
-  review_images?: string[]
+  taste_score?: number | null
+  difficulty_score?: number | null
+  instruction_clarity?: number | null
+  comment?: string | null
+  review_images?: string[] | null
 }
 
 export interface UpdateReviewRequest extends CreateReviewRequest {}

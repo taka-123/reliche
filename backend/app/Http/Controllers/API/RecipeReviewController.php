@@ -71,16 +71,25 @@ class RecipeReviewController extends Controller
             'review_images.*' => 'string|url',
         ]);
 
-        // 既存のレビューチェック（1ユーザー1レシピ1レビュー）
-        $existingReview = RecipeReview::where('recipe_id', $recipe->id)
-            ->where('user_id', $userId)
-            ->first();
+        // 既存のレビューチェック（レースコンディション対策でロック）
+        try {
+            $existingReview = RecipeReview::where('recipe_id', $recipe->id)
+                ->where('user_id', $userId)
+                ->lockForUpdate()
+                ->first();
 
-        if ($existingReview) {
+            if ($existingReview) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'このレシピには既にレビューを投稿済みです。',
+                ], 422);
+            }
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'このレシピには既にレビューを投稿済みです。',
-            ], 422);
+                'message' => 'レビューの確認に失敗しました。',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
         }
 
         try {
@@ -274,32 +283,58 @@ class RecipeReviewController extends Controller
     }
 
     /**
-     * レシピの評価統計情報取得
+     * レシピの評価統計情報取得（精度向上）
      */
     public function statistics(Recipe $recipe)
     {
-        $reviews = $recipe->reviews();
+        try {
+            // 一度のクエリですべてのレビューデータを取得
+            $reviewsData = $recipe->reviews()
+                ->selectRaw('
+                    COUNT(*) as total_reviews,
+                    AVG(rating) as avg_rating,
+                    AVG(CASE WHEN taste_score IS NOT NULL THEN taste_score END) as avg_taste_score,
+                    AVG(CASE WHEN difficulty_score IS NOT NULL THEN difficulty_score END) as avg_difficulty_score,
+                    AVG(CASE WHEN instruction_clarity IS NOT NULL THEN instruction_clarity END) as avg_instruction_clarity
+                ')
+                ->first();
 
-        $stats = [
-            'total_reviews' => $reviews->count(),
-            'average_rating' => round($reviews->avg('rating') ?? 0, 1),
-            'average_taste_score' => round($reviews->whereNotNull('taste_score')->avg('taste_score') ?? 0, 1),
-            'average_difficulty_score' => round($reviews->whereNotNull('difficulty_score')->avg('difficulty_score') ?? 0, 1),
-            'average_instruction_clarity' => round($reviews->whereNotNull('instruction_clarity')->avg('instruction_clarity') ?? 0, 1),
-            'rating_distribution' => [],
-        ];
+            // 評価分布を取得
+            $ratingDistribution = $recipe->reviews()
+                ->selectRaw('rating, COUNT(*) as count')
+                ->groupBy('rating')
+                ->pluck('count', 'rating')
+                ->toArray();
 
-        // 評価分布を計算
-        for ($i = 1; $i <= 5; $i++) {
-            $count = $reviews->where('rating', $i)->count();
-            $stats['rating_distribution'][$i] = [
-                'count' => $count,
-                'percentage' => $stats['total_reviews'] > 0 ? round(($count / $stats['total_reviews']) * 100, 1) : 0,
+            $totalReviews = (int) $reviewsData->total_reviews;
+
+            $stats = [
+                'total_reviews' => $totalReviews,
+                'average_rating' => round($reviewsData->avg_rating ?? 0, 1),
+                'average_taste_score' => round($reviewsData->avg_taste_score ?? 0, 1),
+                'average_difficulty_score' => round($reviewsData->avg_difficulty_score ?? 0, 1),
+                'average_instruction_clarity' => round($reviewsData->avg_instruction_clarity ?? 0, 1),
+                'rating_distribution' => [],
             ];
-        }
 
-        return response()->json([
-            'data' => $stats,
-        ]);
+            // 評価分布を整形（1-5すべての評価を含める）
+            for ($i = 1; $i <= 5; $i++) {
+                $count = $ratingDistribution[$i] ?? 0;
+                $stats['rating_distribution'][$i] = [
+                    'count' => $count,
+                    'percentage' => $totalReviews > 0 ? round(($count / $totalReviews) * 100, 1) : 0,
+                ];
+            }
+
+            return response()->json([
+                'data' => $stats,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '統計情報の取得に失敗しました。',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
     }
 }
