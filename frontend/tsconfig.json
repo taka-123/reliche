@@ -36,6 +36,7 @@
   ],
   "include": [
     "./types/**/*.d.ts",
+    "./test/types.d.ts",
     "./env.d.ts",
     "./shims-vue.d.ts",
     "./**/*.vue",

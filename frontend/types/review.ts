@@ -5,6 +5,8 @@ export interface User {
 
 export interface RecipeReview {
   id: number
+  recipe_id: number
+  user_id: number
   rating: number
   taste_score?: number
   difficulty_score?: number

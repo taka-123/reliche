@@ -1,24 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { createVuetify } from 'vuetify'
 import ReviewForm from '~/components/ReviewForm.vue'
 import type { RecipeReview } from '~/types/review'
 
-// Vuetifyのモック
-vi.mock('vuetify', () => ({
-  createVuetify: () => ({}),
-}))
+// Create Vuetify instance for tests
+const vuetify = createVuetify()
 
-// useReviewApiのモック
+// Mock external composables (setup.ts will handle these globally, but adding local fallbacks)
 const mockCreateReview = vi.fn()
 const mockUpdateReview = vi.fn()
-
-vi.mock('~/composables/useReviewApi', () => ({
-  useReviewApi: () => ({
-    createReview: mockCreateReview,
-    updateReview: mockUpdateReview,
-  }),
-}))
 
 describe('ReviewForm', () => {
   const defaultProps = {
@@ -44,14 +35,22 @@ describe('ReviewForm', () => {
     updated_at: '2025-01-27T10:00:00Z',
   }
 
+  // Helper function to create wrapper with Vuetify
+  const createWrapper = (props = {}) => {
+    return mount(ReviewForm, {
+      props: { ...defaultProps, ...props },
+      global: {
+        plugins: [vuetify],
+      },
+    })
+  }
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   it('新規レビュー投稿フォームが正しく表示される', () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     expect(wrapper.find('.form-title').text()).toContain('レビューを投稿')
     expect(wrapper.find('.rating-section').exists()).toBe(true)
@@ -60,11 +59,8 @@ describe('ReviewForm', () => {
   })
 
   it('編集モードで既存データが正しく設定される', async () => {
-    const wrapper = mount(ReviewForm, {
-      props: {
-        ...defaultProps,
-        existingReview: mockExistingReview,
-      },
+    const wrapper = createWrapper({
+      existingReview: mockExistingReview,
     })
 
     await nextTick()
@@ -77,9 +73,7 @@ describe('ReviewForm', () => {
   })
 
   it('評価テキストが正しく表示される', () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     // 各評価値に対応するテキストをテスト
     expect(wrapper.vm.getRatingText(0)).toBe('')
@@ -91,9 +85,7 @@ describe('ReviewForm', () => {
   })
 
   it('画像URLの追加と削除が正しく動作する', () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     // 画像URL追加
     wrapper.vm.imageUrl = 'https://example.com/test.jpg'
@@ -110,9 +102,7 @@ describe('ReviewForm', () => {
   })
 
   it('画像URLの上限が正しく制御される', () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     // 5つの画像URLを追加
     for (let i = 1; i <= 6; i++) {
@@ -125,9 +115,7 @@ describe('ReviewForm', () => {
   })
 
   it('バリデーションルールが正しく動作する', () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     // 評価のバリデーション
     expect(wrapper.vm.rules.rating(0)).toBe('評価を選択してください')
@@ -145,9 +133,7 @@ describe('ReviewForm', () => {
     const mockReview = { ...mockExistingReview, id: 2 }
     mockCreateReview.mockResolvedValue(mockReview)
 
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     // フォームデータを設定
     wrapper.vm.formData = {
@@ -175,11 +161,8 @@ describe('ReviewForm', () => {
     }
     mockUpdateReview.mockResolvedValue(updatedReview)
 
-    const wrapper = mount(ReviewForm, {
-      props: {
-        ...defaultProps,
-        existingReview: mockExistingReview,
-      },
+    const wrapper = createWrapper({
+      existingReview: mockExistingReview,
     })
 
     // フォームデータを設定
@@ -205,9 +188,7 @@ describe('ReviewForm', () => {
     const errorMessage = 'ネットワークエラー'
     mockCreateReview.mockRejectedValue(new Error(errorMessage))
 
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     wrapper.vm.formData = {
       rating: 4,
@@ -222,9 +203,7 @@ describe('ReviewForm', () => {
   })
 
   it('キャンセルボタンが正しく動作する', async () => {
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     await wrapper.find('button:contains("キャンセル")').trigger('click')
 
@@ -239,9 +218,7 @@ describe('ReviewForm', () => {
         )
     )
 
-    const wrapper = mount(ReviewForm, {
-      props: defaultProps,
-    })
+    const wrapper = createWrapper()
 
     wrapper.vm.formData = {
       rating: 4,

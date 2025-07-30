@@ -8,13 +8,23 @@ export default defineConfig({
     environment: 'happy-dom',
     globals: true,
     setupFiles: ['./test/setup.ts'],
+    typecheck: {
+      tsconfig: './tsconfig.json',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './coverage',
     },
     include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
-    exclude: ['node_modules', 'dist', '.nuxt', '.output'],
+    exclude: [
+      'node_modules',
+      'dist',
+      '.nuxt',
+      '.output',
+      '**/*.e2e.{js,ts}',
+      '**/e2e/**',
+    ],
   },
   resolve: {
     alias: {
@@ -22,4 +32,8 @@ export default defineConfig({
       '~': fileURLToPath(new URL('./', import.meta.url)),
     },
   },
+  define: {
+    'process.env': process.env,
+  },
+  assetsInclude: ['**/*.css'],
 })
