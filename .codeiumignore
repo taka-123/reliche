@@ -1,0 +1,27 @@
+# 秘密情報・認証関連
+.env*
+.env.local
+.env.*.local
+**/.env*
+**/config/database*
+**/config/auth*
+
+# 認証キー・トークン
+~/.ssh/*
+~/.aws/*
+~/.gcp/*
+**/*key*
+**/*token*
+**/*secret*
+**/*password*
+id_rsa
+id_ed25519
+.npmrc
+.pypirc
+
+# 大容量ディレクトリ（パフォーマンス向上）
+node_modules/
+vendor/
+dist/
+build/
+.git/
