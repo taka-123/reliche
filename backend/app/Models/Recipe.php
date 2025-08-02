@@ -82,30 +82,52 @@ class Recipe extends Model
         return $this->calories ? round($this->calories / max($this->servings, 1)) : null;
     }
 
-    // 評価関連アクセサ
+    // 評価関連アクセサ（N+1クエリ対策でキャッシュ対応）
     public function getAverageRatingAttribute()
     {
-        return $this->reviews()->avg('rating') ?? 0;
+        // 既にwithCountやwithAvgで取得済みの場合はそれを使用
+        if (isset($this->attributes['reviews_avg_rating'])) {
+            return round((float) $this->attributes['reviews_avg_rating'], 1);
+        }
+
+        return round($this->reviews()->avg('rating') ?? 0, 1);
     }
 
     public function getReviewCountAttribute()
     {
+        // 既にwithCountで取得済みの場合はそれを使用
+        if (isset($this->attributes['reviews_count'])) {
+            return (int) $this->attributes['reviews_count'];
+        }
+
         return $this->reviews()->count();
     }
 
     public function getAverageTasteScoreAttribute()
     {
-        return $this->reviews()->whereNotNull('taste_score')->avg('taste_score') ?? 0;
+        if (isset($this->attributes['reviews_avg_taste_score'])) {
+            return round((float) $this->attributes['reviews_avg_taste_score'], 1);
+        }
+
+        return round($this->reviews()->whereNotNull('taste_score')->avg('taste_score') ?? 0, 1);
     }
 
     public function getAverageDifficultyScoreAttribute()
     {
-        return $this->reviews()->whereNotNull('difficulty_score')->avg('difficulty_score') ?? 0;
+        if (isset($this->attributes['reviews_avg_difficulty_score'])) {
+            return round((float) $this->attributes['reviews_avg_difficulty_score'], 1);
+        }
+
+        return round($this->reviews()->whereNotNull('difficulty_score')->avg('difficulty_score') ?? 0, 1);
     }
 
     public function getAverageInstructionClarityAttribute()
     {
-        return $this->reviews()->whereNotNull('instruction_clarity')->avg('instruction_clarity') ?? 0;
+        if (isset($this->attributes['reviews_avg_instruction_clarity'])) {
+            return round((float) $this->attributes['reviews_avg_instruction_clarity'], 1);
+        }
+
+        return round($this->reviews()->whereNotNull('instruction_clarity')->avg('instruction_clarity') ?? 0, 1);
     }
 
     // 評価関連スコープ

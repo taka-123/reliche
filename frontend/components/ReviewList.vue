@@ -11,10 +11,10 @@
           <div class="overall-rating">
             <div class="rating-display">
               <span class="rating-number">{{
-                statistics.average_rating.toFixed(1)
+                statistics?.average_rating?.toFixed(1) || '0.0'
               }}</span>
               <v-rating
-                :model-value="statistics.average_rating"
+                :model-value="statistics?.average_rating || 0"
                 color="primary"
                 active-color="primary"
                 size="small"
@@ -23,7 +23,7 @@
                 density="compact"
               />
               <span class="review-count"
-                >（{{ statistics.total_reviews }}件のレビュー）</span
+                >（{{ statistics?.total_reviews || 0 }}件のレビュー）</span
               >
             </div>
           </div>

@@ -22,7 +22,7 @@ class RecipeReviewController extends Controller
     public function index(Recipe $recipe)
     {
         $reviews = $recipe->reviews()
-            ->with(['user:id,name', 'creator:id,name'])
+            ->with(['user:id,name'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

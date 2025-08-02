@@ -6,7 +6,6 @@ declare global {
   var useApi: () => any
   var useAuth: () => any
   var useReviewApi: () => any
-  var useMediaApi: () => any
 }
 
 export {}

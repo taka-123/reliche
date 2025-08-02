@@ -99,7 +99,10 @@ class QualityCheckCommand extends Command
 
         } catch (Exception $e) {
             $this->error('❌ 品質チェック失敗: '.$e->getMessage());
-            Log::error('Quality check failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Quality check failed', [
+                'error' => $e->getMessage(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : null,
+            ]);
 
             return Command::FAILURE;
         }

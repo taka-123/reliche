@@ -54,26 +54,5 @@ globalThis.useReviewApi = vi.fn(() => ({
   }),
 }))
 
-// Mock useMediaApi for test environment
-globalThis.useMediaApi = vi.fn(() => ({
-  getRecipeMedia: vi.fn().mockResolvedValue({
-    data: [],
-    meta: { current_page: 1, last_page: 1, per_page: 20, total: 0 },
-  }),
-  uploadMedia: vi.fn().mockResolvedValue({
-    message: 'Media uploaded successfully',
-    data: { id: 1, media_type: 'image' },
-  }),
-  updateMedia: vi.fn().mockResolvedValue({
-    data: { id: 1, description: 'Updated' },
-  }),
-  deleteMedia: vi.fn().mockResolvedValue({
-    message: 'Media deleted successfully',
-  }),
-  validateFileSize: vi.fn().mockReturnValue({ valid: true }),
-  validateFileType: vi.fn().mockReturnValue({ valid: true }),
-  getMediaTypeFromFile: vi.fn().mockReturnValue('image'),
-}))
-
 // Export mocks for use in tests
 export { mockDelete, mockGet, mockPost, mockPut }

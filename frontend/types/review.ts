@@ -45,7 +45,14 @@ export interface CreateReviewRequest {
   review_images?: string[] | null
 }
 
-export interface UpdateReviewRequest extends CreateReviewRequest {}
+export interface UpdateReviewRequest {
+  rating: number
+  taste_score?: number | null
+  difficulty_score?: number | null
+  instruction_clarity?: number | null
+  comment?: string | null
+  review_images?: string[] | null
+}
 
 export interface ReviewResponse {
   success: boolean

@@ -121,11 +121,11 @@ describe('ReviewList', () => {
   })
   it('レビュー投稿ボタンが条件に応じて表示される', () => {
     const wrapper = createWrapper()
-    
+
     // コンポーネントの初期状態確認
     expect(wrapper.vm).toBeTruthy()
     expect(wrapper.vm.canWriteReview).toBe(true)
-    
+
     // canWriteReviewがfalseの場合のテスト
     const wrapperNoButton = createWrapper({
       canWriteReview: false,
@@ -192,17 +192,17 @@ describe('ReviewList', () => {
     const formattedDate = wrapper.vm.formatDate('2025-01-27T10:00:00Z')
     expect(formattedDate).toBe('2025年1月27日')
   })
-  it('イベント発行が正しく動作する', async () => {
+  it('イベント発行が正しく動作する', () => {
     const wrapper = createWrapper()
-    
+
     // イベント発行テスト
     wrapper.vm.$emit('write-review')
     expect(wrapper.emitted('write-review')).toBeTruthy()
-    
+
     wrapper.vm.$emit('page-change', 2)
     expect(wrapper.emitted('page-change')).toBeTruthy()
     expect(wrapper.emitted('page-change')?.[0]?.[0]).toBe(2)
-    
+
     // レビュー関連のイベント
     wrapper.vm.$emit('edit-review', mockReviews[0])
     expect(wrapper.emitted('edit-review')).toBeTruthy()

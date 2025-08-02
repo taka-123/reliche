@@ -430,8 +430,6 @@ class AIRecipeGeneratorService
      */
     private function parseRecipeResponse(string $responseText): array
     {
-        // デバッグ用：APIレスポンスをログ出力
-        \Log::info('Gemini API Response:', ['response' => $responseText]);
 
         // JSONブロックを抽出
         preg_match('/\{.*\}/s', $responseText, $matches);

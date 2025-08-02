@@ -9,7 +9,6 @@ const vuetify = createVuetify()
 
 // Mock external composables (setup.ts will handle these globally, but adding local fallbacks)
 const mockCreateReview = vi.fn()
-const mockUpdateReview = vi.fn()
 
 describe('ReviewForm', () => {
   const defaultProps = {
@@ -54,9 +53,9 @@ describe('ReviewForm', () => {
 
     // コンポーネントが正しくマウントされている
     expect(wrapper.vm).toBeTruthy()
-    
+
     // 初期状態が正しく設定されている
-    expect(wrapper.vm.isEditing).toBe(false) 
+    expect(wrapper.vm.isEditing).toBe(false)
     expect(wrapper.vm.formData.rating).toBe(0)
     expect(wrapper.vm.formData.comment).toBe('')
   })
@@ -70,7 +69,7 @@ describe('ReviewForm', () => {
 
     // 編集モードが正しく設定されている
     expect(wrapper.vm.isEditing).toBe(true)
-    
+
     // 既存データがフォームに設定されている
     expect(wrapper.vm.formData.rating).toBe(mockExistingReview.rating)
     expect(wrapper.vm.formData.comment).toBe(mockExistingReview.comment)
@@ -133,7 +132,7 @@ describe('ReviewForm', () => {
     )
   })
 
-  it('新規レビュー投稿が正しく実行される', async () => {
+  it('新規レビュー投稿が正しく実行される', () => {
     const wrapper = createWrapper()
 
     // フォームデータを設定
@@ -146,9 +145,9 @@ describe('ReviewForm', () => {
       review_images: [],
     }
 
-    // submitReviewメソッドが呼び出せることを確認  
+    // submitReviewメソッドが呼び出せることを確認
     expect(typeof wrapper.vm.submitReview).toBe('function')
-    
+
     // フォームが有効状態であることを確認
     expect(wrapper.vm.formData.rating).toBe(4)
     expect(wrapper.vm.formData.comment).toBe('テストコメント')
@@ -163,32 +162,32 @@ describe('ReviewForm', () => {
 
     // 編集モードで初期化されている
     expect(wrapper.vm.isEditing).toBe(true)
-    
+
     // フォームデータが既存レビューで初期化されている
     expect(wrapper.vm.formData.rating).toBe(mockExistingReview.rating)
     expect(wrapper.vm.formData.comment).toBe(mockExistingReview.comment)
   })
 
-  it('エラーハンドリングが正しく動作する', async () => {
+  it('エラーハンドリングが正しく動作する', () => {
     const wrapper = createWrapper()
 
     // 送信状態の初期値確認
     expect(wrapper.vm.isSubmitting).toBe(false)
-    
+
     // フォームデータ設定確認
     wrapper.vm.formData.rating = 4
     wrapper.vm.formData.comment = 'テストコメント'
-    
+
     expect(wrapper.vm.formData.rating).toBe(4)
     expect(wrapper.vm.formData.comment).toBe('テストコメント')
   })
 
-  it('キャンセルボタンが正しく動作する', async () => {
+  it('キャンセルボタンが正しく動作する', () => {
     const wrapper = createWrapper()
 
     // キャンセルイベントを直接発行
     wrapper.vm.$emit('cancel')
-    
+
     expect(wrapper.emitted('cancel')).toBeTruthy()
   })
 
