@@ -150,11 +150,6 @@
         </div>
       </div>
 
-      <!-- メディアギャラリーセクション -->
-      <div class="media-section">
-        <MediaGallery :recipe-id="parseInt(recipeId)" />
-      </div>
-
       <!-- レビューセクション -->
       <div class="reviews-section">
         <ReviewList
@@ -231,7 +226,6 @@ import { useAuthStore } from '~/stores/auth'
 import type { RecipeReview, ReviewStatistics } from '~/types/review'
 import ReviewList from '~/components/ReviewList.vue'
 import ReviewForm from '~/components/ReviewForm.vue'
-import MediaGallery from '~/components/MediaGallery.vue'
 
 const route = useRoute()
 const recipeId = route.params.id as string
@@ -283,7 +277,7 @@ const snackbarColor = ref<'success' | 'error'>('success')
 
 // レビュー機能の権限チェック
 const canWriteReview = computed(() => {
-  return isAuthenticated.value && recipe.value
+  return Boolean(isAuthenticated.value && recipe.value)
 })
 
 const isIngredientAvailable = (ingredientId: number) => {
