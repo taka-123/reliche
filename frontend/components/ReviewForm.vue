@@ -185,9 +185,9 @@
 </template>
 
 <script setup lang="ts">
-// @ts-nocheck
-/* eslint-disable */
-// Nuxt 3のauto-importを使用し、TypeScriptエラーを無視
+// Nuxt 3のauto-importを使用
+// Nuxt 3のauto-importを使用（ref, computed, watchは自動インポート）
+import { ref, computed, watch } from '#imports'
 import type { CreateReviewRequest, RecipeReview } from '~/types/review'
 import { useReviewApi } from '~/composables/useReviewApi'
 
@@ -252,7 +252,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 // バリデーションルール
@@ -324,18 +324,21 @@ const submitReview = async () => {
       review = await updateReview(
         props.recipeId,
         props.existingReview.id,
-        form.value
+        form.value,
       )
-    } else {
+    }
+    else {
       review = await createReview(props.recipeId, form.value)
     }
 
     emit('success', review)
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : 'レビューの投稿に失敗しました'
+  }
+  catch (error: unknown) {
+    const errorMessage
+      = error instanceof Error ? error.message : 'レビューの投稿に失敗しました'
     emit('error', errorMessage)
-  } finally {
+  }
+  finally {
     isSubmitting.value = false
   }
 }

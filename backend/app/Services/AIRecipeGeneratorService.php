@@ -661,28 +661,62 @@ class AIRecipeGeneratorService
     private function downloadAndSaveImage(string $imageUrl, string $recipeName): ?string
     {
         try {
-            $imageResponse = Http::timeout(30)->get($imageUrl);
-            
+            // URL 検証
+            if (!filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+                Log::error('Invalid image URL', ['url' => $imageUrl]);
+                return null;
+            }
+
+            // 画像取得（タイムアウト 30 秒、リダイレクト最大 3 回）
+            $imageResponse = Http::timeout(30)
+                ->withOptions(['max_redirects' => 3])
+                ->withHeaders(['User-Agent' => 'RelicheBot/1.0'])
+                ->get($imageUrl);
+
             if (!$imageResponse->successful()) {
-                Log::error('Failed to download image', ['url' => $imageUrl]);
+                Log::error('Failed to download image', [
+                    'url' => $imageUrl,
+                    'status' => $imageResponse->status(),
+                ]);
                 return null;
             }
 
             $imageContent = $imageResponse->body();
-            $fileName = 'recipes/' . Str::slug($recipeName) . '_' . time() . '.jpg';
-            
-            // 画像をストレージに保存
+
+            // ファイルサイズ上限: 5MB
+            if (strlen($imageContent) > 5 * 1024 * 1024) {
+                Log::error('Image too large', ['size' => strlen($imageContent)]);
+                return null;
+            }
+
+            // Content-Type チェック
+            $contentType = $imageResponse->header('Content-Type');
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!in_array($contentType, $allowedTypes, true)) {
+                Log::error('Invalid content type', ['type' => $contentType]);
+                return null;
+            }
+
+            // 拡張子決定
+            $extension = match ($contentType) {
+                'image/png' => '.png',
+                'image/webp' => '.webp',
+                default => '.jpg',
+            };
+
+            $fileName = 'recipes/'.Str::slug($recipeName).'_'.time().$extension;
+
             if (Storage::disk('public')->put($fileName, $imageContent)) {
                 return Storage::disk('public')->url($fileName);
             }
-            
+
             return null;
-            
         } catch (Exception $e) {
             Log::error('Failed to download and save image', [
                 'url' => $imageUrl,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }

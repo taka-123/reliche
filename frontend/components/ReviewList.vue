@@ -384,7 +384,7 @@
 </template>
 
 <script setup lang="ts">
-// @ts-nocheck
+// Nuxt 3のauto-importを使用
 /* eslint-disable */
 // Nuxt 3のauto-importを使用し、TypeScriptエラーを無視
 import { computed } from '#imports'
