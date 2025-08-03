@@ -147,33 +147,60 @@
             </v-card-title>
             <v-card-text>
               <div class="generated-recipe">
-                <h3 class="mb-3">{{ generatedRecipe.data.recipe.title }}</h3>
+                <!-- レシピタイトル -->
+                <div class="recipe-title-section mb-4">
+                  <h1 class="recipe-title">{{ generatedRecipe.data.recipe.title }}</h1>
+                </div>
 
-                <v-row class="mb-4">
-                  <v-col cols="6" sm="3">
-                    <v-chip color="blue" variant="outlined">
-                      <v-icon start icon="mdi-timer" />
-                      {{ generatedRecipe.data.recipe.cooking_time }}分
-                    </v-chip>
-                  </v-col>
-                  <v-col cols="6" sm="3">
-                    <v-chip color="green" variant="outlined">
-                      <v-icon start icon="mdi-account-group" />
-                      {{ generatedRecipe.data.recipe.servings }}人前
-                    </v-chip>
-                  </v-col>
-                  <v-col cols="6" sm="3">
-                    <v-chip color="orange" variant="outlined">
-                      <v-icon start icon="mdi-fire" />
-                      {{ generatedRecipe.data.recipe.calories }}kcal
-                    </v-chip>
-                  </v-col>
-                  <v-col cols="6" sm="3">
-                    <v-chip color="purple" variant="outlined">
-                      {{ generatedRecipe.data.recipe.category }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
+                <!-- レシピ統計情報（通常のレシピ詳細画面と同様） -->
+                <div class="recipe-info mb-4">
+                  <v-row class="recipe-stats-grid" no-gutters>
+                    <v-col cols="6" sm="3">
+                      <v-card class="stat-card" elevation="2">
+                        <div class="stat-content">
+                          <v-icon color="#4CAF50" size="24">mdi-clock-outline</v-icon>
+                          <div class="stat-text">
+                            <span class="stat-value">{{ generatedRecipe.data.recipe.cooking_time }}</span>
+                            <span class="stat-label">分</span>
+                          </div>
+                        </div>
+                      </v-card>
+                    </v-col>
+                    <v-col cols="6" sm="3">
+                      <v-card class="stat-card" elevation="2">
+                        <div class="stat-content">
+                          <v-icon color="#FF9800" size="24">mdi-account-multiple</v-icon>
+                          <div class="stat-text">
+                            <span class="stat-value">{{ generatedRecipe.data.recipe.servings }}</span>
+                            <span class="stat-label">人分</span>
+                          </div>
+                        </div>
+                      </v-card>
+                    </v-col>
+                    <v-col cols="6" sm="3">
+                      <v-card class="stat-card" elevation="2">
+                        <div class="stat-content">
+                          <v-icon color="#F44336" size="24">mdi-fire</v-icon>
+                          <div class="stat-text">
+                            <span class="stat-value">{{ generatedRecipe.data.recipe.calories || '300' }}</span>
+                            <span class="stat-label">kcal</span>
+                          </div>
+                        </div>
+                      </v-card>
+                    </v-col>
+                    <v-col cols="6" sm="3">
+                      <v-card class="stat-card" elevation="2">
+                        <div class="stat-content">
+                          <v-icon color="#9C27B0" size="24">mdi-tag-outline</v-icon>
+                          <div class="stat-text">
+                            <span class="stat-value">{{ generatedRecipe.data.recipe.category }}</span>
+                            <span class="stat-label">ジャンル</span>
+                          </div>
+                        </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </div>
 
                 <v-row>
                   <v-col cols="12" md="6">
@@ -392,13 +419,88 @@ const generateRecipe = async () => {
   background: linear-gradient(135deg, #e8f5e8 0%, #f0f9ff 100%);
 }
 
-.generated-recipe h3 {
-  color: #2d5a27;
+.generated-recipe {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-title-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.recipe-title {
+  font-size: 24px;
   font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.recipe-info {
+  margin-bottom: 32px;
+}
+
+.recipe-stats-grid {
+  gap: 8px;
+}
+
+.stat-card {
+  background: white;
+  margin: 4px;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  gap: 8px;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
 }
 
 .generated-recipe h4 {
   color: #1976d2;
   margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* タブレット・デスクトップ対応 */
+@media (min-width: 768px) {
+  .recipe-title {
+    font-size: 28px;
+  }
+  
+  .generated-recipe {
+    padding: 32px;
+  }
 }
 </style>

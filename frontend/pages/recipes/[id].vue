@@ -300,6 +300,9 @@ const isIngredientChecked = (id: number): boolean => {
   return checkedIngredients.value.has(id)
 }
 
+// 手順チェック状態管理
+const checkedSteps = ref<Set<number>>(new Set())
+
 // 手順の進捗管理
 const completedStepsCount = computed(() => checkedSteps.value.size)
 const totalStepsCount = computed(() => recipe.value?.instructions?.length || 0)
@@ -351,9 +354,6 @@ const toggleIngredient = (id: number) => {
   // Setの変更を検知させるため新しいSetを作成
   checkedIngredients.value = new Set(checkedIngredients.value)
 }
-
-// 手順チェック状態管理
-const checkedSteps = ref<Set<number>>(new Set())
 
 // 手順がチェックされているかどうか
 const isStepCompleted = (index: number): boolean => {

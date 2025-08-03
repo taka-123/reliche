@@ -171,7 +171,7 @@ class QualityCheckCommand extends Command
     {
         $this->info('🤖 代替レシピを生成中...');
 
-        $progressBar = $this->output->createProgressBar($lowQualityRecipes->count());
+        $progressBar = $this->getOutput()->createProgressBar($lowQualityRecipes->count());
         $progressBar->start();
 
         $generated = 0;

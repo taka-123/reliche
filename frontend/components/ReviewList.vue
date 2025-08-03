@@ -331,15 +331,17 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+// 統計情報の詳細スコアがあるかどうか
 const hasDetailedScores = computed(() => {
   if (!props.statistics) return false
   return (
-    props.statistics.average_taste_score > 0 ||
-    props.statistics.average_difficulty_score > 0 ||
-    props.statistics.average_instruction_clarity > 0
+    (props.statistics.average_taste_score && props.statistics.average_taste_score > 0) ||
+    (props.statistics.average_difficulty_score && props.statistics.average_difficulty_score > 0) ||
+    (props.statistics.average_instruction_clarity && props.statistics.average_instruction_clarity > 0)
   )
 })
 
+// 個別レビューに詳細評価があるかどうか
 const hasDetailedRatings = (review: RecipeReview): boolean => {
   return !!(
     review.taste_score ||
@@ -348,10 +350,12 @@ const hasDetailedRatings = (review: RecipeReview): boolean => {
   )
 }
 
+// レビュー編集権限チェック
 const canEditReview = (review: RecipeReview): boolean => {
   return props.currentUserId === review.user.id
 }
 
+// 日付フォーマット
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString('ja-JP', {

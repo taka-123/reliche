@@ -233,6 +233,7 @@ watch(
         instruction_clarity: review.instruction_clarity,
         comment: review.comment || '',
         review_images: review.review_images || [],
+        recipeId: props.recipeId,
       }
     }
   },
@@ -254,12 +255,8 @@ const rules = {
 
 // 評価テキスト
 const getRatingText = (rating: number): string => {
-  if (rating === 0) return '評価なし'
-  if (rating <= 1) return '悪い'
-  if (rating <= 2) return 'いまいち'
-  if (rating <= 3) return '普通'
-  if (rating <= 4) return '良い'
-  return '最高'
+  const texts = ['', 'とても悪い', '悪い', '普通', '良い', 'とても良い']
+  return texts[rating] || ''
 }
 
 // 評価を設定（整数のみ）
@@ -269,8 +266,7 @@ const setRating = (rating: number) => {
 
 // 星ボタンの色を取得
 const getStarButtonColor = (starIndex: number): string => {
-  const currentRating = hoverRating.value || form.value.rating
-  return currentRating >= starIndex ? '#FFD700' : '#E0E0E0'
+  return form.value.rating >= starIndex || hoverRating.value >= starIndex ? 'orange' : 'grey'
 }
 
 // 画像URL追加
