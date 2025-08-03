@@ -10,13 +10,13 @@ export const useIngredientsStore = defineStore('ingredients', {
   }),
 
   getters: {
-    selectedCount: (state) => state.selectedIngredients.length,
-    selectedIngredientIds: (state) =>
-      state.selectedIngredients.map((ingredient) => ingredient.id),
-    hasSelectedIngredients: (state) => state.selectedIngredients.length > 0,
-    isIngredientSelected: (state) => (ingredientId: number) => {
+    selectedCount: state => state.selectedIngredients.length,
+    selectedIngredientIds: state =>
+      state.selectedIngredients.map(ingredient => ingredient.id),
+    hasSelectedIngredients: state => state.selectedIngredients.length > 0,
+    isIngredientSelected: state => (ingredientId: number) => {
       return state.selectedIngredients.some(
-        (ingredient) => ingredient.id === ingredientId
+        ingredient => ingredient.id === ingredientId,
       )
     },
   },
@@ -30,7 +30,7 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     removeIngredient(ingredientId: number) {
       this.selectedIngredients = this.selectedIngredients.filter(
-        (ingredient) => ingredient.id !== ingredientId
+        ingredient => ingredient.id !== ingredientId,
       )
     },
 

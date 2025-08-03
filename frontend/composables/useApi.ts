@@ -5,7 +5,7 @@ export const useApi = () => {
   const config = useRuntimeConfig()
 
   // 開発環境では直接APIサーバーに接続、本番環境では環境変数を使用
-  const baseURL = process.server
+  const baseURL = import.meta.server
     ? config.public.serverApiBase
     : config.public.apiBase
 
@@ -13,7 +13,7 @@ export const useApi = () => {
     baseURL,
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Accept': 'application/json',
     },
     withCredentials: false,
     timeout: 10000,
@@ -23,7 +23,7 @@ export const useApi = () => {
   api.interceptors.request.use(
     (config) => {
       // クライアントサイドでのみトークンを取得
-      if (!process.server) {
+      if (!import.meta.server) {
         const token = localStorage.getItem('auth_token')
         if (token) {
           config.headers.Authorization = `Bearer ${token}`
@@ -33,7 +33,7 @@ export const useApi = () => {
     },
     (error) => {
       return Promise.reject(error)
-    }
+    },
   )
 
   // レスポンスインターセプター
@@ -56,8 +56,8 @@ export const useApi = () => {
             error.message = data?.message || '認証に失敗しました'
             // クライアントサイドでのみ認証エラー処理（ログインページ以外）
             if (
-              !process.server &&
-              !window.location.pathname.includes('/login')
+              !import.meta.server
+              && !window.location.pathname.includes('/login')
             ) {
               localStorage.removeItem('auth_token')
               localStorage.removeItem('refresh_token')
@@ -74,9 +74,9 @@ export const useApi = () => {
             error.message = data?.message || '入力内容に不備があります'
             break
           case 429:
-            error.message =
-              data?.message ||
-              'リクエストが多すぎます。しばらく待ってから再度お試しください'
+            error.message
+              = data?.message
+                || 'リクエストが多すぎます。しばらく待ってから再度お試しください'
             break
           case 500:
             error.message = data?.message || 'サーバーエラーが発生しました'
@@ -88,17 +88,19 @@ export const useApi = () => {
             error.message = data?.message || 'エラーが発生しました'
             break
         }
-      } else if (error.request) {
+      }
+      else if (error.request) {
         // ネットワークエラー
         error.message = 'ネットワークに接続できません'
         error.code = 'NETWORK_ERROR'
-      } else {
+      }
+      else {
         // その他のエラー
         error.message = error.message || '予期しないエラーが発生しました'
       }
 
       return Promise.reject(error)
-    }
+    },
   )
 
   return api

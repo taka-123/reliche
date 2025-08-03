@@ -3,33 +3,68 @@
     <!-- ヘッダー -->
     <div class="header">
       <div class="header-top">
-        <v-btn icon variant="text" class="back-btn" @click="goBack">
+        <v-btn
+          icon
+          variant="text"
+          class="back-btn"
+          @click="goBack"
+        >
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <div class="header-actions">
-          <v-btn icon variant="text" class="share-btn" @click="shareRecipe">
+          <v-btn
+            icon
+            variant="text"
+            class="share-btn"
+            @click="shareRecipe"
+          >
             <v-icon>mdi-share-variant</v-icon>
           </v-btn>
         </div>
       </div>
       <div class="recipe-title-section">
-        <h1 class="page-title" :title="recipe?.name || 'レシピ詳細'">
+        <h1
+          class="page-title"
+          :title="recipe?.name || 'レシピ詳細'"
+        >
           {{ recipe?.name || 'レシピ詳細' }}
         </h1>
       </div>
     </div>
 
-    <div v-if="isLoading" class="loading-container">
-      <v-progress-circular indeterminate size="40" color="primary" />
-      <p class="loading-text">レシピを読み込み中...</p>
+    <div
+      v-if="isLoading"
+      class="loading-container"
+    >
+      <v-progress-circular
+        indeterminate
+        size="40"
+        color="primary"
+      />
+      <p class="loading-text">
+        レシピを読み込み中...
+      </p>
     </div>
 
-    <div v-else-if="!recipe" class="error-container">
-      <v-icon size="64" color="rgba(0, 0, 0, 0.3)">mdi-alert</v-icon>
-      <p class="error-text">レシピが見つかりませんでした</p>
+    <div
+      v-else-if="!recipe"
+      class="error-container"
+    >
+      <v-icon
+        size="64"
+        color="rgba(0, 0, 0, 0.3)"
+      >
+        mdi-alert
+      </v-icon>
+      <p class="error-text">
+        レシピが見つかりませんでした
+      </p>
     </div>
 
-    <div v-else class="recipe-content">
+    <div
+      v-else
+      class="recipe-content"
+    >
       <!-- レシピ画像 -->
       <div class="recipe-image">
         <v-img
@@ -42,23 +77,49 @@
         >
           <template #placeholder>
             <div class="image-loading">
-              <v-progress-circular indeterminate size="40" color="primary" />
+              <v-progress-circular
+                indeterminate
+                size="40"
+                color="primary"
+              />
             </div>
           </template>
         </v-img>
-        <div v-else class="placeholder-image">
-          <v-icon size="48" color="rgba(76, 175, 80, 0.6)">mdi-chef-hat</v-icon>
+        <div
+          v-else
+          class="placeholder-image"
+        >
+          <v-icon
+            size="48"
+            color="rgba(76, 175, 80, 0.6)"
+          >
+            mdi-chef-hat
+          </v-icon>
           <span class="placeholder-text">レシピ画像</span>
         </div>
       </div>
 
       <!-- レシピ情報 -->
       <div class="recipe-info">
-        <v-row class="recipe-stats-grid" no-gutters>
-          <v-col cols="6" sm="3">
-            <v-card class="stat-card" elevation="2">
+        <v-row
+          class="recipe-stats-grid"
+          no-gutters
+        >
+          <v-col
+            cols="6"
+            sm="3"
+          >
+            <v-card
+              class="stat-card"
+              elevation="2"
+            >
               <div class="stat-content">
-                <v-icon color="#4CAF50" size="24">mdi-clock-outline</v-icon>
+                <v-icon
+                  color="#4CAF50"
+                  size="24"
+                >
+                  mdi-clock-outline
+                </v-icon>
                 <div class="stat-text">
                   <span class="stat-value">{{ recipe.cooking_time }}</span>
                   <span class="stat-label">分</span>
@@ -66,10 +127,21 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="6" sm="3">
-            <v-card class="stat-card" elevation="2">
+          <v-col
+            cols="6"
+            sm="3"
+          >
+            <v-card
+              class="stat-card"
+              elevation="2"
+            >
               <div class="stat-content">
-                <v-icon color="#FF9800" size="24">mdi-account-multiple</v-icon>
+                <v-icon
+                  color="#FF9800"
+                  size="24"
+                >
+                  mdi-account-multiple
+                </v-icon>
                 <div class="stat-text">
                   <span class="stat-value">2</span>
                   <span class="stat-label">人分</span>
@@ -77,10 +149,21 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="6" sm="3">
-            <v-card class="stat-card" elevation="2">
+          <v-col
+            cols="6"
+            sm="3"
+          >
+            <v-card
+              class="stat-card"
+              elevation="2"
+            >
               <div class="stat-content">
-                <v-icon color="#F44336" size="24">mdi-fire</v-icon>
+                <v-icon
+                  color="#F44336"
+                  size="24"
+                >
+                  mdi-fire
+                </v-icon>
                 <div class="stat-text">
                   <span class="stat-value">300</span>
                   <span class="stat-label">kcal</span>
@@ -88,10 +171,21 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="6" sm="3">
-            <v-card class="stat-card" elevation="2">
+          <v-col
+            cols="6"
+            sm="3"
+          >
+            <v-card
+              class="stat-card"
+              elevation="2"
+            >
               <div class="stat-content">
-                <v-icon color="#9C27B0" size="24">mdi-tag-outline</v-icon>
+                <v-icon
+                  color="#9C27B0"
+                  size="24"
+                >
+                  mdi-tag-outline
+                </v-icon>
                 <div class="stat-text">
                   <span class="stat-value">和食</span>
                   <span class="stat-label">ジャンル</span>
@@ -104,7 +198,9 @@
 
       <!-- 材料 -->
       <div class="ingredients-section">
-        <h2 class="section-title">材料</h2>
+        <h2 class="section-title">
+          材料
+        </h2>
         <div class="ingredients-list">
           <div
             v-for="ingredient in recipe.ingredients"
@@ -131,7 +227,9 @@
       <!-- 作り方 -->
       <div class="instructions-section">
         <div class="instructions-header">
-          <h2 class="section-title">作り方</h2>
+          <h2 class="section-title">
+            作り方
+          </h2>
           <div class="progress-info">
             <span class="progress-text">
               {{ completedStepsCount }}/{{ totalStepsCount }}
@@ -179,7 +277,9 @@
       <!-- 画面スリープ防止 -->
       <div class="wake-lock-section">
         <div class="wake-lock-toggle">
-          <v-icon color="#666">mdi-lightbulb-outline</v-icon>
+          <v-icon color="#666">
+            mdi-lightbulb-outline
+          </v-icon>
           <span class="wake-lock-label">画面スリープ防止</span>
           <v-switch
             v-model="keepScreenOn"
@@ -209,7 +309,11 @@
     </div>
 
     <!-- レビューフォームダイアログ -->
-    <v-dialog v-model="showReviewForm" max-width="600px" persistent>
+    <v-dialog
+      v-model="showReviewForm"
+      max-width="600px"
+      persistent
+    >
       <ReviewForm
         :recipe-id="recipeId"
         :existing-review="editingReview"
@@ -220,18 +324,31 @@
     </v-dialog>
 
     <!-- 削除確認ダイアログ -->
-    <v-dialog v-model="showDeleteDialog" max-width="400px">
+    <v-dialog
+      v-model="showDeleteDialog"
+      max-width="400px"
+    >
       <v-card>
         <v-card-title class="delete-title">
-          <v-icon color="error" class="mr-2">mdi-alert</v-icon>
+          <v-icon
+            color="error"
+            class="mr-2"
+          >
+            mdi-alert
+          </v-icon>
           レビューを削除
         </v-card-title>
         <v-card-text>
           <p>このレビューを削除しますか？</p>
-          <p class="delete-warning">この操作は取り消すことができません。</p>
+          <p class="delete-warning">
+            この操作は取り消すことができません。
+          </p>
         </v-card-text>
         <v-card-actions>
-          <v-btn variant="outlined" @click="showDeleteDialog = false">
+          <v-btn
+            variant="outlined"
+            @click="showDeleteDialog = false"
+          >
             キャンセル
           </v-btn>
           <v-spacer />
@@ -247,10 +364,19 @@
     </v-dialog>
 
     <!-- スナックバー -->
-    <v-snackbar v-model="showSnackbar" :color="snackbarColor" timeout="4000">
+    <v-snackbar
+      v-model="showSnackbar"
+      :color="snackbarColor"
+      timeout="4000"
+    >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false"> 閉じる </v-btn>
+        <v-btn
+          variant="text"
+          @click="showSnackbar = false"
+        >
+          閉じる
+        </v-btn>
       </template>
     </v-snackbar>
   </div>
@@ -331,14 +457,16 @@ const shareRecipe = async () => {
   try {
     if (navigator.share) {
       await navigator.share(shareData)
-    } else {
+    }
+    else {
       // フォールバック: クリップボードにコピー
       await navigator.clipboard.writeText(window.location.href)
       showMessage('URLをクリップボードにコピーしました', 'success')
     }
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
     // ユーザーがキャンセルした場合はエラーではないので何もしない
-    if (error.name !== 'AbortError') {
+    if (error instanceof Error && error.name !== 'AbortError') {
       console.error('共有エラー:', error)
     }
   }
@@ -348,7 +476,8 @@ const shareRecipe = async () => {
 const toggleIngredient = (id: number) => {
   if (checkedIngredients.value.has(id)) {
     checkedIngredients.value.delete(id)
-  } else {
+  }
+  else {
     checkedIngredients.value.add(id)
   }
   // Setの変更を検知させるため新しいSetを作成
@@ -364,7 +493,8 @@ const isStepCompleted = (index: number): boolean => {
 const toggleStep = (index: number) => {
   if (checkedSteps.value.has(index)) {
     checkedSteps.value.delete(index)
-  } else {
+  }
+  else {
     checkedSteps.value.add(index)
   }
   // Setの変更を検知させるため新しいSetを作成
@@ -412,18 +542,20 @@ const fetchRecipe = async () => {
     const recipe = await getRecipeDetail(recipeId)
     if (recipe && recipe.instructions && Array.isArray(recipe.instructions)) {
       recipesStore.setCurrentRecipe(recipe)
-    } else {
+    }
+    else {
       throw new Error('レシピデータが不正です')
     }
-  } catch (error) {
+  }
+  catch (error) {
     const config = useRuntimeConfig()
     const isDevelopment = config.public.appEnv === 'development'
     if (isDevelopment) {
-      // eslint-disable-next-line no-console
       console.error('レシピ取得エラー:', error)
     }
     await navigateTo('/recipes')
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -441,15 +573,16 @@ const loadReviews = async (page = 1) => {
     reviews.value = reviewsData.data
     reviewMeta.value = reviewsData.meta
     reviewStatistics.value = statisticsData
-  } catch (error) {
+  }
+  catch (error) {
     const config = useRuntimeConfig()
     const isDevelopment = config.public.appEnv === 'development'
     if (isDevelopment) {
-      // eslint-disable-next-line no-console
       console.error('レビュー取得エラー:', error)
     }
     showMessage('レビューの読み込みに失敗しました', 'error')
-  } finally {
+  }
+  finally {
     isLoadingReviews.value = false
   }
 }
@@ -474,7 +607,7 @@ const onReviewSuccess = (review: RecipeReview) => {
   closeReviewForm()
   showMessage(
     editingReview.value ? 'レビューを更新しました' : 'レビューを投稿しました',
-    'success'
+    'success',
   )
   loadReviews() // レビュー一覧を再読み込み
 }
@@ -498,11 +631,13 @@ const confirmDeleteReview = async () => {
     await deleteReviewApi(recipeId, deletingReview.value.id)
     showMessage('レビューを削除しました', 'success')
     loadReviews() // レビュー一覧を再読み込み
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : 'レビューの削除に失敗しました'
+  }
+  catch (error: unknown) {
+    const errorMessage
+      = error instanceof Error ? error.message : 'レビューの削除に失敗しました'
     showMessage(errorMessage, 'error')
-  } finally {
+  }
+  finally {
     isDeletingReview.value = false
     showDeleteDialog.value = false
     deletingReview.value = null
@@ -512,7 +647,7 @@ const confirmDeleteReview = async () => {
 // スナックバーメッセージ表示
 const showMessage = (
   message: string,
-  color: 'success' | 'error' = 'success'
+  color: 'success' | 'error' = 'success',
 ) => {
   snackbarMessage.value = message
   snackbarColor.value = color
@@ -535,7 +670,7 @@ useHead({
     {
       name: 'description',
       content: computed(
-        () => `${recipe.value?.name || 'レシピ'}の詳細な作り方と材料`
+        () => `${recipe.value?.name || 'レシピ'}の詳細な作り方と材料`,
       ),
     },
   ],
@@ -622,7 +757,7 @@ useHead({
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
-  border: 2px dashed rgba(76, 175, 80, 0.3);
+  border: 2px dashed rgb(76 175 80 / 30%);
 }
 
 .placeholder-image {
@@ -635,7 +770,7 @@ useHead({
 
 .placeholder-text {
   font-size: 14px;
-  color: rgba(76, 175, 80, 0.8);
+  color: rgb(76 175 80 / 80%);
   font-weight: 500;
 }
 
@@ -660,7 +795,7 @@ useHead({
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%) !important;
 }
 
 .stat-content {
@@ -697,7 +832,7 @@ useHead({
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .section-title {
@@ -814,7 +949,7 @@ useHead({
 
 .instruction-item:hover {
   border-color: #4caf50;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
+  box-shadow: 0 2px 8px rgb(76 175 80 / 10%);
 }
 
 .instruction-checkbox {
@@ -851,7 +986,7 @@ useHead({
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .media-section {
@@ -859,7 +994,7 @@ useHead({
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .wake-lock-toggle {
@@ -879,7 +1014,7 @@ useHead({
   border-radius: 12px;
   padding: 24px;
   margin-top: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .delete-title {
@@ -895,7 +1030,7 @@ useHead({
 }
 
 /* タブレット・デスクトップ対応 */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .recipe-detail {
     padding: 24px;
   }

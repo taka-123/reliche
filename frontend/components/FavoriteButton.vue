@@ -21,7 +21,10 @@
       {{ isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
     </v-icon>
 
-    <span v-if="showText" class="ml-2">
+    <span
+      v-if="showText"
+      class="ml-2"
+    >
       {{ isFavorited ? 'お気に入り解除' : 'お気に入り' }}
     </span>
   </v-btn>
@@ -73,9 +76,9 @@ const ariaLabel = computed(() => {
 const iconSize = computed(() => {
   const sizeMap = {
     'x-small': 'small',
-    small: 'small',
-    default: 'default',
-    large: 'large',
+    'small': 'small',
+    'default': 'default',
+    'large': 'large',
     'x-large': 'x-large',
   }
   return sizeMap[props.size] || 'default'
@@ -102,19 +105,23 @@ const handleToggle = async (): Promise<void> => {
       // 成功時のイベント発火
       if (wasAlreadyFavorited) {
         emit('favoriteRemoved', props.recipeId)
-      } else {
+      }
+      else {
         emit('favoriteAdded', props.recipeId)
       }
-    } else {
+    }
+    else {
       // エラーハンドリング
       const errorMessage = error.value || 'お気に入りの更新に失敗しました'
       emit('error', errorMessage)
     }
-  } catch (err) {
-    const errorMessage =
-      (err as Error)?.message || 'お気に入りの更新中にエラーが発生しました'
+  }
+  catch (err) {
+    const errorMessage
+      = (err as Error)?.message || 'お気に入りの更新中にエラーが発生しました'
     emit('error', errorMessage)
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

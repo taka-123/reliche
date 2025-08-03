@@ -15,16 +15,16 @@ export const useRecipesStore = defineStore('recipes', {
   }),
 
   getters: {
-    isStepCompleted: (state) => (stepIndex: number) => {
+    isStepCompleted: state => (stepIndex: number) => {
       return state.completedSteps.has(stepIndex)
     },
 
-    completedStepsCount: (state) => state.completedSteps.size,
+    completedStepsCount: state => state.completedSteps.size,
 
     totalStepsCount: (state) => {
       if (
-        !state.currentRecipe ||
-        !Array.isArray(state.currentRecipe.instructions)
+        !state.currentRecipe
+        || !Array.isArray(state.currentRecipe.instructions)
       ) {
         return 0
       }
@@ -33,8 +33,8 @@ export const useRecipesStore = defineStore('recipes', {
 
     progressPercentage: (state) => {
       if (
-        !state.currentRecipe ||
-        !Array.isArray(state.currentRecipe.instructions)
+        !state.currentRecipe
+        || !Array.isArray(state.currentRecipe.instructions)
       ) {
         return 0
       }
@@ -53,7 +53,8 @@ export const useRecipesStore = defineStore('recipes', {
     toggleStep(stepIndex: number) {
       if (this.completedSteps.has(stepIndex)) {
         this.completedSteps.delete(stepIndex)
-      } else {
+      }
+      else {
         this.completedSteps.add(stepIndex)
       }
     },
@@ -67,7 +68,6 @@ export const useRecipesStore = defineStore('recipes', {
         const config = useRuntimeConfig()
         const isDevelopment = config.public.appEnv === 'development'
         if (isDevelopment) {
-          // eslint-disable-next-line no-console
           console.warn('Wake Lock API is not supported')
         }
         return
@@ -81,7 +81,8 @@ export const useRecipesStore = defineStore('recipes', {
             this.wakeLock = null
           }
           this.keepScreenOn = false
-        } else {
+        }
+        else {
           // スリープ防止を有効化
           this.wakeLock = await navigator.wakeLock.request('screen')
           this.keepScreenOn = true
@@ -90,14 +91,14 @@ export const useRecipesStore = defineStore('recipes', {
           this.wakeLock.addEventListener(
             'release',
             this.handleWakeLockRelease,
-            { once: true }
+            { once: true },
           )
         }
-      } catch (error) {
+      }
+      catch (error) {
         const config = useRuntimeConfig()
         const isDevelopment = config.public.appEnv === 'development'
         if (isDevelopment) {
-          // eslint-disable-next-line no-console
           console.error('Wake Lock操作エラー:', error)
         }
       }

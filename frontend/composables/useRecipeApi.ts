@@ -16,7 +16,7 @@ export const useRecipeApi = () => {
     }
 
     const response = await api.get<ApiResponse<Ingredient[]>>(
-      `/ingredients/search?q=${encodeURIComponent(query)}`
+      `/ingredients/search?q=${encodeURIComponent(query)}`,
     )
     return response.data.data || []
   }
@@ -37,7 +37,7 @@ export const useRecipeApi = () => {
   }
 
   const getRecipeDetail = async (
-    id: string | number
+    id: string | number,
   ): Promise<RecipeDetail> => {
     if (!id) {
       throw new Error('レシピIDが指定されていません')
@@ -48,31 +48,31 @@ export const useRecipeApi = () => {
   }
 
   const generateBasicRecipe = async (
-    options: GenerateBasicRecipeOptions = {}
+    options: GenerateBasicRecipeOptions = {},
   ): Promise<AIRecipeResponse> => {
     const response = await api.post<AIRecipeResponse>(
       '/ai-recipes/generate',
-      options
+      options,
     )
     return response.data
   }
 
   const generateRecipeByIngredients = async (
-    options: GenerateRecipeByIngredientsOptions
+    options: GenerateRecipeByIngredientsOptions,
   ): Promise<AIRecipeResponse> => {
     const response = await api.post<AIRecipeResponse>(
       '/ai-recipes/generate/ingredients',
-      options
+      options,
     )
     return response.data
   }
 
   const generateRecipeWithConstraints = async (
-    options: GenerateRecipeWithConstraintsOptions = {}
+    options: GenerateRecipeWithConstraintsOptions = {},
   ): Promise<AIRecipeResponse> => {
     const response = await api.post<AIRecipeResponse>(
       '/ai-recipes/generate/constraints',
-      options
+      options,
     )
     return response.data
   }

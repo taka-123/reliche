@@ -1,12 +1,17 @@
 <template>
-  <div class="d-flex align-center justify-center" style="min-height: 100vh">
+  <div
+    class="d-flex align-center justify-center"
+    style="min-height: 100vh"
+  >
     <v-card
       class="pa-8 mx-4 mx-sm-auto"
       max-width="450"
       width="100%"
       elevation="4"
     >
-      <v-card-title class="text-h4 mb-6 text-center">ユーザー登録</v-card-title>
+      <v-card-title class="text-h4 mb-6 text-center">
+        ユーザー登録
+      </v-card-title>
 
       <v-form @submit.prevent="register">
         <v-alert
@@ -17,7 +22,7 @@
           prominent
           border="start"
         >
-          <strong>登録エラー</strong><br />
+          <strong>登録エラー</strong><br>
           {{ errorMessage }}
         </v-alert>
 
@@ -29,7 +34,7 @@
           prominent
           border="start"
         >
-          <strong>登録成功</strong><br />
+          <strong>登録成功</strong><br>
           {{ successMessage }}
         </v-alert>
 
@@ -46,7 +51,10 @@
           :aria-invalid="!!nameError"
           @input="clearNameError"
         />
-        <div id="name-help" class="sr-only">
+        <div
+          id="name-help"
+          class="sr-only"
+        >
           2文字以上255文字以下で入力してください
         </div>
 
@@ -64,7 +72,10 @@
           aria-invalid="emailError ? 'true' : 'false'"
           @input="clearEmailError"
         />
-        <div id="email-help" class="sr-only">
+        <div
+          id="email-help"
+          class="sr-only"
+        >
           有効なメールアドレス形式で入力してください
         </div>
 
@@ -82,7 +93,10 @@
           aria-invalid="passwordError ? 'true' : 'false'"
           @input="clearPasswordError"
         />
-        <div id="password-help" class="sr-only">
+        <div
+          id="password-help"
+          class="sr-only"
+        >
           8文字以上で大文字・小文字・数字・特殊文字を含むパスワードを入力してください
         </div>
         <div
@@ -113,7 +127,10 @@
           aria-invalid="passwordConfirmationError ? 'true' : 'false'"
           @input="clearPasswordConfirmationError"
         />
-        <div id="password-confirm-help" class="sr-only">
+        <div
+          id="password-confirm-help"
+          class="sr-only"
+        >
           上記で入力したパスワードと同じものを入力してください
         </div>
 
@@ -130,7 +147,12 @@
             aria-label="ユーザー登録を実行"
             :aria-describedby="loading ? 'loading-message' : undefined"
           >
-            <v-icon left class="mr-2">mdi-account-plus</v-icon>
+            <v-icon
+              left
+              class="mr-2"
+            >
+              mdi-account-plus
+            </v-icon>
             アカウントを作成する
           </v-btn>
           <div
@@ -144,7 +166,10 @@
           </div>
 
           <div class="text-center">
-            <NuxtLink to="/login" class="text-decoration-none text-body-2">
+            <NuxtLink
+              to="/login"
+              class="text-decoration-none text-body-2"
+            >
               すでにアカウントをお持ちの方はログイン
             </NuxtLink>
           </div>
@@ -200,7 +225,7 @@ const nameError = computed(() => formState.value.errors.name?.[0] || '')
 const emailError = computed(() => formState.value.errors.email?.[0] || '')
 const passwordError = computed(() => formState.value.errors.password?.[0] || '')
 const passwordConfirmationError = computed(
-  () => formState.value.errors.password_confirmation?.[0] || ''
+  () => formState.value.errors.password_confirmation?.[0] || '',
 )
 
 // 後方互換性のためのエイリアス
@@ -219,7 +244,7 @@ const validateForm = (): boolean => {
   // パスワード確認のバリデーション
   const confirmationError = validatePasswordConfirmation(
     form.value.password,
-    form.value.passwordConfirmation
+    form.value.passwordConfirmation,
   )
 
   if (confirmationError) {
@@ -243,7 +268,8 @@ const clearFieldError = (fieldName: keyof ValidationErrors) => {
 const updatePasswordStrength = () => {
   if (form.value.password) {
     passwordStrength.value = checkPasswordStrength(form.value.password)
-  } else {
+  }
+  else {
     passwordStrength.value = { score: 0, feedback: [] }
   }
 }
@@ -254,7 +280,7 @@ const debouncedPasswordValidation = createDebouncedValidator(
     updatePasswordStrength()
     return ''
   },
-  300
+  300,
 )
 
 // エラークリア関数（後方互換性）
@@ -289,25 +315,28 @@ const register = async (): Promise<void> => {
       registerData.name,
       registerData.email,
       registerData.password,
-      registerData.password_confirmation
+      registerData.password_confirmation,
     )
 
     if (result.success) {
-      successMessage.value =
-        'アカウントが作成されました！自動的にログインします...'
+      successMessage.value
+        = 'アカウントが作成されました！自動的にログインします...'
 
       // パフォーマンス: nextTick後にリダイレクト
       await nextTick()
       setTimeout(() => {
         router.push('/')
       }, 1500) // 1.5秒に短縮
-    } else if (result.errors) {
+    }
+    else if (result.errors) {
       // サーバーエラーの詳細表示
       formState.value.errors = result.errors as ValidationErrors
-    } else {
+    }
+    else {
       errorMessage.value = result.message || '登録に失敗しました'
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     // エラーログは適切にスローまたはトーストで表示
 
     // 型安全なエラーハンドリング
@@ -317,15 +346,19 @@ const register = async (): Promise<void> => {
       }
       if (axiosError.response?.data?.errors) {
         formState.value.errors = axiosError.response.data.errors
-      } else {
+      }
+      else {
         errorMessage.value = '登録中にエラーが発生しました'
       }
-    } else if (error instanceof Error) {
+    }
+    else if (error instanceof Error) {
       errorMessage.value = error.message || '登録中にエラーが発生しました'
-    } else {
+    }
+    else {
       errorMessage.value = '登録中にエラーが発生しました'
     }
-  } finally {
+  }
+  finally {
     formState.value.loading = false
   }
 }

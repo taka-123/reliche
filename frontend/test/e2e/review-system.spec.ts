@@ -15,7 +15,7 @@ test.describe('レビューシステム', () => {
     const statisticsSection = page.locator('.statistics-section')
     if (await statisticsSection.isVisible()) {
       await expect(
-        statisticsSection.locator('.statistics-title')
+        statisticsSection.locator('.statistics-title'),
       ).toContainText('評価統計')
     }
 
@@ -158,7 +158,7 @@ test.describe('レビューシステム', () => {
         const dialog = page.locator('.v-dialog')
         await expect(dialog).toBeVisible()
         await expect(dialog.locator('.form-title')).toContainText(
-          'レビューを編集'
+          'レビューを編集',
         )
       }
     }
@@ -175,14 +175,14 @@ test.describe('レビューシステム', () => {
 
       // 評価分布が表示されることを確認
       await expect(statisticsSection.locator('.distribution-row')).toHaveCount(
-        5
+        5,
       )
 
       // 詳細評価がある場合の表示確認
       const detailedScores = statisticsSection.locator('.detailed-scores')
       if (await detailedScores.isVisible()) {
         await expect(
-          detailedScores.locator('.score-item')
+          detailedScores.locator('.score-item'),
         ).toHaveCount.greaterThan(0)
       }
     }
@@ -201,8 +201,8 @@ test.describe('レビューシステム', () => {
         .locator('button[aria-label*="次"]')
         .first()
       if (
-        (await nextPageButton.isVisible()) &&
-        (await nextPageButton.isEnabled())
+        (await nextPageButton.isVisible())
+        && (await nextPageButton.isEnabled())
       ) {
         await nextPageButton.click()
 

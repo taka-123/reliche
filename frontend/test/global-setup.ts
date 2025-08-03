@@ -2,7 +2,7 @@ import type { FullConfig } from '@playwright/test'
 
 function globalSetup(_config: FullConfig) {
   // グローバルセットアップ処理
-  // eslint-disable-next-line no-console
+
   console.log('Playwright E2Eテスト開始')
 
   // テスト環境の初期化処理があればここに記述
@@ -10,7 +10,7 @@ function globalSetup(_config: FullConfig) {
 
   return () => {
     // クリーンアップ処理
-    // eslint-disable-next-line no-console
+
     console.log('Playwright E2Eテスト終了')
   }
 }

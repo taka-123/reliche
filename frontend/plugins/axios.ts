@@ -11,7 +11,7 @@ export default defineNuxtPlugin(() => {
     baseURL: config.public.apiBase,
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Accept': 'application/json',
     },
     withCredentials: true, // CORSリクエストでCookieを送信
   })
@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
     },
     (error) => {
       return Promise.reject(error)
-    }
+    },
   )
 
   // レスポンスインターセプター
@@ -40,9 +40,9 @@ export default defineNuxtPlugin(() => {
 
       // トークンの有効期限切れの場合（401エラー）かつリフレッシュ試行フラグがない場合
       if (
-        error.response &&
-        error.response.status === 401 &&
-        !originalRequest._retry
+        error.response
+        && error.response.status === 401
+        && !originalRequest._retry
       ) {
         originalRequest._retry = true
 
@@ -60,7 +60,7 @@ export default defineNuxtPlugin(() => {
               headers: {
                 Authorization: `Bearer ${refreshToken}`,
               },
-            }
+            },
           )
 
           const accessToken = response.data.access_token
@@ -69,7 +69,8 @@ export default defineNuxtPlugin(() => {
           // 元のリクエストを再試行
           originalRequest.headers.Authorization = `Bearer ${accessToken}`
           return axios(originalRequest)
-        } catch (refreshError) {
+        }
+        catch (refreshError) {
           // リフレッシュに失敗した場合はログアウト処理
           localStorage.removeItem('auth_token')
           localStorage.removeItem('refresh_token')
@@ -81,13 +82,13 @@ export default defineNuxtPlugin(() => {
       }
 
       return Promise.reject(error)
-    }
+    },
   )
 
   // APIレスポンス形式を統一する関数
   const apiCall = async <T = unknown>(
     url: string,
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {},
   ): Promise<T> => {
     const response = await apiClient(url, options)
     return response.data

@@ -35,7 +35,8 @@ export function useFavorites() {
     try {
       const result = await favoritesStore.addToFavorites(recipeId)
       return result
-    } catch (error) {
+    }
+    catch (error) {
       // エラーログは適切にスローまたはトーストで表示
       return false
     }
@@ -48,7 +49,8 @@ export function useFavorites() {
     try {
       const result = await favoritesStore.removeFromFavorites(recipeId)
       return result
-    } catch (error) {
+    }
+    catch (error) {
       // エラーログは適切にスローまたはトーストで表示
       return false
     }
@@ -61,7 +63,8 @@ export function useFavorites() {
     try {
       const result = await favoritesStore.toggleFavorite(recipeId)
       return result
-    } catch (error) {
+    }
+    catch (error) {
       // エラーログは適切にスローまたはトーストで表示
       return false
     }
@@ -98,7 +101,8 @@ export function useFavorites() {
           try {
             const result = await toggleFavorite(recipeId)
             resolve(result)
-          } catch (error) {
+          }
+          catch (error) {
             // エラーログは適切にスローまたはトーストで表示
             resolve(false)
           }

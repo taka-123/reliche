@@ -114,7 +114,7 @@ describe('AI Recipe API', () => {
         {
           ingredients: ['豚肉', 'キャベツ'],
           save_to_db: false,
-        }
+        },
       )
       expect(result).toEqual(mockResponse)
     })
@@ -156,7 +156,7 @@ describe('AI Recipe API', () => {
           tags: ['時短'],
           difficulty: '簡単',
           save_to_db: true,
-        }
+        },
       )
       expect(result).toEqual(mockResponse)
     })
@@ -186,7 +186,7 @@ describe('AI Recipe API', () => {
 
       expect(mockPost).toHaveBeenCalledWith(
         '/ai-recipes/generate/constraints',
-        {}
+        {},
       )
       expect(result).toEqual(mockResponse)
     })
@@ -243,7 +243,7 @@ describe('AI Recipe API', () => {
         '/ai-recipes/generate/ingredients',
         {
           ingredients: ['テスト食材'],
-        }
+        },
       )
 
       // 制約条件付きレシピ生成エンドポイント確認
@@ -252,7 +252,7 @@ describe('AI Recipe API', () => {
         '/ai-recipes/generate/constraints',
         {
           max_time: 15,
-        }
+        },
       )
 
       // 各エンドポイントが1回ずつ呼び出されていることを確認

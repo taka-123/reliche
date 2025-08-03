@@ -1,12 +1,17 @@
 <template>
-  <div class="d-flex align-center justify-center" style="min-height: 100vh">
+  <div
+    class="d-flex align-center justify-center"
+    style="min-height: 100vh"
+  >
     <v-card
       class="pa-8 mx-4 mx-sm-auto"
       max-width="450"
       width="100%"
       elevation="4"
     >
-      <v-card-title class="text-h4 mb-6 text-center">ログイン</v-card-title>
+      <v-card-title class="text-h4 mb-6 text-center">
+        ログイン
+      </v-card-title>
 
       <v-form @submit.prevent="login">
         <v-alert
@@ -17,7 +22,7 @@
           prominent
           border="start"
         >
-          <strong>ログインエラー</strong><br />
+          <strong>ログインエラー</strong><br>
           {{ getError }}
         </v-alert>
 
@@ -30,7 +35,7 @@
           autocomplete="email"
           prepend-inner-icon="mdi-email"
           @input="clearEmailError"
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="password"
@@ -41,7 +46,7 @@
           autocomplete="current-password"
           prepend-inner-icon="mdi-lock"
           @input="clearPasswordError"
-        ></v-text-field>
+        />
 
         <div class="mt-6">
           <v-btn
@@ -54,12 +59,20 @@
             block
             class="mb-4"
           >
-            <v-icon left class="mr-2">mdi-login</v-icon>
+            <v-icon
+              left
+              class="mr-2"
+            >
+              mdi-login
+            </v-icon>
             ログイン
           </v-btn>
 
           <div class="text-center">
-            <NuxtLink to="/register" class="text-decoration-none text-body-2">
+            <NuxtLink
+              to="/register"
+              class="text-decoration-none text-body-2"
+            >
               アカウントをお持ちでない方は新規登録
             </NuxtLink>
           </div>
@@ -98,7 +111,8 @@ const validateForm = () => {
   if (!email.value) {
     emailError.value = 'メールアドレスを入力してください'
     isValid = false
-  } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+  }
+  else if (!/\S+@\S+\.\S+/.test(email.value)) {
     emailError.value = '有効なメールアドレスを入力してください'
     isValid = false
   }
@@ -107,7 +121,8 @@ const validateForm = () => {
   if (!password.value) {
     passwordError.value = 'パスワードを入力してください'
     isValid = false
-  } else if (password.value.length < 8) {
+  }
+  else if (password.value.length < 8) {
     passwordError.value = 'パスワードは8文字以上である必要があります'
     isValid = false
   }
@@ -138,7 +153,8 @@ const login = async () => {
     const redirectPath = route.query.redirect || '/'
 
     await loginAndRedirect(email.value, password.value, redirectPath)
-  } catch (err) {
+  }
+  catch (err) {
     // エラーは認証ストアで処理済み（UIに表示される）
   }
 }

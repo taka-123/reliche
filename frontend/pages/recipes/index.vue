@@ -2,10 +2,17 @@
   <div class="recipes-page">
     <!-- ヘッダー -->
     <div class="header">
-      <v-btn icon variant="text" class="back-btn" @click="goBack">
+      <v-btn
+        icon
+        variant="text"
+        class="back-btn"
+        @click="goBack"
+      >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <h1 class="page-title">レシピ一覧</h1>
+      <h1 class="page-title">
+        レシピ一覧
+      </h1>
       <div class="header-actions">
         <v-btn
           icon
@@ -16,14 +23,22 @@
         >
           <v-icon>mdi-robot-excited</v-icon>
         </v-btn>
-        <v-btn icon variant="text" class="search-btn" @click="toggleSearch">
+        <v-btn
+          icon
+          variant="text"
+          class="search-btn"
+          @click="toggleSearch"
+        >
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
       </div>
     </div>
 
     <!-- 検索バー -->
-    <div v-if="showSearch" class="search-section">
+    <div
+      v-if="showSearch"
+      class="search-section"
+    >
       <div class="search-input-wrapper">
         <v-text-field
           v-model="searchQuery"
@@ -49,13 +64,18 @@
         </span>
         <span v-else> 全レシピ {{ recipes.length }}件を表示中 </span>
       </p>
-      <p v-else-if="!isLoading">レシピが見つかりませんでした</p>
+      <p v-else-if="!isLoading">
+        レシピが見つかりませんでした
+      </p>
     </div>
 
     <!-- フィルター -->
     <div class="filters-section">
       <div class="filter-chips">
-        <v-chip-group v-model="selectedFilter" color="primary">
+        <v-chip-group
+          v-model="selectedFilter"
+          color="primary"
+        >
           <v-chip
             v-for="filter in filters"
             :key="filter.key"
@@ -84,18 +104,42 @@
 
     <!-- レシピリスト -->
     <div class="recipes-container">
-      <div v-if="isLoading" class="loading-container">
-        <v-progress-circular indeterminate size="40" color="primary" />
-        <p class="loading-text">レシピを検索中...</p>
+      <div
+        v-if="isLoading"
+        class="loading-container"
+      >
+        <v-progress-circular
+          indeterminate
+          size="40"
+          color="primary"
+        />
+        <p class="loading-text">
+          レシピを検索中...
+        </p>
       </div>
 
-      <div v-else-if="recipes.length === 0" class="empty-state">
-        <v-icon size="64" color="rgba(0, 0, 0, 0.3)">mdi-chef-hat</v-icon>
-        <p class="empty-text">レシピが見つかりませんでした</p>
-        <p class="empty-subtext">食材を変更して再度お試しください</p>
+      <div
+        v-else-if="recipes.length === 0"
+        class="empty-state"
+      >
+        <v-icon
+          size="64"
+          color="rgba(0, 0, 0, 0.3)"
+        >
+          mdi-chef-hat
+        </v-icon>
+        <p class="empty-text">
+          レシピが見つかりませんでした
+        </p>
+        <p class="empty-subtext">
+          食材を変更して再度お試しください
+        </p>
       </div>
 
-      <div v-else class="recipes-grid">
+      <div
+        v-else
+        class="recipes-grid"
+      >
         <RecipeCard
           v-for="recipe in filteredRecipes"
           :key="recipe.id"
@@ -115,8 +159,8 @@ import RecipeCard from '~/components/RecipeCard.vue'
 import type { Recipe } from '~/types/recipe'
 
 const ingredientsStore = useIngredientsStore()
-const { selectedIngredients, selectedCount, selectedIngredientIds } =
-  storeToRefs(ingredientsStore)
+const { selectedIngredients, selectedCount, selectedIngredientIds }
+  = storeToRefs(ingredientsStore)
 const { getAllRecipes, suggestRecipes } = useRecipeApi()
 
 const recipes = ref<Recipe[]>([])
@@ -146,15 +190,15 @@ const filteredRecipes = computed(() => {
   if (selectedFilter.value) {
     switch (selectedFilter.value) {
       case 'quick':
-        filtered = filtered.filter((recipe) => recipe.cooking_time <= 15)
+        filtered = filtered.filter(recipe => recipe.cooking_time <= 15)
         break
       case 'economical':
         // 不足食材が少ない（手持ち食材で作りやすい）レシピを優先
-        filtered = filtered.filter((recipe) => recipe.missing_count <= 2)
+        filtered = filtered.filter(recipe => recipe.missing_count <= 2)
         break
       case 'healthy':
         // 調理時間が長め（手間をかけた）レシピをヘルシーと判定
-        filtered = filtered.filter((recipe) => recipe.cooking_time >= 20)
+        filtered = filtered.filter(recipe => recipe.cooking_time >= 20)
         break
     }
   }
@@ -194,22 +238,24 @@ const fetchRecipes = async () => {
     if (selectedIngredientIds.value.length === 0) {
       // 食材が選択されていない場合は全レシピを取得
       data = await getAllRecipes()
-    } else {
+    }
+    else {
       // 食材が選択されている場合は提案レシピを取得
       data = await suggestRecipes(selectedIngredientIds.value)
     }
     recipes.value = data
     allRecipes.value = [...data]
-  } catch (error) {
+  }
+  catch (error) {
     const config = useRuntimeConfig()
     const isDevelopment = config.public.appEnv === 'development'
     if (isDevelopment) {
-      // eslint-disable-next-line no-console
       console.error('レシピ取得エラー:', error)
     }
     recipes.value = []
     allRecipes.value = []
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -237,9 +283,10 @@ const clearSearch = () => {
 const performSearch = () => {
   if (!searchQuery.value.trim()) {
     recipes.value = [...allRecipes.value]
-  } else {
-    recipes.value = allRecipes.value.filter((recipe) =>
-      recipe.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  }
+  else {
+    recipes.value = allRecipes.value.filter(recipe =>
+      recipe.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
 }

@@ -2,10 +2,18 @@
   <div class="recipe-generate">
     <v-container>
       <v-row justify="center">
-        <v-col cols="12" lg="10" xl="8">
+        <v-col
+          cols="12"
+          lg="10"
+          xl="8"
+        >
           <v-card class="pa-4 mb-4">
             <v-card-title class="text-h4 mb-4 text-center">
-              <v-icon icon="mdi-robot-excited" class="mr-2" color="primary" />
+              <v-icon
+                icon="mdi-robot-excited"
+                class="mr-2"
+                color="primary"
+              />
               AI レシピ生成
             </v-card-title>
             <v-card-subtitle class="text-center">
@@ -23,16 +31,34 @@
                 selected-class="text-white"
                 mandatory
               >
-                <v-chip value="basic" size="large">
-                  <v-icon start icon="mdi-chef-hat" />
+                <v-chip
+                  value="basic"
+                  size="large"
+                >
+                  <v-icon
+                    start
+                    icon="mdi-chef-hat"
+                  />
                   基本生成
                 </v-chip>
-                <v-chip value="ingredients" size="large">
-                  <v-icon start icon="mdi-food" />
+                <v-chip
+                  value="ingredients"
+                  size="large"
+                >
+                  <v-icon
+                    start
+                    icon="mdi-food"
+                  />
                   食材指定
                 </v-chip>
-                <v-chip value="constraints" size="large">
-                  <v-icon start icon="mdi-cog" />
+                <v-chip
+                  value="constraints"
+                  size="large"
+                >
+                  <v-icon
+                    start
+                    icon="mdi-cog"
+                  />
                   条件指定
                 </v-chip>
               </v-chip-group>
@@ -40,7 +66,10 @@
           </v-card>
 
           <!-- 基本生成モード -->
-          <v-card v-if="selectedMode === 'basic'" class="mb-4">
+          <v-card
+            v-if="selectedMode === 'basic'"
+            class="mb-4"
+          >
             <v-card-title>基本レシピ生成</v-card-title>
             <v-card-text>
               <v-select
@@ -54,7 +83,10 @@
           </v-card>
 
           <!-- 食材指定モード -->
-          <v-card v-if="selectedMode === 'ingredients'" class="mb-4">
+          <v-card
+            v-if="selectedMode === 'ingredients'"
+            class="mb-4"
+          >
             <v-card-title>食材指定レシピ生成</v-card-title>
             <v-card-text>
               <v-combobox
@@ -72,11 +104,17 @@
           </v-card>
 
           <!-- 条件指定モード -->
-          <v-card v-if="selectedMode === 'constraints'" class="mb-4">
+          <v-card
+            v-if="selectedMode === 'constraints'"
+            class="mb-4"
+          >
             <v-card-title>条件指定レシピ生成</v-card-title>
             <v-card-text>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
                     v-model.number="constraintsOptions.max_time"
                     label="最大調理時間（分）"
@@ -87,7 +125,10 @@
                     clearable
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-select
                     v-model="constraintsOptions.difficulty"
                     :items="difficulties"
@@ -133,67 +174,134 @@
                 size="large"
                 @click="generateRecipe"
               >
-                <v-icon start icon="mdi-magic-staff" />
+                <v-icon
+                  start
+                  icon="mdi-magic-staff"
+                />
                 レシピを生成
               </v-btn>
             </v-card-text>
           </v-card>
 
           <!-- 生成結果 -->
-          <v-card v-if="generatedRecipe" class="mb-4">
+          <v-card
+            v-if="generatedRecipe"
+            class="mb-4"
+          >
             <v-card-title class="d-flex align-center">
-              <v-icon icon="mdi-check-circle" color="success" class="mr-2" />
+              <v-icon
+                icon="mdi-check-circle"
+                color="success"
+                class="mr-2"
+              />
               生成結果
             </v-card-title>
             <v-card-text>
               <div class="generated-recipe">
                 <!-- レシピタイトル -->
                 <div class="recipe-title-section mb-4">
-                  <h1 class="recipe-title">{{ generatedRecipe.data.recipe.title }}</h1>
+                  <h1 class="recipe-title">
+                    {{ generatedRecipe.data.recipe.title }}
+                  </h1>
                 </div>
 
                 <!-- レシピ統計情報（通常のレシピ詳細画面と同様） -->
                 <div class="recipe-info mb-4">
-                  <v-row class="recipe-stats-grid" no-gutters>
-                    <v-col cols="6" sm="3">
-                      <v-card class="stat-card" elevation="2">
+                  <v-row
+                    class="recipe-stats-grid"
+                    no-gutters
+                  >
+                    <v-col
+                      cols="6"
+                      sm="3"
+                    >
+                      <v-card
+                        class="stat-card"
+                        elevation="2"
+                      >
                         <div class="stat-content">
-                          <v-icon color="#4CAF50" size="24">mdi-clock-outline</v-icon>
+                          <v-icon
+                            color="#4CAF50"
+                            size="24"
+                          >
+                            mdi-clock-outline
+                          </v-icon>
                           <div class="stat-text">
-                            <span class="stat-value">{{ generatedRecipe.data.recipe.cooking_time }}</span>
+                            <span class="stat-value">{{
+                              generatedRecipe.data.recipe.cooking_time
+                            }}</span>
                             <span class="stat-label">分</span>
                           </div>
                         </div>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" sm="3">
-                      <v-card class="stat-card" elevation="2">
+                    <v-col
+                      cols="6"
+                      sm="3"
+                    >
+                      <v-card
+                        class="stat-card"
+                        elevation="2"
+                      >
                         <div class="stat-content">
-                          <v-icon color="#FF9800" size="24">mdi-account-multiple</v-icon>
+                          <v-icon
+                            color="#FF9800"
+                            size="24"
+                          >
+                            mdi-account-multiple
+                          </v-icon>
                           <div class="stat-text">
-                            <span class="stat-value">{{ generatedRecipe.data.recipe.servings }}</span>
+                            <span class="stat-value">{{
+                              generatedRecipe.data.recipe.servings
+                            }}</span>
                             <span class="stat-label">人分</span>
                           </div>
                         </div>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" sm="3">
-                      <v-card class="stat-card" elevation="2">
+                    <v-col
+                      cols="6"
+                      sm="3"
+                    >
+                      <v-card
+                        class="stat-card"
+                        elevation="2"
+                      >
                         <div class="stat-content">
-                          <v-icon color="#F44336" size="24">mdi-fire</v-icon>
+                          <v-icon
+                            color="#F44336"
+                            size="24"
+                          >
+                            mdi-fire
+                          </v-icon>
                           <div class="stat-text">
-                            <span class="stat-value">{{ generatedRecipe.data.recipe.calories || '300' }}</span>
+                            <span class="stat-value">{{
+                              generatedRecipe.data.recipe.calories || '300'
+                            }}</span>
                             <span class="stat-label">kcal</span>
                           </div>
                         </div>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" sm="3">
-                      <v-card class="stat-card" elevation="2">
+                    <v-col
+                      cols="6"
+                      sm="3"
+                    >
+                      <v-card
+                        class="stat-card"
+                        elevation="2"
+                      >
                         <div class="stat-content">
-                          <v-icon color="#9C27B0" size="24">mdi-tag-outline</v-icon>
+                          <v-icon
+                            color="#9C27B0"
+                            size="24"
+                          >
+                            mdi-tag-outline
+                          </v-icon>
                           <div class="stat-text">
-                            <span class="stat-value">{{ generatedRecipe.data.recipe.category }}</span>
+                            <span class="stat-value">{{
+                              generatedRecipe.data.recipe.category
+                            }}</span>
                             <span class="stat-label">ジャンル</span>
                           </div>
                         </div>
@@ -203,8 +311,13 @@
                 </div>
 
                 <v-row>
-                  <v-col cols="12" md="6">
-                    <h4 class="mb-2">材料</h4>
+                  <v-col
+                    cols="12"
+                    md="6"
+                  >
+                    <h4 class="mb-2">
+                      材料
+                    </h4>
                     <v-list density="compact">
                       <v-list-item
                         v-for="(ingredient, index) in generatedRecipe.data
@@ -214,14 +327,22 @@
                         :subtitle="ingredient.amount"
                       >
                         <template #prepend>
-                          <v-icon icon="mdi-food" color="primary" />
+                          <v-icon
+                            icon="mdi-food"
+                            color="primary"
+                          />
                         </template>
                       </v-list-item>
                     </v-list>
                   </v-col>
 
-                  <v-col cols="12" md="6">
-                    <h4 class="mb-2">作り方</h4>
+                  <v-col
+                    cols="12"
+                    md="6"
+                  >
+                    <h4 class="mb-2">
+                      作り方
+                    </h4>
                     <v-list density="compact">
                       <v-list-item
                         v-for="(instruction, index) in generatedRecipe.data
@@ -230,7 +351,10 @@
                         :title="`${index + 1}. ${instruction}`"
                       >
                         <template #prepend>
-                          <v-avatar color="primary" size="small">
+                          <v-avatar
+                            color="primary"
+                            size="small"
+                          >
                             {{ index + 1 }}
                           </v-avatar>
                         </template>
@@ -284,6 +408,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { AIRecipeResponse } from '~/types/aiRecipe'
+import { useRecipeApi } from '~/composables/useRecipeApi'
 
 // ページ設定
 definePageMeta({
@@ -350,8 +475,8 @@ const ingredientsValidation = (value: string[]) => {
 const canGenerate = computed(() => {
   if (selectedMode.value === 'ingredients') {
     return (
-      ingredientsOptions.value.ingredients.length > 0 &&
-      ingredientsOptions.value.ingredients.length <= 10
+      ingredientsOptions.value.ingredients.length > 0
+      && ingredientsOptions.value.ingredients.length <= 10
     )
   }
   return true
@@ -386,10 +511,10 @@ const generateRecipe = async () => {
         const cleanConstraints = Object.fromEntries(
           Object.entries(constraintsOptions.value).filter(
             ([_, value]) =>
-              value !== null &&
-              value !== undefined &&
-              (Array.isArray(value) ? value.length > 0 : true)
-          )
+              value !== null
+              && value !== undefined
+              && (Array.isArray(value) ? value.length > 0 : true),
+          ),
         )
         result = await generateRecipeWithConstraints({
           ...cleanConstraints,
@@ -403,11 +528,13 @@ const generateRecipe = async () => {
     }
 
     generatedRecipe.value = result
-  } catch (err: unknown) {
-    const errorMessage =
-      err instanceof Error ? err.message : 'レシピの生成に失敗しました'
+  }
+  catch (err: unknown) {
+    const errorMessage
+      = err instanceof Error ? err.message : 'レシピの生成に失敗しました'
     error.value = errorMessage
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -423,7 +550,7 @@ const generateRecipe = async () => {
   background: white;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .recipe-title-section {
@@ -455,7 +582,7 @@ const generateRecipe = async () => {
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%) !important;
 }
 
 .stat-content {
@@ -494,11 +621,11 @@ const generateRecipe = async () => {
 }
 
 /* タブレット・デスクトップ対応 */
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .recipe-title {
     font-size: 28px;
   }
-  
+
   .generated-recipe {
     padding: 32px;
   }

@@ -30,10 +30,10 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    getUser: (state) => state.user,
-    isLoggedIn: (state) => state.isAuthenticated,
-    getToken: (state) => state.token,
-    getError: (state) => state.error,
+    getUser: state => state.user,
+    isLoggedIn: state => state.isAuthenticated,
+    getToken: state => state.token,
+    getError: state => state.error,
   },
 
   actions: {
@@ -57,30 +57,35 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
 
         // トークンをローカルストレージに保存
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.setItem('auth_token', accessToken)
           localStorage.setItem('refresh_token', accessToken)
         }
 
         return { success: true }
-      } catch (error) {
+      }
+      catch (error) {
         // エラーメッセージを日本語化
         let errorMessage = 'ログインに失敗しました'
 
         if (error.response?.status === 401) {
           errorMessage = 'メールアドレスまたはパスワードが正しくありません'
-        } else if (error.response?.status === 422) {
+        }
+        else if (error.response?.status === 422) {
           errorMessage = '入力内容に不備があります'
-        } else if (error.response?.status >= 500) {
-          errorMessage =
-            'サーバーエラーが発生しました。しばらく待ってから再度お試しください'
-        } else if (error.code === 'NETWORK_ERROR') {
+        }
+        else if (error.response?.status >= 500) {
+          errorMessage
+            = 'サーバーエラーが発生しました。しばらく待ってから再度お試しください'
+        }
+        else if (error.code === 'NETWORK_ERROR') {
           errorMessage = 'ネットワークに接続できません'
         }
 
         this.error = errorMessage
         throw new Error(this.error)
-      } finally {
+      }
+      finally {
         this.loading = false
       }
     },
@@ -89,7 +94,7 @@ export const useAuthStore = defineStore('auth', {
       name: string,
       email: string,
       password: string,
-      passwordConfirmation: string
+      passwordConfirmation: string,
     ) {
       this.loading = true
       const api = useApi()
@@ -111,18 +116,20 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
 
         // トークンをローカルストレージに保存
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.setItem('auth_token', accessToken)
           localStorage.setItem('refresh_token', accessToken)
         }
 
         return { success: true }
-      } catch (error) {
+      }
+      catch (error) {
         return {
           success: false,
           message: error.response?.data?.message || '登録に失敗しました',
         }
-      } finally {
+      }
+      finally {
         this.loading = false
       }
     },
@@ -137,10 +144,12 @@ export const useAuthStore = defineStore('auth', {
         }
 
         return { success: true }
-      } catch (error) {
+      }
+      catch (error) {
         // エラーが発生しても、ローカルのログアウト処理は続行
         return { success: true }
-      } finally {
+      }
+      finally {
         // ローカルの認証状態をクリア
         this.token = null
         this.refreshToken = null
@@ -148,7 +157,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = false
 
         // ローカルストレージからトークンを削除
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.removeItem('auth_token')
           localStorage.removeItem('refresh_token')
         }
@@ -170,7 +179,8 @@ export const useAuthStore = defineStore('auth', {
 
         this.user = response.data
         return { success: true }
-      } catch (error) {
+      }
+      catch (error) {
         if (error.response?.status === 401) {
           // 認証エラーの場合はログアウト
           this.logout()
@@ -181,14 +191,15 @@ export const useAuthStore = defineStore('auth', {
           message:
             error.response?.data?.message || 'ユーザー情報の取得に失敗しました',
         }
-      } finally {
+      }
+      finally {
         this.loading = false
       }
     },
 
     // ページ読み込み時にローカルストレージからトークンを復元
     async initAuth() {
-      if (process.client) {
+      if (import.meta.client) {
         const token = localStorage.getItem('auth_token')
         const refreshToken = localStorage.getItem('refresh_token')
 

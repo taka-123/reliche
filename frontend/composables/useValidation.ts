@@ -5,12 +5,12 @@ import type {
 } from '~/types/auth'
 
 // 強化されたメールバリデーション（RFC 5322準拠）
-const emailRegex =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+const emailRegex
+  = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
 // パスワード強度チェック（最低8文字、大文字・小文字・数字・特殊文字を含む）
-const strongPasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+const strongPasswordRegex
+  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 // バリデーションルール定義
 export const registerValidationRules: ValidationRules = {
@@ -73,7 +73,7 @@ export function useValidation() {
   // フォーム全体のバリデーション
   const validateForm = (
     formData: Record<string, unknown>,
-    rules: ValidationRules
+    rules: ValidationRules,
   ): ValidationErrors => {
     const errors: ValidationErrors = {}
 
@@ -90,7 +90,7 @@ export function useValidation() {
   // パスワード確認のバリデーション
   const validatePasswordConfirmation = (
     password: string,
-    confirmation: string
+    confirmation: string,
   ): string => {
     if (!confirmation.trim()) {
       return 'パスワード（確認）を入力してください'
@@ -103,8 +103,8 @@ export function useValidation() {
 
   // パスワード強度チェック
   const checkPasswordStrength = (
-    password: string
-  ): { score: number; feedback: string[] } => {
+    password: string,
+  ): { score: number, feedback: string[] } => {
     const feedback: string[] = []
     let score = 0
 
@@ -129,7 +129,7 @@ export function useValidation() {
   // リアルタイムバリデーション（デバウンス付き）
   const createDebouncedValidator = (
     validateFn: (value: string) => string,
-    delay: number = 300
+    delay: number = 300,
   ) => {
     let timeoutId: NodeJS.Timeout | null = null
 

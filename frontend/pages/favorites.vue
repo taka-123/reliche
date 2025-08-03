@@ -8,7 +8,9 @@
             <h1 class="text-h4 font-weight-bold mb-2 text-white">
               お気に入りレシピ
             </h1>
-            <p class="text-body-1 text-white">保存したレシピを管理できます</p>
+            <p class="text-body-1 text-white">
+              保存したレシピを管理できます
+            </p>
           </div>
 
           <v-chip
@@ -32,10 +34,15 @@
         border="start"
         class="mb-4"
       >
-        <strong>エラーが発生しました</strong><br />
+        <strong>エラーが発生しました</strong><br>
         {{ error }}
         <template #append>
-          <v-btn color="error" variant="text" size="small" @click="clearError">
+          <v-btn
+            color="error"
+            variant="text"
+            size="small"
+            @click="clearError"
+          >
             閉じる
           </v-btn>
         </template>
@@ -45,7 +52,11 @@
     <!-- ローディング状態 -->
     <v-container v-if="isLoading && favorites.length === 0">
       <div class="d-flex justify-center py-8">
-        <v-progress-circular indeterminate color="primary" size="64" />
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="64"
+        />
       </div>
     </v-container>
 
@@ -56,11 +67,17 @@
         v-if="favorites.length === 0 && !isLoading"
         class="empty-state text-center py-12"
       >
-        <v-icon size="80" color="grey-lighten-1" class="mb-4">
+        <v-icon
+          size="80"
+          color="grey-lighten-1"
+          class="mb-4"
+        >
           mdi-heart-outline
         </v-icon>
 
-        <h2 class="text-h5 mb-3">お気に入りレシピがありません</h2>
+        <h2 class="text-h5 mb-3">
+          お気に入りレシピがありません
+        </h2>
         <p class="text-body-1 text-medium-emphasis mb-6">
           気になるレシピを見つけたら、ハートボタンでお気に入りに追加しましょう
         </p>
@@ -77,7 +94,10 @@
       </div>
 
       <!-- お気に入りグリッド -->
-      <div v-else class="favorites-grid">
+      <div
+        v-else
+        class="favorites-grid"
+      >
         <v-row>
           <v-col
             v-for="favorite in favorites"
@@ -111,7 +131,9 @@
               </v-img>
 
               <v-card-text>
-                <h3 class="text-h6 mb-2">レシピ #{{ favorite.recipe_id }}</h3>
+                <h3 class="text-h6 mb-2">
+                  レシピ #{{ favorite.recipe_id }}
+                </h3>
                 <p class="text-caption text-medium-emphasis">
                   追加日: {{ formatDate(favorite.created_at) }}
                 </p>
@@ -145,16 +167,25 @@
     </v-container>
 
     <!-- 削除確認ダイアログ -->
-    <v-dialog v-model="showRemoveDialog" max-width="400">
+    <v-dialog
+      v-model="showRemoveDialog"
+      max-width="400"
+    >
       <v-card>
-        <v-card-title class="text-h6"> お気に入り削除 </v-card-title>
+        <v-card-title class="text-h6">
+          お気に入り削除
+        </v-card-title>
 
         <v-card-text> このレシピをお気に入りから削除しますか？ </v-card-text>
 
         <v-card-actions>
           <v-spacer />
 
-          <v-btn color="grey" variant="text" @click="showRemoveDialog = false">
+          <v-btn
+            color="grey"
+            variant="text"
+            @click="showRemoveDialog = false"
+          >
             キャンセル
           </v-btn>
 
@@ -171,11 +202,19 @@
     </v-dialog>
 
     <!-- 成功スナックバー -->
-    <v-snackbar v-model="showSuccessMessage" color="success" timeout="3000">
+    <v-snackbar
+      v-model="showSuccessMessage"
+      color="success"
+      timeout="3000"
+    >
       {{ successMessage }}
 
       <template #actions>
-        <v-btn color="white" variant="text" @click="showSuccessMessage = false">
+        <v-btn
+          color="white"
+          variant="text"
+          @click="showSuccessMessage = false"
+        >
           閉じる
         </v-btn>
       </template>

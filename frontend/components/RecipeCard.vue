@@ -41,13 +41,29 @@
 
       <!-- レシピメタ情報 -->
       <div class="recipe-meta d-flex align-center gap-4">
-        <div v-if="recipe.cooking_time" class="meta-item d-flex align-center">
-          <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
+        <div
+          v-if="recipe.cooking_time"
+          class="meta-item d-flex align-center"
+        >
+          <v-icon
+            size="small"
+            class="mr-1"
+          >
+            mdi-clock-outline
+          </v-icon>
           <span class="text-caption">{{ recipe.cooking_time }}分</span>
         </div>
 
-        <div v-if="recipe.servings" class="meta-item d-flex align-center">
-          <v-icon size="small" class="mr-1">mdi-account-group-outline</v-icon>
+        <div
+          v-if="recipe.servings"
+          class="meta-item d-flex align-center"
+        >
+          <v-icon
+            size="small"
+            class="mr-1"
+          >
+            mdi-account-group-outline
+          </v-icon>
           <span class="text-caption">{{ recipe.servings }}人分</span>
         </div>
       </div>

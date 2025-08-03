@@ -19,17 +19,17 @@ export const useFavoritesStore = defineStore('favorites', {
   getters: {
     // ユーザーのお気に入りレシピIDリストを取得
     favoriteRecipeIds: (state): number[] => {
-      return state.favorites.map((favorite) => favorite.recipe_id)
+      return state.favorites.map(favorite => favorite.recipe_id)
     },
 
     // 特定のレシピがお気に入りかどうかチェック
     isFavorited:
-      (state) =>
-      (recipeId: number): boolean => {
-        return state.favorites.some(
-          (favorite) => favorite.recipe_id === recipeId
-        )
-      },
+      state =>
+        (recipeId: number): boolean => {
+          return state.favorites.some(
+            favorite => favorite.recipe_id === recipeId,
+          )
+        },
 
     // お気に入り数を取得
     favoritesCount: (state): number => {
@@ -75,18 +75,21 @@ export const useFavoritesStore = defineStore('favorites', {
 
         if (response.data.success && response.data.data) {
           this.favorites = response.data.data
-        } else {
+        }
+        else {
           throw new Error(
-            response.data.message || 'お気に入り一覧の取得に失敗しました'
+            response.data.message || 'お気に入り一覧の取得に失敗しました',
           )
         }
-      } catch (error: unknown) {
-        this.error =
-          error instanceof Error
+      }
+      catch (error: unknown) {
+        this.error
+          = error instanceof Error
             ? error.message
             : 'お気に入り一覧の取得に失敗しました'
         // エラーログは適切にスローまたはトーストで表示
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -110,26 +113,29 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const response = await api.post<FavoriteApiResponse<Favorite>>(
           '/favorites',
-          requestData
+          requestData,
         )
 
         if (response.data.success && response.data.data) {
           // ローカル状態を更新
           this.favorites.unshift(response.data.data)
           return true
-        } else {
+        }
+        else {
           throw new Error(
-            response.data.message || 'お気に入りの追加に失敗しました'
+            response.data.message || 'お気に入りの追加に失敗しました',
           )
         }
-      } catch (error: unknown) {
-        this.error =
-          error instanceof Error
+      }
+      catch (error: unknown) {
+        this.error
+          = error instanceof Error
             ? error.message
             : 'お気に入りの追加に失敗しました'
         // エラーログは適切にスローまたはトーストで表示
         return false
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -144,28 +150,31 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const api = useApi()
         const response = await api.delete<FavoriteApiResponse>(
-          `/favorites/${recipeId}`
+          `/favorites/${recipeId}`,
         )
 
         if (response.data.success) {
           // ローカル状態を更新
           this.favorites = this.favorites.filter(
-            (favorite) => favorite.recipe_id !== recipeId
+            favorite => favorite.recipe_id !== recipeId,
           )
           return true
-        } else {
+        }
+        else {
           throw new Error(
-            response.data.message || 'お気に入りの削除に失敗しました'
+            response.data.message || 'お気に入りの削除に失敗しました',
           )
         }
-      } catch (error: unknown) {
-        this.error =
-          error instanceof Error
+      }
+      catch (error: unknown) {
+        this.error
+          = error instanceof Error
             ? error.message
             : 'お気に入りの削除に失敗しました'
         // エラーログは適切にスローまたはトーストで表示
         return false
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -176,7 +185,8 @@ export const useFavoritesStore = defineStore('favorites', {
     async toggleFavorite(recipeId: number): Promise<boolean> {
       if (this.isFavorited(recipeId)) {
         return await this.removeFromFavorites(recipeId)
-      } else {
+      }
+      else {
         return await this.addToFavorites(recipeId)
       }
     },
@@ -190,19 +200,21 @@ export const useFavoritesStore = defineStore('favorites', {
 
         const api = useApi()
         const response = await api.get<FavoriteCheckResponse>(
-          `/favorites/check/${recipeId}`
+          `/favorites/check/${recipeId}`,
         )
 
         if (response.data.success && response.data.data) {
           return response.data.data.is_favorited
-        } else {
+        }
+        else {
           throw new Error(
-            response.data.message || 'お気に入り状態の取得に失敗しました'
+            response.data.message || 'お気に入り状態の取得に失敗しました',
           )
         }
-      } catch (error: unknown) {
-        this.error =
-          error instanceof Error
+      }
+      catch (error: unknown) {
+        this.error
+          = error instanceof Error
             ? error.message
             : 'お気に入り状態の取得に失敗しました'
         // エラーログは適切にスローまたはトーストで表示

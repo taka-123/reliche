@@ -2,7 +2,9 @@
   <div class="ingredient-registration">
     <!-- ヘッダー -->
     <div class="header">
-      <h1 class="page-title">食材登録</h1>
+      <h1 class="page-title">
+        食材登録
+      </h1>
     </div>
 
     <!-- 検索バー -->
@@ -12,13 +14,28 @@
 
     <!-- 登録済み食材 -->
     <div class="selected-ingredients-section">
-      <h2 class="section-title">登録済み食材</h2>
+      <h2 class="section-title">
+        登録済み食材
+      </h2>
       <div class="ingredients-container">
-        <div v-if="selectedIngredients.length === 0" class="empty-state">
-          <v-icon size="48" color="rgba(0, 0, 0, 0.3)">mdi-food-variant</v-icon>
-          <p class="empty-text">検索して食材を追加してください</p>
+        <div
+          v-if="selectedIngredients.length === 0"
+          class="empty-state"
+        >
+          <v-icon
+            size="48"
+            color="rgba(0, 0, 0, 0.3)"
+          >
+            mdi-food-variant
+          </v-icon>
+          <p class="empty-text">
+            検索して食材を追加してください
+          </p>
         </div>
-        <div v-else class="ingredients-grid">
+        <div
+          v-else
+          class="ingredients-grid"
+        >
           <IngredientTag
             v-for="ingredient in selectedIngredients"
             :key="ingredient.id"
@@ -39,7 +56,9 @@
         block
         @click="goToAIGenerate"
       >
-        <v-icon left>mdi-robot-excited</v-icon>
+        <v-icon left>
+          mdi-robot-excited
+        </v-icon>
         AIでレシピ生成
       </v-btn>
 
@@ -50,7 +69,9 @@
         block
         @click="searchRecipes"
       >
-        <v-icon left>mdi-chef-hat</v-icon>
+        <v-icon left>
+          mdi-chef-hat
+        </v-icon>
         <span v-if="selectedCount > 0">
           レシピを探す ({{ selectedCount }}品目)
         </span>
@@ -67,8 +88,8 @@ import IngredientSearchInput from '~/components/IngredientSearchInput.vue'
 import IngredientTag from '~/components/IngredientTag.vue'
 
 const ingredientsStore = useIngredientsStore()
-const { selectedIngredients, selectedCount, hasSelectedIngredients } =
-  storeToRefs(ingredientsStore)
+const { selectedIngredients, selectedCount, hasSelectedIngredients }
+  = storeToRefs(ingredientsStore)
 
 const removeIngredient = (ingredientId: number) => {
   ingredientsStore.removeIngredient(ingredientId)

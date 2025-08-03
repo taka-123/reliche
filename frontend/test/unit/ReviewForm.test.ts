@@ -95,7 +95,7 @@ describe('ReviewForm', () => {
     wrapper.vm.addImageUrl()
 
     expect(wrapper.vm.formData.review_images).toContain(
-      'https://example.com/test.jpg'
+      'https://example.com/test.jpg',
     )
     expect(wrapper.vm.imageUrl).toBe('')
 
@@ -128,7 +128,7 @@ describe('ReviewForm', () => {
     expect(wrapper.vm.rules.comment('')).toBe(true)
     expect(wrapper.vm.rules.comment('a'.repeat(500))).toBe(true)
     expect(wrapper.vm.rules.comment('a'.repeat(1001))).toBe(
-      'コメントは1000文字以内で入力してください'
+      'コメントは1000文字以内で入力してください',
     )
   })
 
@@ -194,9 +194,9 @@ describe('ReviewForm', () => {
   it('送信中状態が正しく管理される', async () => {
     mockCreateReview.mockImplementation(
       () =>
-        new Promise((resolve) =>
-          setTimeout(() => resolve(mockExistingReview), 100)
-        )
+        new Promise(resolve =>
+          setTimeout(() => resolve(mockExistingReview), 100),
+        ),
     )
 
     const wrapper = createWrapper()

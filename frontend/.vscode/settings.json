@@ -1,7 +1,4 @@
 {
-  // フロントエンド専用設定
-  "typescript.preferences.includePackageJsonAutoImports": "off",
-
   // Nuxt固有の除外設定
   "files.exclude": {
     "**/.nuxt": true,
@@ -9,9 +6,20 @@
     "**/.output": true
   },
 
+  // cSpell設定
+  "cSpell.words": [
+    "pinia",
+    "Reliche",
+    "nuxt",
+    "composables",
+    "vuetify"
+  ],
+
   // Vue/Nuxt開発用設定
-  "typescript.preferences.useLabelDetailsInCompletionEntries": true,
-  "typescript.preferences.allowTextChangesInNewFiles": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
   "vue.inlayHints.missingProps": false,
-  "vue.inlayHints.optionsWrapper": false
+  "vue.inlayHints.optionsWrapper": false,
+
+  // ESLint設定 - @nuxt/eslint使用
+  "eslint.useFlatConfig": true
 }

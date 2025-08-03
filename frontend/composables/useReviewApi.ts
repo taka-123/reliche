@@ -16,10 +16,10 @@ export const useReviewApi = () => {
    */
   const getReviews = async (
     recipeId: string | number,
-    page = 1
+    page = 1,
   ): Promise<ReviewListResponse> => {
     const response = await api.get<ReviewListResponse>(
-      `/recipes/${recipeId}/reviews?page=${page}`
+      `/recipes/${recipeId}/reviews?page=${page}`,
     )
     return response.data
   }
@@ -28,10 +28,10 @@ export const useReviewApi = () => {
    * レシピの評価統計を取得
    */
   const getStatistics = async (
-    recipeId: string | number
+    recipeId: string | number,
   ): Promise<ReviewStatistics> => {
     const response = await api.get<ReviewStatisticsResponse>(
-      `/recipes/${recipeId}/reviews/statistics`
+      `/recipes/${recipeId}/reviews/statistics`,
     )
     return response.data.data
   }
@@ -41,11 +41,11 @@ export const useReviewApi = () => {
    */
   const createReview = async (
     recipeId: string | number,
-    reviewData: CreateReviewRequest
+    reviewData: CreateReviewRequest,
   ): Promise<RecipeReview> => {
     const response = await api.post<ReviewResponse>(
       `/recipes/${recipeId}/reviews`,
-      reviewData
+      reviewData,
     )
 
     if (!response.data.success) {
@@ -65,11 +65,11 @@ export const useReviewApi = () => {
   const updateReview = async (
     recipeId: string | number,
     reviewId: number,
-    reviewData: UpdateReviewRequest
+    reviewData: UpdateReviewRequest,
   ): Promise<RecipeReview> => {
     const response = await api.put<ReviewResponse>(
       `/recipes/${recipeId}/reviews/${reviewId}`,
-      reviewData
+      reviewData,
     )
 
     if (!response.data.success) {
@@ -88,10 +88,10 @@ export const useReviewApi = () => {
    */
   const deleteReview = async (
     recipeId: string | number,
-    reviewId: number
+    reviewId: number,
   ): Promise<void> => {
     const response = await api.delete<ReviewResponse>(
-      `/recipes/${recipeId}/reviews/${reviewId}`
+      `/recipes/${recipeId}/reviews/${reviewId}`,
     )
 
     if (!response.data.success) {
@@ -104,10 +104,10 @@ export const useReviewApi = () => {
    */
   const getReview = async (
     recipeId: string | number,
-    reviewId: number
+    reviewId: number,
   ): Promise<RecipeReview> => {
     const response = await api.get<{ data: RecipeReview }>(
-      `/recipes/${recipeId}/reviews/${reviewId}`
+      `/recipes/${recipeId}/reviews/${reviewId}`,
     )
     return response.data.data
   }

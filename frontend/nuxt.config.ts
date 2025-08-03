@@ -3,41 +3,21 @@ import { defineNuxtConfig } from 'nuxt/config'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
   modules: [
     '@pinia/nuxt',
+    '@nuxt/eslint',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
   ],
-  build: {
-    transpile: ['vuetify'],
-  },
-  vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
-    },
-    optimizeDeps: {
-      include: ['vue', 'vue-router', 'pinia', '@vueuse/core', '@vueuse/head'],
-      exclude: ['vue-demi'],
-    },
-  },
+  devtools: { enabled: true },
   css: [
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
     '~/assets/css/main.css',
   ],
-  typescript: {
-    strict: false,
-    typeCheck: false,
-    shim: true,
-  },
   runtimeConfig: {
     public: {
       // クライアントサイド（ブラウザ）用API URL
@@ -54,5 +34,25 @@ export default defineNuxtConfig({
         return 'production' as const
       })(),
     },
+  },
+  build: {
+    transpile: ['vuetify'],
+  },
+  compatibilityDate: '2024-11-01',
+  vite: {
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
+    optimizeDeps: {
+      include: ['vue', 'vue-router', 'pinia', '@vueuse/core', '@vueuse/head'],
+      exclude: ['vue-demi'],
+    },
+  },
+  typescript: {
+    strict: false,
+    typeCheck: false,
+    shim: true,
   },
 })

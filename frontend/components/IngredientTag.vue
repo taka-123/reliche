@@ -8,7 +8,12 @@
       class="remove-btn"
       @click="removeIngredient"
     >
-      <v-icon size="16" color="rgba(0, 0, 0, 0.6)">mdi-close</v-icon>
+      <v-icon
+        size="16"
+        color="rgba(0, 0, 0, 0.6)"
+      >
+        mdi-close
+      </v-icon>
     </v-btn>
   </div>
 </template>

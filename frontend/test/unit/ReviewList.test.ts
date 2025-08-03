@@ -116,7 +116,7 @@ describe('ReviewList', () => {
     const firstCard = reviewCards[0]
     expect(firstCard.find('.user-name').text()).toBe('テストユーザー')
     expect(firstCard.find('.review-comment p').text()).toBe(
-      'とても美味しかったです！'
+      'とても美味しかったです！',
     )
   })
   it('レビュー投稿ボタンが条件に応じて表示される', () => {
@@ -140,7 +140,7 @@ describe('ReviewList', () => {
 
     expect(wrapper.find('.loading-container').exists()).toBe(true)
     expect(wrapper.find('.loading-text').text()).toContain(
-      'レビューを読み込み中'
+      'レビューを読み込み中',
     )
   })
   it('レビューがない場合のメッセージが表示される', () => {
@@ -150,7 +150,7 @@ describe('ReviewList', () => {
     })
     expect(wrapper.find('.no-reviews').exists()).toBe(true)
     expect(wrapper.find('.no-reviews-text').text()).toContain(
-      'まだレビューがありません'
+      'まだレビューがありません',
     )
   })
   it('ページネーションが正しく表示される', () => {

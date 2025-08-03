@@ -10,7 +10,7 @@ export function useAuth() {
     async loginAndRedirect(
       email: string,
       password: string,
-      redirectPath?: string
+      redirectPath?: string,
     ) {
       await authStore.login(email, password)
       router.push(redirectPath || '/')
@@ -22,7 +22,7 @@ export function useAuth() {
       email: string,
       password: string,
       passwordConfirmation: string,
-      redirectPath?: string
+      redirectPath?: string,
     ) {
       await authStore.register(name, email, password, passwordConfirmation)
       router.push(redirectPath || '/')
