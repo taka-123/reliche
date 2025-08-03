@@ -1,14 +1,22 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" class="app-header">
-      <!-- レスポンシブなタイトル表示 -->
+      <!-- ロゴとタイトル -->
       <v-app-bar-title class="d-flex align-center">
         <NuxtLink
           to="/"
-          class="text-decoration-none text-white d-flex align-center"
+          class="text-decoration-none text-white d-flex align-center logo-link"
         >
-          <span class="d-none d-sm-block">reliche</span>
-          <span class="d-block d-sm-none">R</span>
+          <div class="logo-container mr-2">
+            <v-icon size="32" color="white">mdi-chef-hat</v-icon>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name d-none d-sm-block">Reliche</span>
+            <span class="brand-tagline d-none d-md-block"
+              >美味しいレシピを発見</span
+            >
+            <span class="d-block d-sm-none brand-initial">R</span>
+          </div>
         </NuxtLink>
       </v-app-bar-title>
 
@@ -136,5 +144,54 @@ const handleLogout = async () => {
 
 .app-footer span {
   color: white !important;
+}
+
+/* ロゴとブランディングのスタイル */
+.logo-link {
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.05);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover .logo-container {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(5deg);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.brand-tagline {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  font-weight: 400;
+  margin-top: -2px;
+}
+
+.brand-initial {
+  font-size: 1.8rem;
+  font-weight: 700;
 }
 </style>

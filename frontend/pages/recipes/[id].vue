@@ -32,7 +32,21 @@
     <div v-else class="recipe-content">
       <!-- レシピ画像 -->
       <div class="recipe-image">
-        <div class="placeholder-image">
+        <v-img
+          v-if="recipe.image_url"
+          :src="recipe.image_url"
+          :alt="recipe.name"
+          height="300"
+          cover
+          class="recipe-main-image"
+        >
+          <template #placeholder>
+            <div class="image-loading">
+              <v-progress-circular indeterminate size="40" color="primary" />
+            </div>
+          </template>
+        </v-img>
+        <div v-else class="placeholder-image">
           <v-icon size="48" color="rgba(76, 175, 80, 0.6)">mdi-chef-hat</v-icon>
           <span class="placeholder-text">レシピ画像</span>
         </div>
@@ -40,20 +54,52 @@
 
       <!-- レシピ情報 -->
       <div class="recipe-info">
-        <div class="recipe-stats">
-          <div class="stat-item">
-            <v-icon color="#666">mdi-clock-outline</v-icon>
-            <span>{{ recipe.cooking_time }}分</span>
-          </div>
-          <div class="stat-item">
-            <v-icon color="#666">mdi-account-multiple</v-icon>
-            <span>2人分</span>
-          </div>
-          <div class="stat-item">
-            <v-icon color="#666">mdi-fire</v-icon>
-            <span>300kcal</span>
-          </div>
-        </div>
+        <v-row class="recipe-stats-grid" no-gutters>
+          <v-col cols="6" sm="3">
+            <v-card class="stat-card" elevation="2">
+              <div class="stat-content">
+                <v-icon color="#4CAF50" size="24">mdi-clock-outline</v-icon>
+                <div class="stat-text">
+                  <span class="stat-value">{{ recipe.cooking_time }}</span>
+                  <span class="stat-label">分</span>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col cols="6" sm="3">
+            <v-card class="stat-card" elevation="2">
+              <div class="stat-content">
+                <v-icon color="#FF9800" size="24">mdi-account-multiple</v-icon>
+                <div class="stat-text">
+                  <span class="stat-value">2</span>
+                  <span class="stat-label">人分</span>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col cols="6" sm="3">
+            <v-card class="stat-card" elevation="2">
+              <div class="stat-content">
+                <v-icon color="#F44336" size="24">mdi-fire</v-icon>
+                <div class="stat-text">
+                  <span class="stat-value">300</span>
+                  <span class="stat-label">kcal</span>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col cols="6" sm="3">
+            <v-card class="stat-card" elevation="2">
+              <div class="stat-content">
+                <v-icon color="#9C27B0" size="24">mdi-tag-outline</v-icon>
+                <div class="stat-text">
+                  <span class="stat-value">和食</span>
+                  <span class="stat-label">ジャンル</span>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
       </div>
 
       <!-- 材料 -->
@@ -65,23 +111,18 @@
             :key="ingredient.id"
             class="ingredient-item"
           >
-            <div class="ingredient-status">
-              <v-icon
-                :color="
-                  isIngredientAvailable(ingredient.id) ? '#4CAF50' : '#FF9800'
-                "
-                size="20"
-              >
-                {{
-                  isIngredientAvailable(ingredient.id)
-                    ? 'mdi-check-circle'
-                    : 'mdi-alert'
-                }}
-              </v-icon>
-            </div>
             <div class="ingredient-info">
               <span class="ingredient-name">{{ ingredient.name }}</span>
-              <span class="ingredient-quantity">{{ ingredient.quantity }}</span>
+              <span class="ingredient-amount">{{ ingredient.amount }}</span>
+            </div>
+            <div class="ingredient-checkbox">
+              <v-checkbox
+                :model-value="isIngredientChecked(ingredient.id)"
+                color="primary"
+                hide-details
+                density="comfortable"
+                @update:model-value="toggleIngredient(ingredient.id)"
+              />
             </div>
           </div>
         </div>
@@ -111,15 +152,6 @@
             :key="index"
             class="instruction-item"
           >
-            <div class="instruction-checkbox">
-              <v-checkbox
-                :model-value="isStepCompleted(index)"
-                color="primary"
-                hide-details
-                density="comfortable"
-                @update:model-value="toggleStep(index)"
-              />
-            </div>
             <div class="instruction-content">
               <span class="step-number">{{ index + 1 }}.</span>
               <span
@@ -130,6 +162,15 @@
               >
                 {{ instruction }}
               </span>
+            </div>
+            <div class="instruction-checkbox">
+              <v-checkbox
+                :model-value="isStepCompleted(index)"
+                color="primary"
+                hide-details
+                density="comfortable"
+                @update:model-value="toggleStep(index)"
+              />
             </div>
           </div>
         </div>
@@ -217,15 +258,16 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useRoute, useRuntimeConfig, navigateTo, useHead } from 'nuxt/app'
+import { computed, onMounted, onUnmounted, ref } from '#imports'
+import ReviewForm from '~/components/ReviewForm.vue'
+import ReviewList from '~/components/ReviewList.vue'
 import { useRecipeApi } from '~/composables/useRecipeApi'
 import { useReviewApi } from '~/composables/useReviewApi'
+import { useAuthStore } from '~/stores/auth'
 import { useIngredientsStore } from '~/stores/ingredients'
 import { useRecipesStore } from '~/stores/recipes'
-import { useAuthStore } from '~/stores/auth'
 import type { RecipeReview, ReviewStatistics } from '~/types/review'
-import ReviewList from '~/components/ReviewList.vue'
-import ReviewForm from '~/components/ReviewForm.vue'
 
 const route = useRoute()
 const recipeId = route.params.id as string
@@ -241,22 +283,96 @@ const {
 } = useReviewApi()
 
 const { selectedIngredientIds } = storeToRefs(ingredientsStore)
-const {
-  currentRecipe,
-  completedSteps,
-  keepScreenOn,
-  completedStepsCount,
-  totalStepsCount,
-  progressPercentage,
-} = storeToRefs(recipesStore)
+const { currentRecipe, completedSteps } = storeToRefs(recipesStore)
 const { currentUser, isAuthenticated } = storeToRefs(authStore)
 
 const recipe = computed(() => currentRecipe.value)
 const isLoading = ref(true)
 
+// レビュー統計の取得
+const reviewStatistics = ref(null)
+
+// 材料チェック状態管理
+const checkedIngredients = ref<Set<number>>(new Set())
+
+// 材料がチェックされているかどうか
+const isIngredientChecked = (id: number): boolean => {
+  return checkedIngredients.value.has(id)
+}
+
+// 手順の進捗管理
+const completedStepsCount = computed(() => checkedSteps.value.size)
+const totalStepsCount = computed(() => recipe.value?.instructions?.length || 0)
+const progressPercentage = computed(() => {
+  if (totalStepsCount.value === 0) return 0
+  return Math.round((completedStepsCount.value / totalStepsCount.value) * 100)
+})
+
+// 画面スリープ防止
+const keepScreenOn = ref(false)
+
+// 各種ハンドラー関数
+const goBack = () => {
+  history.back()
+}
+
+const shareRecipe = async () => {
+  if (!recipe.value) return
+
+  const shareData = {
+    title: recipe.value.name,
+    text: `${recipe.value.name}のレシピをチェック！`,
+    url: window.location.href,
+  }
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData)
+    } else {
+      // フォールバック: クリップボードにコピー
+      await navigator.clipboard.writeText(window.location.href)
+      showMessage('URLをクリップボードにコピーしました', 'success')
+    }
+  } catch (error: any) {
+    // ユーザーがキャンセルした場合はエラーではないので何もしない
+    if (error.name !== 'AbortError') {
+      console.error('共有エラー:', error)
+    }
+  }
+}
+
+// 材料のチェック状態を切り替え
+const toggleIngredient = (id: number) => {
+  if (checkedIngredients.value.has(id)) {
+    checkedIngredients.value.delete(id)
+  } else {
+    checkedIngredients.value.add(id)
+  }
+  // Setの変更を検知させるため新しいSetを作成
+  checkedIngredients.value = new Set(checkedIngredients.value)
+}
+
+// 手順チェック状態管理
+const checkedSteps = ref<Set<number>>(new Set())
+
+// 手順がチェックされているかどうか
+const isStepCompleted = (index: number): boolean => {
+  return checkedSteps.value.has(index)
+}
+
+// 手順のチェック状態を切り替え
+const toggleStep = (index: number) => {
+  if (checkedSteps.value.has(index)) {
+    checkedSteps.value.delete(index)
+  } else {
+    checkedSteps.value.add(index)
+  }
+  // Setの変更を検知させるため新しいSetを作成
+  checkedSteps.value = new Set(checkedSteps.value)
+}
+
 // レビュー関連の状態
 const reviews = ref<RecipeReview[]>([])
-const reviewStatistics = ref<ReviewStatistics | null>(null)
 const reviewMeta = ref<{
   current_page: number
   last_page: number
@@ -280,16 +396,9 @@ const canWriteReview = computed(() => {
   return Boolean(isAuthenticated.value && recipe.value)
 })
 
+// 材料の利用可能性チェック
 const isIngredientAvailable = (ingredientId: number) => {
   return selectedIngredientIds.value.includes(ingredientId)
-}
-
-const isStepCompleted = (stepIndex: number) => {
-  return recipesStore.isStepCompleted(stepIndex)
-}
-
-const toggleStep = (stepIndex: number) => {
-  recipesStore.toggleStep(stepIndex)
 }
 
 const toggleScreenWakeLock = () => {
@@ -410,39 +519,6 @@ const showMessage = (
   showSnackbar.value = true
 }
 
-const goBack = () => {
-  history.back()
-}
-
-const shareRecipe = async () => {
-  if (!recipe.value) return
-
-  const shareData = {
-    title: recipe.value.name,
-    text: `${recipe.value.name}のレシピをチェック！`,
-    url: window.location.href,
-  }
-
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData)
-    } else {
-      // フォールバック: クリップボードにコピー
-      await navigator.clipboard.writeText(window.location.href)
-    }
-  } catch (error) {
-    // ユーザーがキャンセルした場合はエラーではないので何もしない
-    if (error.name !== 'AbortError') {
-      const config = useRuntimeConfig()
-      const isDevelopment = config.public.appEnv === 'development'
-      if (isDevelopment) {
-        // eslint-disable-next-line no-console
-        console.error('共有エラー:', error)
-      }
-    }
-  }
-}
-
 onMounted(async () => {
   await fetchRecipe()
   await loadReviews()
@@ -502,6 +578,7 @@ useHead({
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 2.6em;
@@ -573,15 +650,45 @@ useHead({
   padding: 16px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.stat-item {
+.stat-card {
+  margin: 4px;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  padding: 16px 12px;
   gap: 8px;
-  font-size: 14px;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 12px;
   color: #666;
+  margin-top: 2px;
 }
 
 .ingredients-section,
@@ -609,18 +716,17 @@ useHead({
 .ingredient-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   padding: 12px 16px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 8px;
 }
 
 .ingredient-item:hover {
   background-color: #f8f9fa;
-}
-
-.ingredient-status {
-  flex-shrink: 0;
+  border-color: #e0e0e0;
 }
 
 .ingredient-info {
@@ -628,16 +734,23 @@ useHead({
   justify-content: space-between;
   align-items: center;
   flex: 1;
+  margin-right: 12px;
 }
 
 .ingredient-name {
   font-size: 16px;
   color: #333;
+  font-weight: 500;
 }
 
-.ingredient-quantity {
+.ingredient-amount {
   font-size: 14px;
   color: #666;
+  margin-left: 8px;
+}
+
+.ingredient-checkbox {
+  flex-shrink: 0;
 }
 
 .instructions-header {
@@ -673,12 +786,26 @@ useHead({
 .instruction-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  justify-content: space-between;
   padding: 16px;
   border-radius: 8px;
   border: 1px solid #f0f0f0;
   margin-bottom: 12px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+}
+
+.instruction-item:hover {
+  background-color: #f8f9fa;
+  border-color: #e0e0e0;
+}
+
+.instruction-content {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.instruction-checkbox {
+  flex-shrink: 0;
 }
 
 .instruction-item:last-child {

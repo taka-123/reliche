@@ -8,6 +8,8 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AIRecipeGeneratorService
 {
@@ -25,6 +27,8 @@ class AIRecipeGeneratorService
 
     private bool $useProModel;
 
+    private string $imageGenerationUrl;
+
     public function __construct()
     {
         $this->apiKey = config('services.gemini.api_key');
@@ -34,6 +38,7 @@ class AIRecipeGeneratorService
         $this->timeout = config('ai.recipe.timeout', 30);
         $this->cacheTtl = config('ai.recipe.cache_ttl', 3600);
         $this->useProModel = false; // デフォルトはFlash-Lite
+        $this->imageGenerationUrl = config('services.mcp.image_generation_url', 'https://mcp-creatify-lipsync-20250719-010824-a071b7b8-820994673238.us-central1.run.app/t2i/fal/rundiffusion/photo-flux');
 
         // テスト環境またはCI環境ではAPIキーチェックをスキップ
         if (app()->runningUnitTests() || app()->environment('testing') || ! empty(env('CI'))) {
@@ -142,6 +147,21 @@ class AIRecipeGeneratorService
         // 栄養マスターデータがある場合は保存
         if (isset($validatedData['nutrition_master'])) {
             $this->saveNutritionMasterData($validatedData['nutrition_master']);
+        }
+
+        // レシピ画像を生成して保存
+        $imageUrl = $this->generateRecipeImage(
+            $recipeInfo['title'],
+            $recipeInfo['description'] ?? '',
+            $ingredients
+        );
+        
+        if ($imageUrl) {
+            $recipe->update(['image_url' => $imageUrl]);
+            Log::info('Recipe image generated and saved', [
+                'recipe_id' => $recipe->id,
+                'image_url' => $imageUrl
+            ]);
         }
 
         return $recipe;
@@ -554,6 +574,116 @@ class AIRecipeGeneratorService
                     'cooking_tips' => $nutritionData['cooking_tips'],
                 ]
             );
+        }
+    }
+
+    /**
+     * レシピ画像を生成
+     */
+    public function generateRecipeImage(string $recipeName, string $description, array $ingredients = []): ?string
+    {
+        try {
+            // レシピの詳細情報から画像生成用のプロンプトを作成
+            $prompt = $this->createImagePrompt($recipeName, $description, $ingredients);
+            
+            Log::info('Generating recipe image', [
+                'recipe_name' => $recipeName,
+                'prompt' => $prompt
+            ]);
+
+            // MCP経由で画像生成API呼び出し
+            $response = Http::timeout($this->timeout)
+                ->post($this->imageGenerationUrl, [
+                    'prompt' => $prompt,
+                    'image_size' => 'landscape_4_3',
+                    'num_inference_steps' => 28,
+                    'guidance_scale' => 3.5,
+                    'num_images' => 1,
+                    'enable_safety_checker' => true,
+                    'safety_tolerance' => 2
+                ]);
+
+            if (!$response->successful()) {
+                Log::error('Image generation failed', [
+                    'status' => $response->status(),
+                    'response' => $response->body()
+                ]);
+                return null;
+            }
+
+            $data = $response->json();
+            
+            if (empty($data['images']) || !isset($data['images'][0]['url'])) {
+                Log::error('No image URL in response', ['response' => $data]);
+                return null;
+            }
+
+            $imageUrl = $data['images'][0]['url'];
+            
+            // 画像をダウンロードして保存
+            return $this->downloadAndSaveImage($imageUrl, $recipeName);
+            
+        } catch (Exception $e) {
+            Log::error('Recipe image generation failed', [
+                'recipe_name' => $recipeName,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * 画像生成用のプロンプトを作成
+     */
+    private function createImagePrompt(string $recipeName, string $description, array $ingredients): string
+    {
+        $ingredientList = !empty($ingredients) ? implode(', ', array_column($ingredients, 'name')) : '';
+        
+        $prompt = "Professional food photography of {$recipeName}. ";
+        $prompt .= "Beautiful, appetizing dish presentation. ";
+        $prompt .= "{$description} ";
+        
+        if ($ingredientList) {
+            $prompt .= "Made with {$ingredientList}. ";
+        }
+        
+        $prompt .= "High-quality, well-lit, restaurant-style plating. ";
+        $prompt .= "Clean white background, natural lighting, 4K resolution, ";
+        $prompt .= "professional culinary photography, appetizing colors, ";
+        $prompt .= "detailed textures, mouth-watering presentation";
+        
+        return $prompt;
+    }
+
+    /**
+     * 画像をダウンロードして保存
+     */
+    private function downloadAndSaveImage(string $imageUrl, string $recipeName): ?string
+    {
+        try {
+            $imageResponse = Http::timeout(30)->get($imageUrl);
+            
+            if (!$imageResponse->successful()) {
+                Log::error('Failed to download image', ['url' => $imageUrl]);
+                return null;
+            }
+
+            $imageContent = $imageResponse->body();
+            $fileName = 'recipes/' . Str::slug($recipeName) . '_' . time() . '.jpg';
+            
+            // 画像をストレージに保存
+            if (Storage::disk('public')->put($fileName, $imageContent)) {
+                return Storage::disk('public')->url($fileName);
+            }
+            
+            return null;
+            
+        } catch (Exception $e) {
+            Log::error('Failed to download and save image', [
+                'url' => $imageUrl,
+                'error' => $e->getMessage()
+            ]);
+            return null;
         }
     }
 }

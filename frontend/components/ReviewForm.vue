@@ -14,17 +14,37 @@
         <!-- 総合評価 -->
         <div class="rating-section">
           <v-label class="rating-label">総合評価 *</v-label>
-          <v-rating
-            v-model="formData.rating"
-            :rules="[rules.rating]"
-            color="primary"
-            active-color="primary"
-            size="large"
-            hover
-            half-increments
-            class="rating-input"
-          />
-          <span class="rating-text">{{ getRatingText(formData.rating) }}</span>
+          <div class="rating-container">
+            <!-- 押しやすい星評価ボタン（整数のみ） -->
+            <div class="star-buttons">
+              <button
+                v-for="i in 5"
+                :key="i"
+                type="button"
+                class="star-button"
+                :class="{ active: form.rating >= i }"
+                @click="setRating(i)"
+                @mouseenter="hoverRating = i"
+                @mouseleave="hoverRating = 0"
+              >
+                <v-icon
+                  :color="getStarButtonColor(i)"
+                  size="36"
+                  class="star-icon"
+                >
+                  {{
+                    form.rating >= i || hoverRating >= i
+                      ? 'mdi-star'
+                      : 'mdi-star-outline'
+                  }}
+                </v-icon>
+              </button>
+            </div>
+            <div class="rating-display">
+              <span class="rating-value">{{ form.rating || 0 }}</span>
+              <span class="rating-text">{{ getRatingText(form.rating) }}</span>
+            </div>
+          </div>
         </div>
 
         <!-- 詳細評価 -->
@@ -148,8 +168,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { computed, ref, watch } from '#imports'
+import type { Ref } from '#imports'
 import type { CreateReviewRequest, RecipeReview } from '~/types/review'
+import { useReviewApi } from '~/composables/useReviewApi'
 
 interface Props {
   recipeId: string | number
@@ -167,29 +189,44 @@ const emit = defineEmits<Emits>()
 
 const { createReview, updateReview } = useReviewApi()
 
-const formRef = ref()
-const isFormValid = ref(false)
-const isSubmitting = ref(false)
-const imageUrl = ref('')
-
-const isEditing = computed(() => !!props.existingReview)
-
 // フォームデータ
-const formData = ref<CreateReviewRequest>({
+const form = ref<CreateReviewRequest>({
   rating: 0,
-  taste_score: undefined,
-  difficulty_score: undefined,
-  instruction_clarity: undefined,
   comment: '',
+  recipeId: props.recipeId,
+  taste_score: 0,
+  difficulty_score: 0,
+  instruction_clarity: 0,
   review_images: [],
 })
+
+// formDataエイリアス（テンプレートとの互換性）
+const formData = form
+
+// ホバー状態の管理
+const hoverRating = ref(0)
+
+// フォームバリデーション状態
+const isEditing = computed(() => !!props.existingReview)
+
+// 画像URL入力用
+const imageUrl = ref('')
+
+// 送信状態
+const isSubmitting = ref(false)
+
+// フォーム参照
+const formRef = ref()
+
+// フォーム有効性
+const isFormValid = ref(false)
 
 // 既存レビューがある場合、フォームに設定
 watch(
   () => props.existingReview,
   (review) => {
     if (review) {
-      formData.value = {
+      form.value = {
         rating: review.rating,
         taste_score: review.taste_score,
         difficulty_score: review.difficulty_score,
@@ -217,22 +254,33 @@ const rules = {
 
 // 評価テキスト
 const getRatingText = (rating: number): string => {
-  if (rating === 0) return ''
-  if (rating <= 1) return '改善が必要'
-  if (rating <= 2) return 'イマイチ'
+  if (rating === 0) return '評価なし'
+  if (rating <= 1) return '悪い'
+  if (rating <= 2) return 'いまいち'
   if (rating <= 3) return '普通'
   if (rating <= 4) return '良い'
-  return '最高！'
+  return '最高'
+}
+
+// 評価を設定（整数のみ）
+const setRating = (rating: number) => {
+  form.value.rating = rating
+}
+
+// 星ボタンの色を取得
+const getStarButtonColor = (starIndex: number): string => {
+  const currentRating = hoverRating.value || form.value.rating
+  return currentRating >= starIndex ? '#FFD700' : '#E0E0E0'
 }
 
 // 画像URL追加
 const addImageUrl = () => {
   if (imageUrl.value.trim()) {
-    if (!formData.value.review_images) {
-      formData.value.review_images = []
+    if (!form.value.review_images) {
+      form.value.review_images = []
     }
-    if (formData.value.review_images.length < 5) {
-      formData.value.review_images.push(imageUrl.value.trim())
+    if (form.value.review_images.length < 5) {
+      form.value.review_images.push(imageUrl.value.trim())
       imageUrl.value = ''
     }
   }
@@ -240,8 +288,8 @@ const addImageUrl = () => {
 
 // 画像削除
 const removeImage = (index: number) => {
-  if (formData.value.review_images) {
-    formData.value.review_images.splice(index, 1)
+  if (form.value.review_images) {
+    form.value.review_images.splice(index, 1)
   }
 }
 
@@ -258,10 +306,10 @@ const submitReview = async () => {
       review = await updateReview(
         props.recipeId,
         props.existingReview.id,
-        formData.value
+        form.value
       )
     } else {
-      review = await createReview(props.recipeId, formData.value)
+      review = await createReview(props.recipeId, form.value)
     }
 
     emit('success', review)
@@ -307,70 +355,175 @@ const submitReview = async () => {
   margin-bottom: 8px;
 }
 
+.rating-section {
+  margin-bottom: 24px;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.star-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-button:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.star-button:active {
+  transform: scale(0.95);
+}
+
+.star-icon {
+  transition: all 0.2s ease;
+}
+
+.stars-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stars-container {
+  display: flex;
+  gap: 4px;
+}
+
+.rating-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rating-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
 .rating-text {
   font-size: 14px;
   color: #666;
   font-weight: 500;
 }
 
-.detail-ratings {
+.additional-ratings {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
-.detail-rating-item {
+@media (min-width: 768px) {
+  .additional-ratings {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.rating-item {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  padding: 8px 0;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.detail-rating-label {
-  min-width: 120px;
-  font-weight: 500;
-  color: #333;
+.rating-item .v-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
 }
 
-.difficulty-hint {
-  font-size: 12px;
-  color: #999;
-  margin-left: 8px;
+.comment-section {
+  margin-bottom: 24px;
 }
 
-.comment-input {
-  margin-bottom: 16px;
+.images-section {
+  margin-bottom: 24px;
 }
 
-.image-input {
-  margin-bottom: 16px;
-}
-
-.image-list {
+.image-input-container {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
 
-.image-chip {
-  margin-bottom: 4px;
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.image-preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e0e0e0;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .form-actions {
-  padding: 16px 24px;
-  background: #fafafa;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
-/* レスポンシブ対応 */
 @media (max-width: 600px) {
-  .detail-rating-item {
+  .rating-container {
+    gap: 12px;
+  }
+
+  .stars-display {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
 
-  .detail-rating-label {
-    min-width: auto;
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .v-btn {
+    width: 100%;
   }
 }
 </style>
